@@ -1,9 +1,7 @@
 module DatabaseConsistency
   module Comparators
-    # The comparator for {{ActiveModel::Validations::PresenceValidator}}
-    module PresenceComparator
-      module_function
-
+    # The comparator class for {{ActiveModel::Validations::PresenceValidator}}
+    class PresenceComparator < BaseComparator
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       CONSTRAINT_MISSING = 'database field should have: "null: false"'.freeze
       POSSIBLE_NULL = 'possible null value insert'.freeze
@@ -15,16 +13,16 @@ module DatabaseConsistency
       # | at least one provided           | optional | ok     |
       # | all missed                      | required | ok     |
       # | all missed                      | optional | fail   |
-      def compare(validator, column)
+      def compare
         can_be_null = column.null
         has_weak_option = validator.options.slice(*WEAK_OPTIONS).any?
 
         if can_be_null == has_weak_option
-          ComparisonResult.format(:ok)
+          result(:ok)
         elsif can_be_null
-          ComparisonResult.format(:fail, CONSTRAINT_MISSING)
+          result(:fail, CONSTRAINT_MISSING)
         else
-          ComparisonResult.format(:fail, POSSIBLE_NULL)
+          result(:fail, POSSIBLE_NULL)
         end
       end
     end

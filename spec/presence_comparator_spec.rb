@@ -1,46 +1,35 @@
+require_relative 'database_context'
+
 RSpec.describe DatabaseConsistency::Comparators::PresenceComparator do
+  include_context 'database context'
+
   subject(:compare) do
     described_class.compare(klass.validators.first, klass.columns.first)
   end
 
-  let!(:database) do
-    ActiveRecord::Base.establish_connection(
-      adapter: 'sqlite3',
-      database: ':memory:'
-    )
-    ActiveRecord::Schema.verbose = false
-
-    options = field_options
-    ActiveRecord::Schema.define(version: 1) do
-      create_table :entities, id: false do |t|
-        t.string :field, options
-      end
-    end
-  end
-
-  let(:klass) do
-    options = validates_options
-    Class.new(ActiveRecord::Base) do |klass|
-      klass.table_name = :entities
-      klass.validates :field, options
-    end
-  end
-
   context 'when database has null: false' do
-    let(:field_options) { { null: false } }
+    before do
+      define_database { |t| t.string :field, null: false }
+    end
 
     context 'when presence: true' do
-      let(:validates_options) { { presence: true } }
+      let(:klass) do
+        define_class { |klass| klass.validates :field, presence: true }
+      end
 
       specify do
-        expect(compare).to eq(status: :ok)
+        expect(compare).to include(status: :ok)
       end
 
       context 'when allow_nil/allow_blank/if/unless is true' do
-        let(:validates_options) { { presence: true, allow_nil: true } }
+        let(:klass) do
+          define_class do |klass|
+            klass.validates :field, presence: true, allow_nil: true
+          end
+        end
 
         specify do
-          expect(compare).to eq(
+          expect(compare).to include(
             status: :fail,
             message: 'possible null value insert'
           )
@@ -50,23 +39,31 @@ RSpec.describe DatabaseConsistency::Comparators::PresenceComparator do
   end
 
   context 'when database has null: true' do
-    let(:field_options) { { null: true } }
+    before do
+      define_database { |t| t.string :field, null: true }
+    end
 
     context 'when presence: true' do
-      let(:validates_options) { { presence: true } }
+      let(:klass) do
+        define_class { |klass| klass.validates :field, presence: true }
+      end
 
       specify do
-        expect(compare).to eq(
+        expect(compare).to include(
           status: :fail,
           message: 'database field should have: "null: false"'
         )
       end
 
       context 'when allow_nil/allow_blank/if/unless is true' do
-        let(:validates_options) { { presence: true, allow_nil: true } }
+        let(:klass) do
+          define_class do |klass|
+            klass.validates :field, presence: true, allow_nil: true
+          end
+        end
 
         specify do
-          expect(compare).to eq(status: :ok)
+          expect(compare).to include(status: :ok)
         end
       end
     end
