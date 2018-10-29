@@ -12,3 +12,8 @@
 
 # RubyMine
 /.idea
+
+# Example
+/example/db/*.sqlite3
+/example/tmp
+/example/log
