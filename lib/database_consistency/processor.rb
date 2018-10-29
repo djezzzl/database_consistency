@@ -5,11 +5,6 @@ module DatabaseConsistency
       presence: DatabaseConsistency::Comparators::PresenceComparator
     }.freeze
 
-    def begin
-      Helper.load_environment!
-      Formatters::SimpleFormatter.format(comparisons)
-    end
-
     def comparisons
       Helper.models.each_with_object({}) do |model, hash|
         hash[model.name] = model.validators.flat_map do |validator|

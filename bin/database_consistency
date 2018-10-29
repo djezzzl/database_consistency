@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+base_dir = File.join(Dir.pwd, ARGV.first.to_s)
+
+unless File.realpath(base_dir).start_with?(Dir.pwd)
+  puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
+end
+
+begin
+  require File.join(base_dir, 'config', 'boot')
+  require File.join(base_dir, 'config', 'environment')
+rescue LoadError
+  puts "\nUh-oh! You must be in the root directory of a Rails project.\n"
+  raise
+end
+
+$LOAD_PATH.unshift(File.expand_path('lib', __dir__))
+require 'database_consistency'
+
+DatabaseConsistency.run

@@ -10,4 +10,8 @@ require 'database_consistency/processor'
 
 # The root module
 module DatabaseConsistency
+  def self.run
+    Helper.load_environment!
+    p Formatters::SimpleFormatter.format(Processor.new.comparisons)
+  end
 end

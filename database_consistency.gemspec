@@ -13,10 +13,12 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/djezzzl/database_consistency'
   spec.license       = 'MIT'
 
-  spec.files         = Dir['lib/**/*'] + %w[README.md LICENSE.txt]
+  spec.files         = Dir['lib/**/*']
   spec.require_paths = ['lib']
+  spec.executables   = ['database_consistency']
 
-  spec.add_development_dependency 'activerecord', '~> 5.2'
+  spec.add_dependency 'activerecord', '>= 3.2', '< 6'
+
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'

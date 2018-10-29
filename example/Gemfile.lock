@@ -1,3 +1,9 @@
+PATH
+  remote: ..
+  specs:
+    database_consistency (0.1.0)
+      activerecord (>= 3.2, < 6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -199,6 +205,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   chromedriver-helper
   coffee-rails (~> 4.2)
+  database_consistency!
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   puma (~> 3.11)
