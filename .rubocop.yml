@@ -1,3 +1,8 @@
+AllCops:
+  Exclude:
+    - 'example/**/*'
+    - 'bin/**/*'
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
