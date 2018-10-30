@@ -10,7 +10,11 @@ module DatabaseConsistency
       end
 
       def write?(status)
-        status == :fail || log_level == 'DEBUG'
+        status == :fail
+      end
+
+      def debug?
+        log_level == 'DEBUG'
       end
 
       def self.write(results, log_level)

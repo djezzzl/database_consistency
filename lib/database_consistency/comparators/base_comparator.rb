@@ -4,17 +4,15 @@ module DatabaseConsistency
     class BaseComparator
       attr_reader :validator, :column
 
-      delegate :result, to: :comparison
-
-      private_class_method :new
+      delegate :result, to: :report
 
       def initialize(validator, column)
         @validator = validator
         @column = column
       end
 
-      def comparison
-        Comparison.for(validator, column)
+      def report
+        Report.new(validator: validator, column: column)
       end
 
       def self.compare(validator, column)

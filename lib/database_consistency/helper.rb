@@ -17,5 +17,12 @@ module DatabaseConsistency
     def find_field(model, attribute)
       model.columns.select.find { |field| field.name == attribute }
     end
+
+    # @return [String]
+    def message(column, template = nil)
+      str = "column #{column.name} of table #{column.table_name}"
+      str += " #{template}" if template
+      str
+    end
   end
 end
