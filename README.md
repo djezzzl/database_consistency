@@ -1,43 +1,73 @@
 # DatabaseConsistency
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/database_consistency`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+The main goal of the project is to provide an easy way to check the consistency of the 
+database constraints with the application validations.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'database_consistency'
+gem 'database_consistency', group: :development, require: false
 ```
 
 And then execute:
 
-    $ bundle
+```bash
+bundle install
+```
 
 Or install it yourself as:
 
-    $ gem install database_consistency
+```bash
+gem install database_consistency
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+In the root directory of your Rails project run `bundle exec database_consistency`. 
+To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
+
+## How it works?
+
+Right now, we only check the consistency from the application validations perspective. 
+We iterate over all validators and check their consistency with the database constraints. 
+
+### PresenceComparator
+
+This comparator is used for *PresenceValidator*.
+
+| allow_nil/allow_blank/if/unless | database | status |
+| :-----------------------------: | :------: | :----: |
+| at least one provided           | required | fail   |
+| at least one provided           | optional | ok     |
+| all missed                      | required | ok     |
+| all missed                      | optional | fail   |  
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rspec` to run the tests.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, 
+update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git 
+tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/database_consistency. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+[Bug reports](https://github.com/djezzzl/database_consistency/issues) and [pull requests](https://github.com/djezzzl/database_consistency/pulls) are welcome on GitHub. 
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected 
+to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## Code of Conduct
 
-Everyone interacting in the DatabaseConsistency project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/database_consistency/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the *DatabaseConsistency* project’s codebases, issue trackers, chat rooms 
+and mailing lists is expected to 
+follow the [code of conduct](CODE_OF_CONDUCT.md).
+
+## Changelog
+
+*DatabaseConsistency*'s changelog is available [here](CHANGELOG.md).
+
+## Copyright
+
+Copyright (c) Evgeniy Demin. See [LICENSE.txt](LICENSE.txt) for further details.
