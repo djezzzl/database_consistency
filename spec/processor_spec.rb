@@ -1,10 +1,12 @@
 require_relative 'database_context'
 
-RSpec.describe DatabaseConsistency::Processor do
+RSpec.describe DatabaseConsistency::ValidatorsProcessor do
   include_context 'database context'
 
-  describe '#comparisons' do
-    subject { described_class.new.comparisons }
+  before { allow(DatabaseConsistency::Helper).to receive(:models).and_return([klass]) }
+
+  describe '#reports' do
+    subject { described_class.new.reports }
 
     context 'with one validator' do
       before do
@@ -19,7 +21,6 @@ RSpec.describe DatabaseConsistency::Processor do
 
       specify do
         expect(subject.size).to eq(1)
-        expect(subject['Entity'].size).to eq(1)
       end
     end
 
@@ -39,8 +40,7 @@ RSpec.describe DatabaseConsistency::Processor do
       end
 
       specify do
-        expect(subject.size).to eq(1)
-        expect(subject['Entity'].size).to eq(2)
+        expect(subject.size).to eq(2)
       end
     end
   end

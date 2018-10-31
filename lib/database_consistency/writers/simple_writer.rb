@@ -8,18 +8,20 @@ module DatabaseConsistency
       end
 
       def format
-        results.map do |model_name, comparisons|
-          comparisons.map do |comparison|
-            next unless write?(comparison[:status])
-            line(model_name, comparison)
-          end.tap(&:compact!).map(&:lstrip).join("\n")
-        end.join("\n")
+        results.map do |result|
+          next unless write?(result[:status])
+          line(result)
+        end.tap(&:compact!).map(&:lstrip).delete_if(&:empty?).join(delimiter)
       end
 
-      def line(model_name, comparison)
-        <<-TEXT
-          #{comparison[:status]} #{comparison[:message]} #{model_name} #{comparison[:validator].inspect} #{comparison[:column].inspect}
-        TEXT
+      def delimiter
+        debug? ? "\n\n" : "\n"
+      end
+
+      def line(result)
+        "#{result[:status]} #{result[:message]}".tap do |str|
+          str.concat " #{result[:opts].inspect}" if debug?
+        end
       end
     end
   end

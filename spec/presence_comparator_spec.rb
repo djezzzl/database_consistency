@@ -31,7 +31,7 @@ RSpec.describe DatabaseConsistency::Comparators::PresenceComparator do
         specify do
           expect(compare).to include(
             status: :fail,
-            message: 'possible null value insert'
+            message: 'column field of table entities is required but possible null value insert'
           )
         end
       end
@@ -51,7 +51,7 @@ RSpec.describe DatabaseConsistency::Comparators::PresenceComparator do
       specify do
         expect(compare).to include(
           status: :fail,
-          message: 'database field should have: "null: false"'
+          message: 'column field of table entities should be required in the database'
         )
       end
 

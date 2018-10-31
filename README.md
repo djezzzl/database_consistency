@@ -33,8 +33,10 @@ To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
 
 ## How it works?
 
-Right now, we only check the consistency from the application validations perspective. 
-We iterate over all validators and check their consistency with the database constraints. 
+- As first step, we iterate over all validators and check their consistency with the database constraints. 
+Right now, we only check consistency for presence validator. 
+- As second step, we iterate over all column in the database and check if they have proper validations. 
+Right now, we only check if field should have presence validator.  
 
 ### PresenceComparator
 
@@ -46,6 +48,24 @@ This comparator is used for *PresenceValidator*.
 | at least one provided           | optional | ok     |
 | all missed                      | required | ok     |
 | all missed                      | optional | fail   |  
+
+### PresenceMissingVerifier
+
+We fail if the column satisfy conditions:
+- column is required in the database
+- column is not a primary key (we don't need need presence validators for primary keys)
+- model records timestamps and column's name is not `created_at` or `updated_at`
+
+## Example
+
+```
+$ bundle exec database_consistency
+fail column phone of table users should be required in the database
+fail column name of table users is required but possible null value insert
+fail column code of table users is required but do not have presence validator
+```
+
+See [example](example) project for more details.
 
 ## Development
 

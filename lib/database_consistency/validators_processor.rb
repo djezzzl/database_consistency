@@ -1,13 +1,13 @@
 module DatabaseConsistency
-  # The class to begin
-  class Processor
+  # The class to process all comparators
+  class ValidatorsProcessor
     COMPARATORS = {
       presence: DatabaseConsistency::Comparators::PresenceComparator
     }.freeze
 
-    def comparisons
-      Helper.models.each_with_object({}) do |model, hash|
-        hash[model.name] = model.validators.flat_map do |validator|
+    def reports
+      Helper.models.flat_map do |model|
+        model.validators.flat_map do |validator|
           next unless (comparator = COMPARATORS[validator.kind])
 
           validator.attributes.map do |attribute|
@@ -15,8 +15,8 @@ module DatabaseConsistency
 
             comparator.compare(validator, column)
           end
-        end.compact
-      end
+        end
+      end.compact
     end
   end
 end
