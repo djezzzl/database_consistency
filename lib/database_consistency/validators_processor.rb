@@ -13,7 +13,7 @@ module DatabaseConsistency
           validator.attributes.map do |attribute|
             next unless (column = Helper.find_field(model, attribute.to_s))
 
-            comparator.compare(validator, column)
+            comparator.compare(validator, model, column)
           end
         end
       end.compact

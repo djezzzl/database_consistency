@@ -30,7 +30,7 @@ module DatabaseConsistency
       private
 
       def message(template = nil)
-        Helper.message(column, template)
+        Helper.message(model, column, template)
       end
     end
   end

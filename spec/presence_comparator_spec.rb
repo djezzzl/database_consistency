@@ -4,7 +4,7 @@ RSpec.describe DatabaseConsistency::Comparators::PresenceComparator do
   include_context 'database context'
 
   subject(:compare) do
-    described_class.compare(klass.validators.first, klass.columns.first)
+    described_class.compare(klass.validators.first, klass, klass.columns.first)
   end
 
   context 'when database has null: false' do
