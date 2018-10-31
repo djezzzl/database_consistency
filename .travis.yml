@@ -5,3 +5,6 @@ cache: bundler
 rvm:
   - 2.5.1
 before_install: gem install bundler -v 1.16.4
+env:
+  - AR_VERSION="~> 5.2"
+  - AR_VERSION="~> 4.2"

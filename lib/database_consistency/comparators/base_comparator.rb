@@ -2,12 +2,13 @@ module DatabaseConsistency
   module Comparators
     # The base class for comparators
     class BaseComparator
-      attr_reader :validator, :column
+      attr_reader :validator, :model, :column
 
       delegate :result, to: :report
 
-      def initialize(validator, column)
+      def initialize(validator, model, column)
         @validator = validator
+        @model = model
         @column = column
       end
 
@@ -15,8 +16,8 @@ module DatabaseConsistency
         Report.new(validator: validator, column: column)
       end
 
-      def self.compare(validator, column)
-        new(validator, column).compare
+      def self.compare(validator, model, column)
+        new(validator, model, column).compare
       end
     end
   end

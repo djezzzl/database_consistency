@@ -5,7 +5,7 @@ module DatabaseConsistency
       VALIDATOR_MISSING = 'is required but do not have presence validator'.freeze
 
       def verify
-        result(:fail, Helper.message(column, VALIDATOR_MISSING)) unless skip? || validator?
+        result(:fail, Helper.message(model, column, VALIDATOR_MISSING)) unless skip? || validator?
       end
 
       private

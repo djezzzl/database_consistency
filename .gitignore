@@ -17,3 +17,6 @@
 /example/db/*.sqlite3
 /example/tmp
 /example/log
+
+Gemfile.lock
+Gemfile.local

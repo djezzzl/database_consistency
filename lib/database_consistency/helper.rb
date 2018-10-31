@@ -19,8 +19,8 @@ module DatabaseConsistency
     end
 
     # @return [String]
-    def message(column, template = nil)
-      str = "column #{column.name} of table #{column.table_name}"
+    def message(model, column, template = nil)
+      str = "column #{column.name} of table #{model.table_name}"
       str += " #{template}" if template
       str
     end
