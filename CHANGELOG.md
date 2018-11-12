@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.2.2] - 2018/11/12
+
+Improvements:
+
+- Exclude Inclusion validator and BelongsTo reflection from being alerted by PresenceMissingVerifier
+
 ### [0.2.1] - 2018/10/31
 
 Improvements:

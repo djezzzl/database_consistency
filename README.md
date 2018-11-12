@@ -55,14 +55,15 @@ We fail if the column satisfy conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
+- column is not used for any Presence or Inclusion validators, or BelongsTo reflection
 
 ## Example
 
 ```
 $ bundle exec database_consistency
-fail column phone of table users should be required in the database
-fail column name of table users is required but possible null value insert
-fail column code of table users is required but do not have presence validator
+fail column phone of table users of model User should be required in the database
+fail column name of table users of model User is required but possible null value insert
+fail column code of table users of model User is required but do not have presence validator
 ```
 
 See [example](example) project for more details.

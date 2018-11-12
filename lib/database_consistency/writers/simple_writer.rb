@@ -10,6 +10,7 @@ module DatabaseConsistency
       def format
         results.map do |result|
           next unless write?(result[:status])
+
           line(result)
         end.tap(&:compact!).map(&:lstrip).delete_if(&:empty?).join(delimiter)
       end
