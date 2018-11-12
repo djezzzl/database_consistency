@@ -9,7 +9,7 @@ module DatabaseConsistency
 
     def result(status, message)
       {
-        status:  status,
+        status: status,
         message: message
       }.tap { |hash| hash[:opts] = opts unless opts.empty? }
     end

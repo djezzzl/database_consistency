@@ -5,7 +5,14 @@ module DatabaseConsistency
 
     # Returns list of models to check
     def models
-      ActiveRecord::Base.descendants.select { |model| model.validators.any? }
+      ActiveRecord::Base.descendants.delete_if(&:abstract_class?)
+    end
+
+    # Return list of not inherited models
+    def parent_models
+      models.group_by(&:table_name).each_value.map do |models|
+        models.min_by { |model| models.include?(model.superclass) ? 1 : 0 }
+      end
     end
 
     # Loads all models
@@ -20,9 +27,14 @@ module DatabaseConsistency
 
     # @return [String]
     def message(model, column, template = nil)
-      str = "column #{column.name} of table #{model.table_name}"
+      str = "column #{column.name} of table #{model.table_name} of model #{model.name}"
       str += " #{template}" if template
       str
+    end
+
+    # @return [Boolean]
+    def check_inclusion?(array, element)
+      array.include?(element.to_s) || array.include?(element.to_sym)
     end
   end
 end

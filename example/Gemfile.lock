@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    database_consistency (0.2.0)
+    database_consistency (0.2.2)
       activerecord (>= 3.2, < 6)
 
 GEM

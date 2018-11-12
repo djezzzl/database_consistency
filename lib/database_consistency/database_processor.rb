@@ -6,7 +6,7 @@ module DatabaseConsistency
     ].freeze
 
     def reports
-      Helper.models.flat_map do |model|
+      Helper.parent_models.flat_map do |model|
         model.columns.flat_map do |column|
           VERIFIERS.map do |verifier|
             verifier.verify(model, column)
