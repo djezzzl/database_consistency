@@ -31,6 +31,8 @@ gem install database_consistency
 In the root directory of your Rails project run `bundle exec database_consistency`. 
 To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
 
+You can also configure the gem to skip some of its checks using [.database_consistency.yml](example/.database_consistency.yml) file. 
+
 ## How it works?
 
 - As first step, we iterate over all validators and check their consistency with the database constraints. 
