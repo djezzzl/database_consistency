@@ -56,6 +56,7 @@ We fail if the column satisfy conditions:
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
 - column is not used for any Presence or Inclusion validators, or BelongsTo reflection
+- column has not a default value
 
 ## Example
 

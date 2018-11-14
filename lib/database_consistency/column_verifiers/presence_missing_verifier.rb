@@ -14,8 +14,13 @@ module DatabaseConsistency
 
       def skip?
         column.null ||
+          !column.default.nil? ||
           column.name == model.primary_key ||
-          (model.record_timestamps? && %w[created_at updated_at].include?(column.name))
+          timestamp_field?
+      end
+
+      def timestamp_field?
+        model.record_timestamps? && %w[created_at updated_at].include?(column.name)
       end
 
       def presence_validator?
