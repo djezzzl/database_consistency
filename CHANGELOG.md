@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.2.3] - 2018/11/14
+
+Improvements:
+- Exclude columns with default value from PresenceMissingVerifier
+ 
+Features:
+- Support configurations via yml file
+
 ### [0.2.2] - 2018/11/12
 
 Improvements:

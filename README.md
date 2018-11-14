@@ -31,6 +31,8 @@ gem install database_consistency
 In the root directory of your Rails project run `bundle exec database_consistency`. 
 To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
 
+You can also configure the gem to skip some of its checks using [.database_consistency.yml](example/.database_consistency.yml) file. 
+
 ## How it works?
 
 - As first step, we iterate over all validators and check their consistency with the database constraints. 
@@ -56,6 +58,7 @@ We fail if the column satisfy conditions:
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
 - column is not used for any Presence or Inclusion validators, or BelongsTo reflection
+- column has not a default value
 
 ## Example
 
