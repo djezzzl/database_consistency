@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.2.4] - 2018/11/15
+
+Features:
+- Support of [overcommit](https://github.com/brigade/overcommit) gem
+
 ### [0.2.3] - 2018/11/14
 
 Improvements:

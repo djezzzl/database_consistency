@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    database_consistency (0.2.3)
+    database_consistency (0.2.4)
       activerecord (>= 3.2, < 6)
 
 GEM
@@ -224,4 +224,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.17.0
+   1.17.1
