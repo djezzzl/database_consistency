@@ -71,6 +71,18 @@ fail column code of table users of model User is required but do not have presen
 
 See [example](example) project for more details.
 
+## Integrations
+
+Configuration example for [overcommit](https://github.com/brigade/overcommit) gem. 
+
+```yaml
+PreCommit:
+  DatabaseConsistency:
+    enabled: true
+    quiet: false
+    command: ['bundle', 'exec', 'database_consistency']
+```
+
 ## Development
 
 After checking out the repo, run `bundle install` to install dependencies. Then, run `bundle exec rspec` to run the tests.

@@ -17,4 +17,5 @@ end
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'database_consistency'
 
-DatabaseConsistency.run
+result = DatabaseConsistency.run
+exit result

@@ -33,14 +33,16 @@ module DatabaseConsistency
         reports,
         ENV['LOG_LEVEL'] || 'INFO'
       )
+
+      reports.empty? ? 0 : 1
     end
 
     def enabled_processors
-      PROCESSORS.select { |processor| configuration.enabled?(processor) }
+      @enabled_processors ||= PROCESSORS.select { |processor| configuration.enabled?(processor) }
     end
 
     def reports
-      enabled_processors.map(&:new).flat_map(&:reports)
+      @reports ||= enabled_processors.map(&:new).flat_map(&:reports)
     end
 
     def configuration
