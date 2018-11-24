@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.2.5] - 2018/11/24
+
+Improvements:
+- Exclude subclasses from ValidatorsProcessor
+
 ### [0.2.4] - 2018/11/15
 
 Features:
