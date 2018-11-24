@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    database_consistency (0.2.4)
+    database_consistency (0.2.5)
       activerecord (>= 3.2, < 6)
 
 GEM
@@ -219,9 +219,6 @@ DEPENDENCIES
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
-
-RUBY VERSION
-   ruby 2.5.1p57
 
 BUNDLED WITH
    1.17.1

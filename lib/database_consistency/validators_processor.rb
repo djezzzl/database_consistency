@@ -6,7 +6,7 @@ module DatabaseConsistency
     }.freeze
 
     def reports
-      Helper.models.flat_map do |model|
+      Helper.parent_models.flat_map do |model|
         model.validators.flat_map do |validator|
           next unless (comparator = COMPARATORS[validator.kind])
 
