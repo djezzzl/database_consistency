@@ -8,3 +8,6 @@ before_install: gem install bundler -v 1.16.4
 env:
   - AR_VERSION="~> 5.2"
   - AR_VERSION="~> 4.2"
+script:
+  - bundle exec rspec
+  - bundle exec rubocop
