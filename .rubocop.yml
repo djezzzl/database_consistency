@@ -5,6 +5,7 @@ AllCops:
   Exclude:
     - 'example/**/*'
     - 'bin/**/*'
+    - 'vendor/bundle/**/*'
   TargetRubyVersion: 2.5
 
 Metrics/BlockLength:
