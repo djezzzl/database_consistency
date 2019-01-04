@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'database_consistency'
+
+require 'database_context'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -10,5 +14,9 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  def file_fixture(path)
+    File.join('spec/fixtures/files/', path)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   # The module contains helper methods
   module Helper
@@ -23,13 +25,6 @@ module DatabaseConsistency
     # Find a database field with name equals to attribute
     def find_field(model, attribute)
       model.columns.select.find { |field| field.name == attribute }
-    end
-
-    # @return [String]
-    def message(model, column, template = nil)
-      str = "column #{column.name} of table #{model.table_name} of model #{model.name}"
-      str += " #{template}" if template
-      str
     end
 
     # @return [Boolean]

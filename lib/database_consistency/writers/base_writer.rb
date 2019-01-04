@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   module Writers
     # The base class for writers
@@ -10,7 +12,7 @@ module DatabaseConsistency
       end
 
       def write?(status)
-        status == :fail
+        status == :fail || debug?
       end
 
       def debug?

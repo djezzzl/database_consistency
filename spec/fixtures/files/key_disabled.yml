@@ -1,0 +1,6 @@
+PresenceValidationChecker:
+  enabled: true
+  User:
+    enabled: true
+    email:
+      enabled: false

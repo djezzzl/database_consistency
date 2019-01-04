@@ -1,33 +1,30 @@
+# frozen_string_literal: true
+
 require 'active_record'
 
 require 'database_consistency/version'
-require 'database_consistency/report'
 require 'database_consistency/helper'
 require 'database_consistency/configuration'
 
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
 
-require 'database_consistency/comparators/base_comparator'
-require 'database_consistency/comparators/presence_comparator'
-require 'database_consistency/validators_processor'
+require 'database_consistency/checkers/base_checker'
+require 'database_consistency/checkers/presence_validation_checker'
+require 'database_consistency/checkers/null_constraint_checker'
 
-require 'database_consistency/column_verifiers/base_verifier'
-require 'database_consistency/column_verifiers/presence_missing_verifier'
-require 'database_consistency/database_processor'
+require 'database_consistency/processors/base_processor'
+require 'database_consistency/processors/models_processor'
+require 'database_consistency/processors/tables_processor'
 
 # The root module
 module DatabaseConsistency
-  CONFIGURATION_PATH = '.database_consistency.yml'.freeze
-
-  PROCESSORS = [
-    ValidatorsProcessor,
-    DatabaseProcessor
-  ].freeze
-
   class << self
     def run
       Helper.load_environment!
+
+      configuration = Configuration.new
+      reports = Processors.reports(configuration)
 
       Writers::SimpleWriter.write(
         reports,
@@ -35,22 +32,6 @@ module DatabaseConsistency
       )
 
       reports.empty? ? 0 : 1
-    end
-
-    def enabled_processors
-      @enabled_processors ||= PROCESSORS.select { |processor| configuration.enabled?(processor) }
-    end
-
-    def reports
-      @reports ||= enabled_processors.map(&:new).flat_map(&:reports)
-    end
-
-    def configuration
-      @configuration ||= if File.exist?(CONFIGURATION_PATH)
-                           Configuration.new(CONFIGURATION_PATH)
-                         else
-                           Configuration.new
-                         end
     end
   end
 end

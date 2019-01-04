@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context 'database context' do
   def define_database
     ActiveRecord::Base.establish_connection(
@@ -8,7 +10,7 @@ RSpec.shared_context 'database context' do
 
     ActiveRecord::Schema.define(version: 1) do
       create_table :entities, id: false do |table|
-        yield(table)
+        yield(table) if block_given?
       end
     end
   end
@@ -20,7 +22,7 @@ RSpec.shared_context 'database context' do
       end
 
       klass.table_name = :entities
-      yield(klass)
+      yield(klass) if block_given?
     end
   end
 end
