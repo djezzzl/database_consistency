@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker do
   subject(:checker) { described_class.new(model, column) }
 

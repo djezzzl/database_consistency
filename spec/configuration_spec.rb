@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe DatabaseConsistency::Configuration do
   subject(:configuration) { described_class.new(file_fixture(file_path)) }
 

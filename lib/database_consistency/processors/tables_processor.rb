@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   module Processors
     # The class to process missing validators

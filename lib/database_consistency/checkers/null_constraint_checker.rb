@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
     class NullConstraintChecker < BaseChecker
       # Message templates
-      VALIDATOR_MISSING = 'is required but do not have presence validator'.freeze
+      VALIDATOR_MISSING = 'is required but do not have presence validator'
 
       private
 

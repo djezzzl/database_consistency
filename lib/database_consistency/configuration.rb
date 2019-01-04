@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'yaml'
 
 module DatabaseConsistency
   # The class to access configuration options
   class Configuration
-    CONFIGURATION_PATH = '.database_consistency.yml'.freeze
+    CONFIGURATION_PATH = '.database_consistency.yml'
 
     def initialize(filepath = CONFIGURATION_PATH)
       @configuration = if filepath && File.exist?(filepath)

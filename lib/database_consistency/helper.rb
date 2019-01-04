@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   # The module contains helper methods
   module Helper

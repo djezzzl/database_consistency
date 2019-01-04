@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   module Checkers
     # This class checks PresenceValidator
     class PresenceValidationChecker < BaseChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
-      CONSTRAINT_MISSING = 'should be required in the database'.freeze
-      POSSIBLE_NULL = 'is required but possible null value insert'.freeze
+      CONSTRAINT_MISSING = 'should be required in the database'
+      POSSIBLE_NULL = 'is required but possible null value insert'
 
       private
 

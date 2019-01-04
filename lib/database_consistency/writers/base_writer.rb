@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConsistency
   module Writers
     # The base class for writers
