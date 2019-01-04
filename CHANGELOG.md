@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.3.0] - 2019/01/04
+
+Features:
+- Support flexible configuration (disable specified check for specified column)
+
+Breaking changes:
+- Configuration should be provided according to the new format 
+
 ### [0.2.5] - 2018/11/24
 
 Improvements:

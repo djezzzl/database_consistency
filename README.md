@@ -31,18 +31,18 @@ gem install database_consistency
 In the root directory of your Rails project run `bundle exec database_consistency`. 
 To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
 
-You can also configure the gem to skip some of its checks using [.database_consistency.yml](example/.database_consistency.yml) file. 
+You can also configure the gem to skip some of its checks using [.database_consistency.yml](example/.database_consistency.yml) file.
+By default, every checker is enabled. 
 
 ## How it works?
 
-- As first step, we iterate over all validators and check their consistency with the database constraints. 
-Right now, we only check consistency for presence validator. 
-- As second step, we iterate over all column in the database and check if they have proper validations. 
-Right now, we only check if field should have presence validator.  
+### PresenceValidationChecker
 
-### PresenceComparator
+Imagine your model has a `validates <field>, presence: true` validation on some field but doesn't have not-null constraint in 
+the database. In that case, your model's definition assumes (in most cases) you won't have `null` values in the database but 
+it's possible to skip validations or directly write improper data in the table. 
 
-This comparator is used for *PresenceValidator*.
+To avoid the inconsistency and be always sure your value won't be `null` you should add not-null constraint.
 
 | allow_nil/allow_blank/if/unless | database | status |
 | :-----------------------------: | :------: | :----: |
@@ -51,22 +51,27 @@ This comparator is used for *PresenceValidator*.
 | all missed                      | required | ok     |
 | all missed                      | optional | fail   |  
 
-### PresenceMissingVerifier
+### NullConstraintChecker
+
+Imagine your model has not-null constraint on some field in the database but doesn't have 
+`validates <field>, presence: true` validation. In that case, you're sure that you won't have `null` values in the database.
+But each attempt to save the `nil` value on that field will be rolled back with error raised and without `errors` on your object.
+Mostly, you'd like to catch it properly and for that presence validator exists.
 
 We fail if the column satisfy conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
-- column is not used for any Presence or Inclusion validators, or BelongsTo reflection
+- column is not used for any Presence or Inclusion validators or BelongsTo reflection
 - column has not a default value
 
 ## Example
 
 ```
 $ bundle exec database_consistency
-fail column phone of table users of model User should be required in the database
-fail column name of table users of model User is required but possible null value insert
-fail column code of table users of model User is required but do not have presence validator
+fail User phone should be required in the database
+fail User name is required but possible null value insert
+fail User code is required but do not have presence validator
 ```
 
 See [example](example) project for more details.

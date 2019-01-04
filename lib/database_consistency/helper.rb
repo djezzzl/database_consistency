@@ -25,13 +25,6 @@ module DatabaseConsistency
       model.columns.select.find { |field| field.name == attribute }
     end
 
-    # @return [String]
-    def message(model, column, template = nil)
-      str = "column #{column.name} of table #{model.table_name} of model #{model.name}"
-      str += " #{template}" if template
-      str
-    end
-
     # @return [Boolean]
     def check_inclusion?(array, element)
       array.include?(element.to_s) || array.include?(element.to_sym)

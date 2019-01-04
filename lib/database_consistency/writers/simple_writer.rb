@@ -12,16 +12,12 @@ module DatabaseConsistency
           next unless write?(result[:status])
 
           line(result)
-        end.tap(&:compact!).map(&:lstrip).delete_if(&:empty?).join(delimiter)
-      end
-
-      def delimiter
-        debug? ? "\n\n" : "\n"
+        end.tap(&:compact!).map(&:lstrip).delete_if(&:empty?).join("\n")
       end
 
       def line(result)
-        "#{result[:status]} #{result[:message]}".tap do |str|
-          str.concat " #{result[:opts].inspect}" if debug?
+        "#{result.status} #{result.table_or_model_name} #{result.column_or_attribute_name} #{result.message}".tap do |s|
+          s.concat " (checker: #{result.checker_name})" if debug?
         end
       end
     end

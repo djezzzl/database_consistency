@@ -1,2 +1,25 @@
-ValidatorsProcessor: true
-DatabaseProcessor: true
+PresenceValidationChecker:
+  enabled: true # 1st priority
+  User:
+    enabled: true # 2nd priority
+    phone:
+      enabled: true # 3rd priority
+    name:
+      enabled: true
+
+NullConstraintChecker:
+  enabled: true
+  User:
+    enabled: true
+    code:
+      enabled: true
+
+#  Can be compact (example), "enabled: true" is default
+#  PresenceValidationChecker:
+#    User:
+#      enabled: false
+#
+#  NullConstraintChecker:
+#    User:
+#      code:
+#        enabled: false

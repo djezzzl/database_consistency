@@ -10,7 +10,7 @@ module DatabaseConsistency
       end
 
       def write?(status)
-        status == :fail
+        status == :fail || debug?
       end
 
       def debug?
