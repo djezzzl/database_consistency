@@ -34,22 +34,22 @@ module DatabaseConsistency
       def skip?
         column.null ||
           !column.default.nil? ||
-          column.name == table.primary_key ||
+          column.name == model.primary_key ||
           timestamp_field?
       end
 
       def timestamp_field?
-        table.record_timestamps? && %w[created_at updated_at].include?(column.name)
+        model.record_timestamps? && %w[created_at updated_at].include?(column.name)
       end
 
       def validator?(validator_class)
-        table.validators.grep(validator_class).any? do |validator|
+        model.validators.grep(validator_class).any? do |validator|
           Helper.check_inclusion?(validator.attributes, column.name)
         end
       end
 
       def belongs_to_reflection?
-        table.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
+        model.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
           Helper.check_inclusion?([r.foreign_key, r.foreign_type], column.name)
         end
       end

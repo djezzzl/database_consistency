@@ -4,10 +4,10 @@ module DatabaseConsistency
   module Checkers
     # The base class for table checkers
     class TableChecker < BaseChecker
-      attr_reader :table, :column
+      attr_reader :model, :column
 
-      def initialize(table, column)
-        @table = table
+      def initialize(model, column)
+        @model = model
         @column = column
       end
 
@@ -16,7 +16,7 @@ module DatabaseConsistency
       end
 
       def table_or_model_name
-        @table_or_model_name ||= table.name.to_s
+        @table_or_model_name ||= model.name.to_s
       end
     end
   end
