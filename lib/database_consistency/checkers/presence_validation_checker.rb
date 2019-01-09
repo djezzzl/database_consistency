@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # This class checks PresenceValidator
-    class PresenceValidationChecker < BaseChecker
+    class PresenceValidationChecker < ValidatorChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
       CONSTRAINT_MISSING = 'should be required in the database'
@@ -37,19 +37,15 @@ module DatabaseConsistency
       end
 
       def column
-        @column ||= Helper.find_field(table_or_model, column_or_attribute.to_s)
+        @column ||= Helper.find_column(model, attribute)
       end
 
       def column_or_attribute_name
-        column_or_attribute.to_s
+        attribute.to_s
       end
 
       def table_or_model_name
-        table_or_model.name.to_s
-      end
-
-      def validator
-        opts[:validator]
+        model.name.to_s
       end
     end
   end

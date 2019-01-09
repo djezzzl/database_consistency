@@ -58,7 +58,7 @@ Imagine your model has not-null constraint on some field in the database but doe
 But each attempt to save the `nil` value on that field will be rolled back with error raised and without `errors` on your object.
 Mostly, you'd like to catch it properly and for that presence validator exists.
 
-We fail if the column satisfy conditions:
+We fail if the column satisfies the following conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`

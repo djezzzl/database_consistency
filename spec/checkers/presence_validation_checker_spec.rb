@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
-  subject(:checker) { described_class.new(model, attribute, validator: validator) }
+  subject(:checker) { described_class.new(model, attribute, validator) }
 
   let(:model) { klass }
   let(:attribute) { :email }

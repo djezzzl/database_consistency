@@ -17,7 +17,7 @@ module DatabaseConsistency
             next unless (checker_class = CHECKERS[validator.kind])
 
             validator.attributes.map do |attribute|
-              checker = checker_class.new(model, attribute, validator: validator)
+              checker = checker_class.new(model, attribute, validator)
               checker.report if checker.enabled?(configuration)
             end
           end

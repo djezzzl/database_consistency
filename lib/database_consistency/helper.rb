@@ -23,8 +23,9 @@ module DatabaseConsistency
     end
 
     # Find a database field with name equals to attribute
-    def find_field(model, attribute)
-      model.columns.select.find { |field| field.name == attribute }
+    def find_column(model, attribute)
+      attribute_str = attribute.to_s
+      model.columns.select.find { |field| field.name == attribute_str }
     end
 
     # @return [Boolean]

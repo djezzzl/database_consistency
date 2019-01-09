@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
-    class NullConstraintChecker < BaseChecker
+    class NullConstraintChecker < TableChecker
       # Message templates
       VALIDATOR_MISSING = 'is required but do not have presence validator'
 
@@ -32,33 +32,33 @@ module DatabaseConsistency
       end
 
       def column_or_attribute_name
-        column_or_attribute.name.to_s
+        column.name.to_s
       end
 
       def table_or_model_name
-        table_or_model.name.to_s
+        table.name.to_s
       end
 
       def skip?
-        column_or_attribute.null ||
-          !column_or_attribute.default.nil? ||
-          column_or_attribute.name == table_or_model.primary_key ||
+        column.null ||
+          !column.default.nil? ||
+          column.name == table.primary_key ||
           timestamp_field?
       end
 
       def timestamp_field?
-        table_or_model.record_timestamps? && %w[created_at updated_at].include?(column_or_attribute.name)
+        table.record_timestamps? && %w[created_at updated_at].include?(column.name)
       end
 
       def validator?(validator_class)
-        table_or_model.validators.grep(validator_class).any? do |validator|
-          Helper.check_inclusion?(validator.attributes, column_or_attribute.name)
+        table.validators.grep(validator_class).any? do |validator|
+          Helper.check_inclusion?(validator.attributes, column.name)
         end
       end
 
       def belongs_to_reflection?
-        table_or_model.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
-          Helper.check_inclusion?([r.foreign_key, r.foreign_type], column_or_attribute.name)
+        table.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
+          Helper.check_inclusion?([r.foreign_key, r.foreign_type], column.name)
         end
       end
     end
