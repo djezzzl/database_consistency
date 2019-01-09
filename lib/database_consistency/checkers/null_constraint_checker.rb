@@ -9,33 +9,37 @@ module DatabaseConsistency
 
       private
 
-      # Table of possible statuses
-      # | validation | database | status |
-      # | ---------- | -------- | ------ |
-      # | missed     | required | fail   |
-      #
       # We skip check when:
       #  - column hasn't null constraint
       #  - column has default value
       #  - column is a primary key
       #  - column is a timestamp
-      #  - presence validation exists
-      #  - inclusion validation exists
-      #  - belongs_to reflection exists with given column as foreign key or foreign type
-      def check
-        return if skip? ||
-                  validator?(ActiveModel::Validations::PresenceValidator) ||
-                  validator?(ActiveModel::Validations::InclusionValidator) ||
-                  belongs_to_reflection?
-
-        report_template(:fail, VALIDATOR_MISSING)
+      def preconditions
+        !column.null && column.default.nil? && !primary_field? && !timestamp_field?
       end
 
-      def skip?
-        column.null ||
-          !column.default.nil? ||
-          column.name == model.primary_key ||
-          timestamp_field?
+      # Table of possible statuses
+      # | validation | database | status |
+      # | ---------- | -------- | ------ |
+      # | missed     | required | fail   |
+      #
+      # We consider PresenceValidation, InclusionValidation or BelongsTo reflection using this column
+      def check
+        if valid?
+          report_template(:ok)
+        else
+          report_template(:fail, VALIDATOR_MISSING)
+        end
+      end
+
+      def valid?
+        validator?(ActiveModel::Validations::PresenceValidator) ||
+          validator?(ActiveModel::Validations::InclusionValidator) ||
+          belongs_to_reflection?
+      end
+
+      def primary_field?
+        column.name.to_s == model.primary_key.to_s
       end
 
       def timestamp_field?

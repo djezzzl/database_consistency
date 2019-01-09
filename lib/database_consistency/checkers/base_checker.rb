@@ -4,8 +4,10 @@ module DatabaseConsistency
   module Checkers
     # The base class for checkers
     class BaseChecker
-      # @return [Hash]
+      # @return [Hash, nil]
       def report
+        return unless preconditions
+
         @report ||= check
       end
 
@@ -17,6 +19,10 @@ module DatabaseConsistency
       private
 
       def check
+        raise NotImplementedError
+      end
+
+      def preconditions
         raise NotImplementedError
       end
 

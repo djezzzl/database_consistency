@@ -11,6 +11,13 @@ module DatabaseConsistency
 
       private
 
+      # We skip check when:
+      #  - validator is not a presence validator
+      #  - there is no column in the database with given name
+      def preconditions
+        validator.kind == :presence && column
+      end
+
       # Table of possible statuses
       # | allow_nil/allow_blank/if/unless | database | status |
       # | ------------------------------- | -------- | ------ |
@@ -18,12 +25,7 @@ module DatabaseConsistency
       # | at least one provided           | optional | ok     |
       # | all missed                      | required | ok     |
       # | all missed                      | optional | fail   |
-      #
-      # We skip check when:
-      #  - there is no column in the database with given name
       def check
-        return unless column
-
         can_be_null = column.null
         has_weak_option = validator.options.slice(*WEAK_OPTIONS).any?
 
