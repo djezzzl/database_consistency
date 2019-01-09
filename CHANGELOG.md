@@ -1,5 +1,10 @@
 # Changelog
 
+### [Master]
+
+Breaking changes:
+- Rename `PresenceValidationChecker` to `ColumnPresenceChecker` for simplicity. Please update your configuration files properly.
+
 ### [0.3.0] - 2019/01/04
 
 Features:

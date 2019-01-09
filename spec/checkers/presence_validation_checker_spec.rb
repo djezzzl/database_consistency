@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
+RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
   subject(:checker) { described_class.new(model, attribute, validator) }
 
   let(:model) { klass }
@@ -18,7 +18,7 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :ok,
@@ -36,7 +36,7 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
@@ -54,7 +54,7 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,

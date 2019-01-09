@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # This class checks PresenceValidator
-    class PresenceValidationChecker < ValidatorChecker
+    class ColumnPresenceChecker < ValidatorChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
       CONSTRAINT_MISSING = 'should be required in the database'

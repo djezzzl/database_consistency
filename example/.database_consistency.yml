@@ -1,4 +1,4 @@
-PresenceValidationChecker:
+ColumnPresenceChecker:
   enabled: true # 1st priority
   User:
     enabled: true # 2nd priority
@@ -15,7 +15,7 @@ NullConstraintChecker:
       enabled: true
 
 #  Can be compact (example), "enabled: true" is default
-#  PresenceValidationChecker:
+#  ColumnPresenceChecker:
 #    User:
 #      enabled: false
 #

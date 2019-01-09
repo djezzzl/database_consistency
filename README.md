@@ -36,7 +36,7 @@ By default, every checker is enabled.
 
 ## How it works?
 
-### PresenceValidationChecker
+### ColumnPresenceChecker
 
 Imagine your model has a `validates <field>, presence: true` validation on some field but doesn't have not-null constraint in 
 the database. In that case, your model's definition assumes (in most cases) you won't have `null` values in the database but 

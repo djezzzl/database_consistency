@@ -5,7 +5,7 @@ module DatabaseConsistency
     # The class to process all comparators
     class ModelsProcessor < BaseProcessor
       CHECKERS = {
-        presence: Checkers::PresenceValidationChecker
+        presence: Checkers::ColumnPresenceChecker
       }.freeze
 
       private
