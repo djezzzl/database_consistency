@@ -31,14 +31,6 @@ module DatabaseConsistency
         report_template(:fail, VALIDATOR_MISSING)
       end
 
-      def column_or_attribute_name
-        column.name.to_s
-      end
-
-      def table_or_model_name
-        table.name.to_s
-      end
-
       def skip?
         column.null ||
           !column.default.nil? ||

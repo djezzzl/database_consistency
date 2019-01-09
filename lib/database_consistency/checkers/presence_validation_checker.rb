@@ -39,14 +39,6 @@ module DatabaseConsistency
       def column
         @column ||= Helper.find_column(model, attribute)
       end
-
-      def column_or_attribute_name
-        attribute.to_s
-      end
-
-      def table_or_model_name
-        model.name.to_s
-      end
     end
   end
 end
