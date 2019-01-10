@@ -65,12 +65,26 @@ We fail if the column satisfies the following conditions:
 - column is not used for any Presence or Inclusion validators or BelongsTo reflection
 - column has not a default value
 
+### BelongsToPresenceChecker
+
+Imagine your model has a `validates <belongs_to reflection>, presence: true` or `belongs_to <some model>, optional: false` 
+(since Rails 5+ optional is `false` by default). In both cases, you assume your instance has a persisted relation with another
+model which can be not true. For example, we can skip validations or remove connected instance after insert and etc. So, 
+to keep your data consistency, in most cases, you should define a foreign key constraint in the database. It will ensure your
+relation exists. 
+
+We fail if the following conditions are satisfied:
+- belongs_to reflection is not polymorphic
+- belongs_to reflection has presence validator
+- there is no foreign key constraint
+
 ## Example
 
 ```
 $ bundle exec database_consistency
 fail User phone should be required in the database
 fail User name is required but possible null value insert
+fail User company should have foreign key in the database
 fail User code is required but do not have presence validator
 ```
 

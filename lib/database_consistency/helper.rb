@@ -22,12 +22,6 @@ module DatabaseConsistency
       Rails.application.eager_load! if defined?(Rails)
     end
 
-    # Find a database field with name equals to attribute
-    def find_column(model, attribute)
-      attribute_str = attribute.to_s
-      model.columns.select.find { |field| field.name == attribute_str }
-    end
-
     # @return [Boolean]
     def check_inclusion?(array, element)
       array.include?(element.to_s) || array.include?(element.to_sym)

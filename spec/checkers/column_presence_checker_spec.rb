@@ -11,7 +11,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
 
   context 'when null constraint is provided' do
     before do
-      define_database { |table| table.string :email, null: false }
+      define_database_with_entity { |table| table.string :email, null: false }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true } }
@@ -29,7 +29,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
 
   context 'when null constraint is missing' do
     before do
-      define_database { |table| table.string :email }
+      define_database_with_entity { |table| table.string :email }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true } }
@@ -47,7 +47,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
 
   context 'when null insert is possible' do
     before do
-      define_database { |table| table.string :email, null: false }
+      define_database_with_entity { |table| table.string :email, null: false }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true, if: -> { false } } }

@@ -19,9 +19,10 @@ module DatabaseConsistency
       end
 
       # Table of possible statuses
-      # | validation | database | status |
-      # | ---------- | -------- | ------ |
-      # | missed     | required | fail   |
+      # | validation | status |
+      # | ---------- | ------ |
+      # | provided   | ok     |
+      # | missed     | fail   |
       #
       # We consider PresenceValidation, InclusionValidation or BelongsTo reflection using this column
       def check

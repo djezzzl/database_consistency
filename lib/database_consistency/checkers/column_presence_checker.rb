@@ -39,7 +39,7 @@ module DatabaseConsistency
       end
 
       def column
-        @column ||= Helper.find_column(model, attribute)
+        @column ||= model.columns.select.find { |field| field.name == attribute.to_s }
       end
     end
   end

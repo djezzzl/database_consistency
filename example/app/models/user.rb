@@ -4,5 +4,6 @@ class User < ApplicationRecord
   validates :slug, inclusion: {in: %w[short full]}
 
   belongs_to :company
+  belongs_to :country
   belongs_to :invitable, polymorphic: true
 end

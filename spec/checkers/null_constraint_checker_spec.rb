@@ -10,7 +10,7 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker do
 
   context 'when validation is missed' do
     before do
-      define_database { |table| table.string :email, null: false }
+      define_database_with_entity { |table| table.string :email, null: false }
     end
 
     let(:klass) { define_class }

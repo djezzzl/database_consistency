@@ -18,6 +18,12 @@ ActiveRecord::Schema.define(version: 2018_11_12_080414) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
@@ -26,6 +32,7 @@ ActiveRecord::Schema.define(version: 2018_11_12_080414) do
     t.string "code", null: false
     t.string "slug", null: false
     t.integer "company_id", null: false
+    t.integer "country_id", null: false
     t.integer "invitable_id", null: false
     t.string "invitable_type", null: false
     t.datetime "created_at", null: false

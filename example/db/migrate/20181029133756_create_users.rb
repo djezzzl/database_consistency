@@ -10,6 +10,9 @@ class CreateUsers < ActiveRecord::Migration[5.2]
 
       t.integer :company_id, null: false
 
+      t.integer :country_id, null: false
+      t.foreign_key :countries
+
       t.integer :invitable_id, null: false
       t.string :invitable_type, null: false
 

@@ -5,7 +5,8 @@ module DatabaseConsistency
     # The class to process all comparators
     class ModelsProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::ColumnPresenceChecker
+        Checkers::ColumnPresenceChecker,
+        Checkers::BelongsToPresenceChecker
       ].freeze
 
       private
@@ -14,8 +15,8 @@ module DatabaseConsistency
       def check
         Helper.parent_models.flat_map do |model|
           model.validators.flat_map do |validator|
-            validator.attributes.map do |attribute|
-              CHECKERS.each do |checker_class|
+            validator.attributes.flat_map do |attribute|
+              CHECKERS.map do |checker_class|
                 checker = checker_class.new(model, attribute, validator)
                 checker.report if checker.enabled?(configuration)
               end
