@@ -6,7 +6,7 @@ RSpec.describe DatabaseConsistency::Configuration do
   shared_examples 'checker' do |value|
     context 'checker' do
       specify do
-        expect(configuration.enabled?('PresenceValidationChecker')).to eq(value)
+        expect(configuration.enabled?('ColumnPresenceChecker')).to eq(value)
       end
     end
   end
@@ -14,7 +14,7 @@ RSpec.describe DatabaseConsistency::Configuration do
   shared_examples 'model' do |value|
     context 'model' do
       specify do
-        expect(configuration.enabled?('PresenceValidationChecker', 'User')).to eq(value)
+        expect(configuration.enabled?('ColumnPresenceChecker', 'User')).to eq(value)
       end
     end
   end
@@ -22,7 +22,7 @@ RSpec.describe DatabaseConsistency::Configuration do
   shared_examples 'key' do |value|
     context 'key' do
       specify do
-        expect(configuration.enabled?('PresenceValidationChecker', 'User', 'email')).to eq(value)
+        expect(configuration.enabled?('ColumnPresenceChecker', 'User', 'email')).to eq(value)
       end
     end
   end

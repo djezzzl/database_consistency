@@ -4,14 +4,10 @@ module DatabaseConsistency
   module Checkers
     # The base class for checkers
     class BaseChecker
-      def initialize(table_or_model, column_or_attribute, opts = {})
-        @table_or_model = table_or_model
-        @column_or_attribute = column_or_attribute
-        @opts = opts
-      end
-
-      # @return [Hash]
+      # @return [Hash, nil]
       def report
+        return unless preconditions
+
         @report ||= check
       end
 
@@ -21,6 +17,14 @@ module DatabaseConsistency
       end
 
       private
+
+      def check
+        raise NotImplementedError
+      end
+
+      def preconditions
+        raise NotImplementedError
+      end
 
       attr_reader :table_or_model, :column_or_attribute, :opts
 

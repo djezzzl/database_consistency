@@ -1,4 +1,4 @@
-PresenceValidationChecker:
+ColumnPresenceChecker:
   enabled: true
   User:
     enabled: true

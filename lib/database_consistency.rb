@@ -10,8 +10,11 @@ require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/checkers/base_checker'
-require 'database_consistency/checkers/presence_validation_checker'
+require 'database_consistency/checkers/table_checker'
+require 'database_consistency/checkers/validator_checker'
+require 'database_consistency/checkers/column_presence_checker'
 require 'database_consistency/checkers/null_constraint_checker'
+require 'database_consistency/checkers/belongs_to_presence_checker'
 
 require 'database_consistency/processors/base_processor'
 require 'database_consistency/processors/models_processor'

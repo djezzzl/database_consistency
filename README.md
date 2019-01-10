@@ -36,7 +36,7 @@ By default, every checker is enabled.
 
 ## How it works?
 
-### PresenceValidationChecker
+### ColumnPresenceChecker
 
 Imagine your model has a `validates <field>, presence: true` validation on some field but doesn't have not-null constraint in 
 the database. In that case, your model's definition assumes (in most cases) you won't have `null` values in the database but 
@@ -58,12 +58,25 @@ Imagine your model has not-null constraint on some field in the database but doe
 But each attempt to save the `nil` value on that field will be rolled back with error raised and without `errors` on your object.
 Mostly, you'd like to catch it properly and for that presence validator exists.
 
-We fail if the column satisfy conditions:
+We fail if the column satisfies the following conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
 - column is not used for any Presence or Inclusion validators or BelongsTo reflection
 - column has not a default value
+
+### BelongsToPresenceChecker
+
+Imagine your model has a `validates <belongs_to reflection>, presence: true` or `belongs_to <some model>, optional: false` 
+(since Rails 5+ optional is `false` by default). In both cases, you assume your instance has a persisted relation with another
+model which can be not true. For example, we can skip validations or remove connected instance after insert and etc. So, 
+to keep your data consistency, in most cases, you should define a foreign key constraint in the database. It will ensure your
+relation exists. 
+
+We fail if the following conditions are satisfied:
+- belongs_to reflection is not polymorphic
+- belongs_to reflection has presence validator
+- there is no foreign key constraint
 
 ## Example
 
@@ -71,6 +84,7 @@ We fail if the column satisfy conditions:
 $ bundle exec database_consistency
 fail User phone should be required in the database
 fail User name is required but possible null value insert
+fail User company should have foreign key in the database
 fail User code is required but do not have presence validator
 ```
 

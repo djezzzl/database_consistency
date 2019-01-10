@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.4.0] - 2019/01/10
+
+Features:
+- Introduce `BelongsToPresenceChecker` to find missed foreign keys.
+
+Breaking changes:
+- Rename `PresenceValidationChecker` to `ColumnPresenceChecker` for simplicity. Please update your configuration files properly.
+
 ### [0.3.0] - 2019/01/04
 
 Features:

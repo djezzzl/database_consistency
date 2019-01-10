@@ -1,2 +1,2 @@
-PresenceValidationChecker:
+ColumnPresenceChecker:
   enabled: false

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
-  subject(:checker) { described_class.new(model, attribute, validator: validator) }
+RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
+  subject(:checker) { described_class.new(model, attribute, validator) }
 
   let(:model) { klass }
   let(:attribute) { :email }
@@ -11,14 +11,14 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
   context 'when null constraint is provided' do
     before do
-      define_database { |table| table.string :email, null: false }
+      define_database_with_entity { |table| table.string :email, null: false }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true } }
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :ok,
@@ -29,14 +29,14 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
   context 'when null constraint is missing' do
     before do
-      define_database { |table| table.string :email }
+      define_database_with_entity { |table| table.string :email }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true } }
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
@@ -47,14 +47,14 @@ RSpec.describe DatabaseConsistency::Checkers::PresenceValidationChecker do
 
   context 'when null insert is possible' do
     before do
-      define_database { |table| table.string :email, null: false }
+      define_database_with_entity { |table| table.string :email, null: false }
     end
 
     let(:klass) { define_class { |klass| klass.validates :email, presence: true, if: -> { false } } }
 
     specify do
       expect(checker.report).to have_attributes(
-        checker_name: 'PresenceValidationChecker',
+        checker_name: 'ColumnPresenceChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
