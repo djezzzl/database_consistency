@@ -7,7 +7,12 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
   let(:attribute) { :country }
   let(:validator) { entity_class.validators.first }
   let!(:country_class) { define_class('Country', :countries) }
-  let!(:entity_class) { define_class { |klass| klass.belongs_to :country, optional: false } }
+  let!(:entity_class) do
+    define_class do |klass|
+      klass.belongs_to :country
+      klass.validates :country, presence: true
+    end
+  end
 
   include_context 'database context'
 
