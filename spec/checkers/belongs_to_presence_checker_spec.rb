@@ -3,6 +3,10 @@
 RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
   subject(:checker) { described_class.new(model, attribute, validator) }
 
+  before do
+    skip('older versions are not supported with sqlite3') if ActiveRecord::VERSION::MAJOR < 5
+  end
+
   let(:model) { entity_class }
   let(:attribute) { :country }
   let(:validator) { entity_class.validators.first }

@@ -13,7 +13,7 @@ module DatabaseConsistency
       #  - there is no belongs_to reflection with given name
       #  - belongs_to reflection is polymorphic
       def preconditions
-        validator.kind == :presence && reflection && reflection.foreign_type.nil?
+        validator.kind == :presence && reflection && !reflection.polymorphic?
       end
 
       # Table of possible statuses
