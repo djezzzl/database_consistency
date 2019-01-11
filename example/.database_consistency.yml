@@ -1,30 +1,25 @@
-ColumnPresenceChecker:
+User:
   enabled: true # 1st priority
-  User:
-    enabled: true # 2nd priority
-    phone:
+  phone:
+    enabled: true # 2rd priority
+    ColumnPresenceChecker:
       enabled: true # 3rd priority
-    name:
-      enabled: true
-
-NullConstraintChecker:
-  enabled: true
-  User:
+  name:
     enabled: true
-    code:
+  code:
+    enabled: true
+    NullConstraintChecker:
+      enabled: true
+  name+email:
+    MissingUniqueIndexChecker:
       enabled: true
 
-MissingUniqueIndexChecker:
-  User:
-    name+email:
-      enabled: true
-
-#  Can be compact (example), "enabled: true" is default
-#  ColumnPresenceChecker:
-#    User:
-#      enabled: false
-#
-#  NullConstraintChecker:
-#    User:
-#      code:
-#        enabled: false
+# Can be compact (example), "enabled: true" is default
+# User:
+#   phone:
+#     ColumnPresenceChecker:
+#       enabled: false
+#   name:
+#     enabled: false
+# Company:
+#   enabled: false

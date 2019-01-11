@@ -1,6 +1,4 @@
 User:
-  enabled: true
   email:
-    enabled: true
     ColumnPresenceChecker:
       enabled: false

@@ -13,7 +13,7 @@ module DatabaseConsistency
 
       # @param [DatabaseConsistency::Configuration] configuration
       def enabled?(configuration)
-        configuration.enabled?(checker_name, table_or_model_name, column_or_attribute_name)
+        configuration.enabled?(table_or_model_name, column_or_attribute_name, checker_name)
       end
 
       private

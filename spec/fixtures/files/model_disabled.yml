@@ -1,4 +1,6 @@
-ColumnPresenceChecker:
-  enabled: true
-  User:
-    enabled: false
+User:
+  enabled: false
+  email:
+    enabled: true
+    ColumnPresenceChecker:
+      enabled: true

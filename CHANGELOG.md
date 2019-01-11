@@ -5,6 +5,9 @@
 Features:
 - Introduce `MissingUniqueIndexChecker` to find missing unique indexes.
 
+Breaking changes:
+- Change schema of the configuration file. Please update to the new version according to the [example](example/.database_consistency.yml).
+
 ### [0.4.0] - 2019/01/10
 
 Features:
