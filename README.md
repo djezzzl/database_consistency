@@ -6,6 +6,14 @@
 The main goal of the project is to provide an easy way to check the consistency of the 
 database constraints with the application validations.
 
+Currently, we can:
+- find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
+- find missing presence validations ([NullConstraintChecker](#nullconstraintchecker))
+- find missing foreign keys ([BelongsToPresenceChecker](#belongstopresencechecker))
+- find missing unique indexes ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
+
+We also provide flexible configuration ([example](example/.database_consistency.yml)) and [integrations](#integrations)
+
 ## Installation
 
 Add this line to your application's Gemfile:
