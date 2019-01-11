@@ -48,8 +48,8 @@ To avoid the inconsistency and be always sure your value won't be `null` you sho
 | :-----------------------------: | :------: | :----: |
 | at least one provided           | required | fail   |
 | at least one provided           | optional | ok     |
-| all missed                      | required | ok     |
-| all missed                      | optional | fail   |  
+| all missing                     | required | ok     |
+| all missing                     | optional | fail   |  
 
 ### NullConstraintChecker
 
@@ -78,12 +78,23 @@ We fail if the following conditions are satisfied:
 - belongs_to reflection has presence validator
 - there is no foreign key constraint
 
+### MissingUniqueIndexChecker
+
+Imagine your model has a `validates <field>, uniqueness: true` validation but has no unique index in the database. As general
+problem your validation can be skipped or there is possible duplicates insert because of race condition. To keep your data 
+consistent you should cover your validation with proper unique index in the database (if possible). It will ensure you don't
+have duplicates.
+
+We fail if the following conditions are satisfied:
+- there is no unique index for the uniqueness validation 
+
 ## Example
 
 ```
 $ bundle exec database_consistency
 fail User phone should be required in the database
 fail User name is required but possible null value insert
+fail User name+email should have unique index in the database
 fail User company should have foreign key in the database
 fail User code is required but do not have presence validator
 ```

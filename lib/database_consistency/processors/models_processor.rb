@@ -6,7 +6,8 @@ module DatabaseConsistency
     class ModelsProcessor < BaseProcessor
       CHECKERS = [
         Checkers::ColumnPresenceChecker,
-        Checkers::BelongsToPresenceChecker
+        Checkers::BelongsToPresenceChecker,
+        Checkers::MissingUniqueIndexChecker
       ].freeze
 
       private

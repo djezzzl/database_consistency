@@ -1,9 +1,17 @@
 # Changelog
 
+### [0.5.0] - 2019/01/11
+
+Features:
+- Introduce `MissingUniqueIndexChecker` to find missing unique indexes.
+
+Breaking changes:
+- Change schema of the configuration file. Please update to the new version according to the [example](example/.database_consistency.yml).
+
 ### [0.4.0] - 2019/01/10
 
 Features:
-- Introduce `BelongsToPresenceChecker` to find missed foreign keys.
+- Introduce `BelongsToPresenceChecker` to find missing foreign keys.
 
 Breaking changes:
 - Rename `PresenceValidationChecker` to `ColumnPresenceChecker` for simplicity. Please update your configuration files properly.

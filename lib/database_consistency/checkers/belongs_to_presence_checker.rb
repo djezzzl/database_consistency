@@ -20,7 +20,7 @@ module DatabaseConsistency
       # | foreign key | status |
       # | ----------- | ------ |
       # | persisted   | ok     |
-      # | missed      | fail   |
+      # | missing     | fail   |
       def check
         if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == reflection.foreign_key.to_s }
           report_template(:ok)

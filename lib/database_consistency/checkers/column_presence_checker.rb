@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks PresenceValidator
+    # This class checks if presence validator has non-null constraint in the database
     class ColumnPresenceChecker < ValidatorChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
@@ -23,8 +23,8 @@ module DatabaseConsistency
       # | ------------------------------- | -------- | ------ |
       # | at least one provided           | required | fail   |
       # | at least one provided           | optional | ok     |
-      # | all missed                      | required | ok     |
-      # | all missed                      | optional | fail   |
+      # | all missing                     | required | ok     |
+      # | all missing                     | optional | fail   |
       def check
         can_be_null = column.null
         has_weak_option = validator.options.slice(*WEAK_OPTIONS).any?

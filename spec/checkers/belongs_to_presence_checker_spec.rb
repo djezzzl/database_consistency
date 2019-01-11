@@ -43,7 +43,7 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
     end
   end
 
-  context 'when foreign key is missed' do
+  context 'when foreign key is missing' do
     before do
       define_database do
         create_table :countries

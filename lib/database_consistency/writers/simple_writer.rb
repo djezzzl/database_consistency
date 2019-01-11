@@ -18,9 +18,9 @@ module DatabaseConsistency
       end
 
       def line(result)
-        "#{result.status} #{result.table_or_model_name} #{result.column_or_attribute_name} #{result.message}".tap do |s|
-          s.concat " (checker: #{result.checker_name})" if debug?
-        end
+        s = "#{result.status} #{result.table_or_model_name} #{result.column_or_attribute_name} #{result.message}"
+        s += " (checker: #{result.checker_name})" if debug?
+        s
       end
     end
   end

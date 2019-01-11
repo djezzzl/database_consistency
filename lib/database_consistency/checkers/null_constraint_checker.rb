@@ -22,7 +22,7 @@ module DatabaseConsistency
       # | validation | status |
       # | ---------- | ------ |
       # | provided   | ok     |
-      # | missed     | fail   |
+      # | missing    | fail   |
       #
       # We consider PresenceValidation, InclusionValidation or BelongsTo reflection using this column
       def check
