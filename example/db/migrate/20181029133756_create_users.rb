@@ -7,16 +7,15 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :address
       t.string :code, null: false
       t.string :slug, null: false
-
       t.integer :company_id, null: false
-
       t.integer :country_id, null: false
-      t.foreign_key :countries
-
       t.integer :invitable_id, null: false
       t.string :invitable_type, null: false
 
       t.timestamps
+
+      t.foreign_key :countries
+      t.index :slug, unique: true
     end
   end
 end

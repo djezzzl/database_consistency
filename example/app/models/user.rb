@@ -3,6 +3,9 @@ class User < ApplicationRecord
   validates :name, :address, presence: true, allow_nil: true
   validates :slug, inclusion: {in: %w[short full]}
 
+  validates :slug, uniqueness: true
+  validates :name, uniqueness: { scope: :email }
+
   belongs_to :company
   belongs_to :country
   belongs_to :invitable, polymorphic: true
