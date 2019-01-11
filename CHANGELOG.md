@@ -1,6 +1,6 @@
 # Changelog
 
-### Master
+### [0.5.0] - 2019/01/11
 
 Features:
 - Introduce `MissingUniqueIndexChecker` to find missing unique indexes.
