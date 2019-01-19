@@ -2,19 +2,19 @@
 
 module DatabaseConsistency
   module Processors
-    # The class to process missing validators
-    class TablesProcessor < BaseProcessor
+    # The class to process associations
+    class AssociationsProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::NullConstraintChecker
+        Checkers::MissingIndexChecker
       ].freeze
 
       private
 
       def check
-        Helper.parent_models.flat_map do |model|
-          model.columns.flat_map do |column|
+        Helper.models.flat_map do |model|
+          model.reflect_on_all_associations.flat_map do |association|
             CHECKERS.map do |checker_class|
-              checker = checker_class.new(model, column)
+              checker = checker_class.new(model, association)
               checker.report if checker.enabled?(configuration)
             end
           end

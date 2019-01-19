@@ -3,9 +3,9 @@
 module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
-    class NullConstraintChecker < TableChecker
+    class NullConstraintChecker < ColumnChecker
       # Message templates
-      VALIDATOR_MISSING = 'is required but do not have presence validator'
+      VALIDATOR_MISSING = 'column is required in the database but do not have presence validator'
 
       private
 
@@ -24,7 +24,7 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | missing    | fail   |
       #
-      # We consider PresenceValidation, InclusionValidation or BelongsTo reflection using this column
+      # We consider PresenceValidation, InclusionValidation or BelongsTo association using this column
       def check
         if valid?
           report_template(:ok)
@@ -36,7 +36,7 @@ module DatabaseConsistency
       def valid?
         validator?(ActiveModel::Validations::PresenceValidator) ||
           validator?(ActiveModel::Validations::InclusionValidator) ||
-          belongs_to_reflection?
+          belongs_to_association?
       end
 
       def primary_field?
@@ -53,7 +53,7 @@ module DatabaseConsistency
         end
       end
 
-      def belongs_to_reflection?
+      def belongs_to_association?
         model.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
           Helper.check_inclusion?([r.foreign_key, r.foreign_type], column.name)
         end

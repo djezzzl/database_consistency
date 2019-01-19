@@ -4,16 +4,16 @@ module DatabaseConsistency
   module Checkers
     # This class checks if required +belongs_to+ has foreign key constraint
     class BelongsToPresenceChecker < ValidatorChecker
-      MISSING_FOREIGN_KEY = 'should have foreign key in the database'
+      MISSING_FOREIGN_KEY = 'model should have proper foreign key in the database'
 
       private
 
       # We skip check when:
       #  - validator is a not a presence validator
-      #  - there is no belongs_to reflection with given name
-      #  - belongs_to reflection is polymorphic
+      #  - there is no belongs_to association with given name
+      #  - belongs_to association is polymorphic
       def preconditions
-        validator.kind == :presence && reflection && !reflection.polymorphic?
+        validator.kind == :presence && association && !association.polymorphic?
       end
 
       # Table of possible statuses
@@ -22,15 +22,15 @@ module DatabaseConsistency
       # | persisted   | ok     |
       # | missing     | fail   |
       def check
-        if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == reflection.foreign_key.to_s }
+        if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
           report_template(:ok)
         else
           report_template(:fail, MISSING_FOREIGN_KEY)
         end
       end
 
-      def reflection
-        @reflection ||= model.reflect_on_association(attribute)
+      def association
+        @association ||= model.reflect_on_association(attribute)
       end
     end
   end

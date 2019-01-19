@@ -6,8 +6,8 @@ module DatabaseConsistency
     class ColumnPresenceChecker < ValidatorChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
-      CONSTRAINT_MISSING = 'should be required in the database'
-      POSSIBLE_NULL = 'is required but possible null value insert'
+      CONSTRAINT_MISSING = 'column should be required in the database'
+      POSSIBLE_NULL = 'column is required but there is possible null value insert'
 
       private
 

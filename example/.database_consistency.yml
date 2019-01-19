@@ -14,6 +14,11 @@ User:
     MissingUniqueIndexChecker:
       enabled: true
 
+Country:
+  users:
+    MissingIndexChecker:
+      enabled: true
+
 # Can be compact (example), "enabled: true" is default
 # User:
 #   phone:

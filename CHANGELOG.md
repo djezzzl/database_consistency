@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.6.0]
+
+Features:
+- Introduce `MissingIndexChecker` to find missing indexes for `HasOne` and `HasMany` associated models.
+
+Improvements:
+- Change message templates to be more informative
+
 ### [0.5.0] - 2019/01/11
 
 Features:
@@ -46,7 +54,7 @@ Features:
 
 Improvements:
 
-- Exclude Inclusion validator and BelongsTo reflection from being alerted by PresenceMissingVerifier
+- Exclude Inclusion validator and BelongsTo association from being alerted by PresenceMissingVerifier
 
 ### [0.2.1] - 2018/10/31
 

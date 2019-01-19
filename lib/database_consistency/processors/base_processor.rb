@@ -4,7 +4,11 @@ module DatabaseConsistency
   # The module for processors
   module Processors
     def self.reports(configuration)
-      [ModelsProcessor, TablesProcessor].flat_map do |processor|
+      [
+        ColumnsProcessor,
+        ValidatorsProcessor,
+        AssociationsProcessor
+      ].flat_map do |processor|
         processor.new(configuration).reports
       end
     end

@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # The base class for table checkers
-    class TableChecker < BaseChecker
+    class ColumnChecker < BaseChecker
       attr_reader :model, :column
 
       def initialize(model, column)

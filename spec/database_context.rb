@@ -20,13 +20,13 @@ RSpec.shared_context 'database context' do
   end
 
   def define_class(name = 'Entity', table_name = :entities)
-    Class.new(ActiveRecord::Base) do |klass|
+    stub_const(name, Class.new(ActiveRecord::Base) do |klass|
       klass.define_singleton_method :name do
         name
       end
 
       klass.table_name = table_name
       yield(klass) if block_given?
-    end
+    end)
   end
 end
