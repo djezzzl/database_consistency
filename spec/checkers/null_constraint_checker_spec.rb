@@ -21,7 +21,7 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker do
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'is required but do not have presence validator'
+        message: 'column is required in the database but do not have presence validator'
       )
     end
   end

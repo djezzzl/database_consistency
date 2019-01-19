@@ -60,7 +60,7 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
         table_or_model_name: entity_class.name,
         column_or_attribute_name: 'country',
         status: :fail,
-        message: 'should have foreign key in the database'
+        message: 'model should have proper foreign key in the database'
       )
     end
   end

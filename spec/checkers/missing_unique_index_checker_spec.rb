@@ -44,7 +44,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :fail,
-          message: 'should have unique index in the database'
+          message: 'model should have proper unique index in the database'
         )
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email+country',
           status: :fail,
-          message: 'should have unique index in the database'
+          message: 'model should have proper unique index in the database'
         )
       end
     end

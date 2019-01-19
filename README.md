@@ -9,10 +9,14 @@ database constraints with the application validations.
 Currently, we can:
 - find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
 - find missing presence validations ([NullConstraintChecker](#nullconstraintchecker))
-- find missing foreign keys ([BelongsToPresenceChecker](#belongstopresencechecker))
-- find missing unique indexes ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
+- find missing foreign keys for `BelongsTo` associations ([BelongsToPresenceChecker](#belongstopresencechecker))
+- find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
+- find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 
 We also provide flexible configuration ([example](example/.database_consistency.yml)) and [integrations](#integrations)
+
+Check out the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable with
+uniqueness validations and `BelongsTo` associations using ActiveRecord.
 
 ## Installation
 
@@ -46,7 +50,7 @@ By default, every checker is enabled.
 
 ### ColumnPresenceChecker
 
-Imagine your model has a `validates <field>, presence: true` validation on some field but doesn't have not-null constraint in 
+Imagine your model has a `validates :email, presence: true` validation on some field but doesn't have not-null constraint in 
 the database. In that case, your model's definition assumes (in most cases) you won't have `null` values in the database but 
 it's possible to skip validations or directly write improper data in the table. 
 
@@ -62,7 +66,7 @@ To avoid the inconsistency and be always sure your value won't be `null` you sho
 ### NullConstraintChecker
 
 Imagine your model has not-null constraint on some field in the database but doesn't have 
-`validates <field>, presence: true` validation. In that case, you're sure that you won't have `null` values in the database.
+`validates :email, presence: true` validation. In that case, you're sure that you won't have `null` values in the database.
 But each attempt to save the `nil` value on that field will be rolled back with error raised and without `errors` on your object.
 Mostly, you'd like to catch it properly and for that presence validator exists.
 
@@ -70,25 +74,25 @@ We fail if the column satisfies the following conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
-- column is not used for any Presence or Inclusion validators or BelongsTo reflection
+- column is not used for any Presence or Inclusion validators or BelongsTo association
 - column has not a default value
 
 ### BelongsToPresenceChecker
 
-Imagine your model has a `validates <belongs_to reflection>, presence: true` or `belongs_to <some model>, optional: false` 
+Imagine your model has a `validates :user, presence: true` or `belongs_to :user, optional: false` 
 (since Rails 5+ optional is `false` by default). In both cases, you assume your instance has a persisted relation with another
 model which can be not true. For example, we can skip validations or remove connected instance after insert and etc. So, 
 to keep your data consistency, in most cases, you should define a foreign key constraint in the database. It will ensure your
 relation exists. 
 
 We fail if the following conditions are satisfied:
-- belongs_to reflection is not polymorphic
-- belongs_to reflection has presence validator
+- belongs_to association is not polymorphic
+- belongs_to association has presence validator
 - there is no foreign key constraint
 
 ### MissingUniqueIndexChecker
 
-Imagine your model has a `validates <field>, uniqueness: true` validation but has no unique index in the database. As general
+Imagine your model has a `validates :email, uniqueness: true` validation but has no unique index in the database. As general
 problem your validation can be skipped or there is possible duplicates insert because of race condition. To keep your data 
 consistent you should cover your validation with proper unique index in the database (if possible). It will ensure you don't
 have duplicates.
@@ -96,15 +100,25 @@ have duplicates.
 We fail if the following conditions are satisfied:
 - there is no unique index for the uniqueness validation 
 
+### MissingIndexChecker
+
+Imagine your model has a `has_one :user` association but has no index in the database. In this case querying the database
+to get the associated instance can be very inefficient. Mostly, you'll need an index to process such queries fast. 
+
+We fail if the following conditions are satisfied:
+- there is no index for the `HasOne` or `HasMany` association
+
 ## Example
 
 ```
 $ bundle exec database_consistency
-fail User phone should be required in the database
-fail User name is required but possible null value insert
-fail User name+email should have unique index in the database
-fail User company should have foreign key in the database
-fail User code is required but do not have presence validator
+fail User code column is required in the database but do not have presence validator
+fail User phone column should be required in the database
+fail User name column is required but there is possible null value insert
+fail User name+email model should have proper unique index in the database
+fail User company model should have proper foreign key in the database
+fail Company user associated model should have proper index in the database
+fail Country users associated model should have proper index in the database
 ```
 
 See [example](example) project for more details.

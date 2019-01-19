@@ -40,7 +40,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'should be required in the database'
+        message: 'column should be required in the database'
       )
     end
   end
@@ -58,7 +58,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'is required but possible null value insert'
+        message: 'column is required but there is possible null value insert'
       )
     end
   end
