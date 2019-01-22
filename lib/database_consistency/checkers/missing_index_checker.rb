@@ -11,13 +11,12 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - association isn't a `HasOne` or `HasMany`
+      #  - association has `through` option
       def preconditions
-        [
-          ActiveRecord::Associations::HasOneAssociation,
-          ActiveRecord::Associations::HasOneThroughAssociation,
-          ActiveRecord::Associations::HasManyAssociation,
-          ActiveRecord::Associations::HasManyThroughAssociation
-        ].include?(association.association_class)
+        %i[
+          has_one
+          has_many
+        ].include?(association.macro) && !association.through_reflection?
       end
 
       # Table of possible statuses

@@ -107,6 +107,7 @@ to get the associated instance can be very inefficient. Mostly, you'll need an i
 
 We fail if the following conditions are satisfied:
 - there is no index for the `HasOne` or `HasMany` association
+- it has a `through` option
 
 ## Example
 

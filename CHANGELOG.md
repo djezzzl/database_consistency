@@ -1,5 +1,11 @@
 # Changelog
 
+### [Master]
+
+Fixes:
+- Fix empty configuration file support
+- Fix `MissingIndexChecker`, we don't support through associations for now
+
 ### [0.6.0]
 
 Features:
