@@ -16,7 +16,7 @@ module DatabaseConsistency
         %i[
           has_one
           has_many
-        ].include?(association.macro) && !association.through_reflection?
+        ].include?(association.macro) && association.through_reflection.nil?
       end
 
       # Table of possible statuses
