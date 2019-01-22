@@ -1,6 +1,6 @@
 # Changelog
 
-### [Master]
+### [0.6.1] - 2019/01/22
 
 Fixes:
 - Fix empty configuration file support
