@@ -1,5 +1,14 @@
 # Changelog
 
+### [0.6.1] - 2019/01/22
+
+Fixes:
+- Fix empty configuration file support
+- Fix `MissingIndexChecker`, we don't support `through` associations for now
+
+Improves:
+- Extend configuration to support complete turning off particular checker
+
 ### [0.6.0]
 
 Features:

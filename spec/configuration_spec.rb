@@ -27,6 +27,14 @@ RSpec.describe DatabaseConsistency::Configuration do
     end
   end
 
+  context 'when file is empty' do
+    let(:file_path) { 'empty.yml' }
+
+    include_examples 'model', true
+    include_examples 'key', true
+    include_examples 'checker', true
+  end
+
   context 'when checker is disabled' do
     let(:file_path) { 'checker_disabled.yml' }
 
