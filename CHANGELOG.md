@@ -4,7 +4,10 @@
 
 Fixes:
 - Fix empty configuration file support
-- Fix `MissingIndexChecker`, we don't support through associations for now
+- Fix `MissingIndexChecker`, we don't support `through` associations for now
+
+Improves:
+- Extend configuration to support complete turning off particular checker
 
 ### [0.6.0]
 

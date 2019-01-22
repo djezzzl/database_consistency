@@ -9,7 +9,8 @@ module DatabaseConsistency
 
     def initialize(filepath = CONFIGURATION_PATH)
       @configuration = if filepath && File.exist?(filepath)
-                         YAML.load_file(filepath, fallback: {})
+                         data = YAML.load_file(filepath)
+                         data.is_a?(Hash) ? data : {}
                        else
                          {}
                        end

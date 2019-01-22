@@ -27,6 +27,11 @@ module DatabaseConsistency
         @reports ||= check
       end
 
+      # @return [Array<Class>]
+      def enabled_checkers
+        self.class::CHECKERS.select { |checker| checker.enabled?(configuration) }
+      end
+
       private
 
       def check
