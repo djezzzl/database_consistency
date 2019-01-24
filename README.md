@@ -76,6 +76,7 @@ We fail if the column satisfies the following conditions:
 - model records timestamps and column's name is not `created_at` or `updated_at`
 - column is not used for any Presence or Inclusion validators or BelongsTo association
 - column has not a default value
+- column has not a default function
 
 ### BelongsToPresenceChecker
 

@@ -1,5 +1,10 @@
 # Changelog
 
+### [Master]
+
+Improvements:
+- Skip `NullConstraintChecker` is column has default function
+
 ### [0.6.1] - 2019/01/22
 
 Fixes:
