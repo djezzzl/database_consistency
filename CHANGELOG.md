@@ -1,9 +1,10 @@
 # Changelog
 
-### [Master]
+### [0.6.2] - 2019/01/26
 
 Improvements:
 - Skip `NullConstraintChecker` is column has default function
+- Improve specs to test different databases
 
 ### [0.6.1] - 2019/01/22
 
