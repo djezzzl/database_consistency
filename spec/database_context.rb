@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'database context' do |configuration|
-  define_method :define_database do |&block|
+  before do
     ActiveRecord::Base.establish_connection(configuration)
     clear_database!
     ActiveRecord::Schema.verbose = false
+  end
+
+  define_method :define_database do |&block|
     ActiveRecord::Schema.define(version: 1, &block)
   end
 
