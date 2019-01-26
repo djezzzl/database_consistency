@@ -12,10 +12,11 @@ module DatabaseConsistency
       # We skip check when:
       #  - column hasn't null constraint
       #  - column has default value
+      #  - column has default function
       #  - column is a primary key
       #  - column is a timestamp
       def preconditions
-        !column.null && column.default.nil? && !primary_field? && !timestamp_field?
+        !column.null && column.default.nil? && !primary_field? && !timestamp_field? && !column.default_function
       end
 
       # Table of possible statuses

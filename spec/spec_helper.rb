@@ -2,7 +2,6 @@
 
 require 'bundler/setup'
 require 'database_consistency'
-
 require 'database_context'
 
 RSpec.configure do |config|
@@ -18,5 +17,18 @@ RSpec.configure do |config|
 
   def file_fixture(path)
     File.join('spec/fixtures/files/', path)
+  end
+
+  def test_each_database(&block)
+    [
+      { adapter: 'sqlite3', database: ':memory:' },
+      { adapter: 'mysql2', database: 'database_consistency_test' },
+      { adapter: 'postgresql', database: 'database_consistency_test' }
+    ].each do |configuration|
+      context "with #{configuration[:adapter]} database" do
+        include_context 'database context', configuration
+        instance_eval(&block)
+      end
+    end
   end
 end
