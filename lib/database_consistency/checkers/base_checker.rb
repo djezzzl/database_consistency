@@ -21,6 +21,8 @@ module DatabaseConsistency
         return unless preconditions
 
         @report ||= check
+      rescue StandardError => error
+        RescueError.call(error)
       end
 
       # @return [Hash, nil]
