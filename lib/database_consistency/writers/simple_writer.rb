@@ -6,7 +6,7 @@ module DatabaseConsistency
     # The simplest formatter
     class SimpleWriter < BaseWriter
       def write
-        puts format
+        puts format unless format.empty?
       end
 
       def format
