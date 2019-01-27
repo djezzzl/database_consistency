@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.6.3] - 2019/01/27
+
+Improvements:
+- Add message to inspire people to collaborate
+- Add `RescueError` to catch possible error
+
 ### [0.6.2] - 2019/01/26
 
 Improvements:
