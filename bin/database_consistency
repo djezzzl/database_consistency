@@ -6,6 +6,7 @@ unless File.realpath(base_dir).start_with?(Dir.pwd)
   puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
 end
 
+# Load Rails project
 begin
   require File.join(base_dir, 'config', 'boot')
   require File.join(base_dir, 'config', 'environment')
@@ -14,8 +15,17 @@ rescue LoadError
   raise
 end
 
+# Load Rails models
+Rails.application.eager_load! if defined?(Rails)
+
+# Require the gem
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'database_consistency'
 
+# Welcome message
+puts 'Thank you for using the gem. Any contribution is welcome https://github.com/djezzzl/database_consistency!'
+puts "(c) Evgeniy Demin <lawliet.djez@gmail.com>\n\n"
+
+# Process checks
 result = DatabaseConsistency.run
 exit result

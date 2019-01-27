@@ -13,10 +13,10 @@
 # RubyMine
 /.idea
 
-# Example
-/example/db/*.sqlite3
-/example/tmp
-/example/log
+# Rails Example
+/rails-example/db/*.sqlite3
+/rails-example/tmp
+/rails-example/log
 
 Gemfile.lock
 Gemfile.local

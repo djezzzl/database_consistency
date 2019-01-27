@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.6.4] - 2019/01/27
+
+Improvements:
+- Change documentation
+- Refactor code
+
 ### [0.6.3] - 2019/01/27
 
 Improvements:
