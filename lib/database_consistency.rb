@@ -5,6 +5,7 @@ require 'active_record'
 require 'database_consistency/version'
 require 'database_consistency/helper'
 require 'database_consistency/configuration'
+require 'database_consistency/rescue_error'
 
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
@@ -29,6 +30,7 @@ require 'database_consistency/processors/columns_processor'
 module DatabaseConsistency
   class << self
     def run
+      Helper.welcome_message!
       Helper.load_environment!
 
       configuration = Configuration.new
