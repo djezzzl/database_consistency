@@ -30,9 +30,6 @@ require 'database_consistency/processors/columns_processor'
 module DatabaseConsistency
   class << self
     def run
-      Helper.welcome_message!
-      Helper.load_environment!
-
       configuration = Configuration.new
       reports = Processors.reports(configuration)
 

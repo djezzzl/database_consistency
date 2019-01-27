@@ -13,9 +13,10 @@ Currently, we can:
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 
-We also provide flexible configuration ([example](example/.database_consistency.yml)) and [integrations](#integrations)
+We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations)
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
+We support any framework or pure ruby which uses ActiveRecord. 
 
 Check out the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable with
 uniqueness validations and `BelongsTo` associations using ActiveRecord.
@@ -45,7 +46,23 @@ gem install database_consistency
 In the root directory of your Rails project run `bundle exec database_consistency`. 
 To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
 
-You can also configure the gem to skip some of its checks using [.database_consistency.yml](example/.database_consistency.yml) file.
+For any other framework or pure ruby, you can copy the following code and create a file `database_consistency_runner.rb`.
+
+```ruby
+# First of all, you need to load all models
+# The following example is for Rails, but it can be anything  
+require_relative 'config/environment'
+Rails.application.eager_load!
+
+# Now start the check
+require 'database_consistency'
+result = DatabaseConsistency.run
+exit result
+```
+
+Now, just start the script: `bundle exec ruby database_consistency_runner`.
+
+You can also configure the gem to skip some of its checks using [.database_consistency.yml](rails-example/.database_consistency.yml) file.
 By default, every checker is enabled. 
 
 ## How it works?
@@ -125,7 +142,7 @@ fail Company user associated model should have proper index in the database
 fail Country users associated model should have proper index in the database
 ```
 
-See [example](example) project for more details.
+See [rails-example](rails-example) project for more details.
 
 ## Integrations
 
