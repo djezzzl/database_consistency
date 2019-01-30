@@ -21,5 +21,16 @@ module DatabaseConsistency
     def check_inclusion?(array, element)
       array.include?(element.to_s) || array.include?(element.to_sym)
     end
+
+    def first_level_associations(model)
+      associations = model.reflect_on_all_associations
+
+      while model != ActiveRecord::Base && model.respond_to?(:reflect_on_all_associations)
+        model = model.superclass
+        associations -= model.reflect_on_all_associations
+      end
+
+      associations
+    end
   end
 end

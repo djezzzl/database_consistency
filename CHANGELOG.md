@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.6.5] - 2019/01/30
+
+Improvements:
+- Exclude superclasses associations from `MissingIndexChecker`
+
 ### [0.6.4] - 2019/01/27
 
 Improvements:
