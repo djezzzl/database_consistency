@@ -18,7 +18,7 @@ We also provide flexible configuration ([example](rails-example/.database_consis
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
 We support any framework or pure ruby which uses ActiveRecord. 
 
-Check out the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable with
+Check out the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable
 uniqueness validations and `BelongsTo` associations using ActiveRecord.
 
 ## Installation
