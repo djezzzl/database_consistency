@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
+  before do
+    if ActiveRecord::VERSION::MAJOR < 5
+      skip('Uniqueness validation with "case sensitive: false" is supported only by ActiveRecord >= 5')
+    end
+  end
+
   subject(:checker) { described_class.new(model, attribute, validator) }
 
   let(:model) { klass }
