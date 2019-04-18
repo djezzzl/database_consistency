@@ -33,16 +33,35 @@ module DatabaseConsistency
 
       def unique_index
         @unique_index ||= model.connection.indexes(model.table_name).find do |index|
-          index.unique && index.columns.sort == sorted_index_columns
+          index.unique && extract_index_columns(index.columns).sort == sorted_index_columns
         end
       end
 
+      # @return [Array<String>]
+      def extract_index_columns(index_columns)
+        return index_columns unless index_columns.is_a?(String)
+
+        index_columns.split(',')
+                     .map(&:strip)
+                     .map { |str| str.gsub(/lower\(/i, 'lower(') }
+                     .map { |str| str.gsub(/\(([^)]+)\)::\w+/, '\1') }
+      end
+
       def index_columns
-        @index_columns ||= ([attribute] + Array.wrap(validator.options[:scope])).map(&:to_s)
+        @index_columns ||= ([wrapped_attribute_name] + Array.wrap(validator.options[:scope])).map(&:to_s)
       end
 
       def sorted_index_columns
         @sorted_index_columns ||= index_columns.sort
+      end
+
+      # @return [String]
+      def wrapped_attribute_name
+        if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive]
+          attribute
+        else
+          "lower(#{attribute})"
+        end
       end
     end
   end

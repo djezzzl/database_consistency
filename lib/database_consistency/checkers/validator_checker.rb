@@ -12,10 +12,12 @@ module DatabaseConsistency
         @validator = validator
       end
 
+      # @return [String]
       def column_or_attribute_name
         @column_or_attribute_name ||= attribute.to_s
       end
 
+      # @return [String]
       def table_or_model_name
         @table_or_model_name ||= model.name.to_s
       end
