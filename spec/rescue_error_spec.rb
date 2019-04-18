@@ -3,8 +3,8 @@
 RSpec.describe DatabaseConsistency::RescueError do
   def error
     1 / 0
-  rescue StandardError => error
-    error
+  rescue StandardError => e
+    e
   end
 
   specify do
