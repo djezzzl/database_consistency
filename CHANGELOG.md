@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.6.6] - 2019/04/18
+
+Improvements:
+- Add support `case_sensitive: false` for `MissingUniqueIndexChecker` 
+
 ### [0.6.5] - 2019/01/30
 
 Improvements:
