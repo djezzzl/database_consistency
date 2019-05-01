@@ -12,6 +12,8 @@ module DatabaseConsistency
 
       def check
         Helper.models.flat_map do |model|
+          next unless configuration.enabled?(model)
+
           Helper.first_level_associations(model).flat_map do |association|
             enabled_checkers.map do |checker_class|
               checker = checker_class.new(model, association)

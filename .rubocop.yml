@@ -11,3 +11,6 @@ AllCops:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
+
+Metrics/MethodLength:
+  Max: 11

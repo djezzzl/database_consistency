@@ -19,6 +19,14 @@ RSpec.describe DatabaseConsistency::Configuration do
     end
   end
 
+  shared_examples 'namespaced model' do |value|
+    context 'model' do
+      specify do
+        expect(configuration.enabled?('Namespace::Model')).to eq(value)
+      end
+    end
+  end
+
   shared_examples 'key' do |value|
     context 'key' do
       specify do
@@ -41,6 +49,18 @@ RSpec.describe DatabaseConsistency::Configuration do
     include_examples 'model', true
     include_examples 'key', true
     include_examples 'checker', false
+  end
+
+  context 'with namespaced model' do
+    context 'when enabled' do
+      let(:file_path) { 'namespaced_model_enabled.yml' }
+      include_examples 'namespaced model', true
+    end
+
+    context 'when disabled' do
+      let(:file_path) { 'namespaced_model_disabled.yml' }
+      include_examples 'namespaced model', false
+    end
   end
 
   context 'when model is disabled' do

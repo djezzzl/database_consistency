@@ -15,6 +15,8 @@ module DatabaseConsistency
       # @return [Array<Hash>]
       def check
         Helper.parent_models.flat_map do |model|
+          next unless configuration.enabled?(model)
+
           model.validators.flat_map do |validator|
             validator.attributes.flat_map do |attribute|
               enabled_checkers.map do |checker_class|
