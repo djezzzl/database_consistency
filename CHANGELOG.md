@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.6.7] - 2019/05/01
+
+Fixes:
+- Fix disabling models from checks
+
 ### [0.6.6] - 2019/04/18
 
 Improvements:
