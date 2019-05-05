@@ -35,7 +35,8 @@ module DatabaseConsistency
 
       Writers::SimpleWriter.write(
         reports,
-        ENV['LOG_LEVEL'] || 'INFO'
+        ENV['LOG_LEVEL'] || 'INFO',
+        config: configuration
       )
 
       reports.empty? ? 0 : 1

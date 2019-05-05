@@ -4,11 +4,12 @@ module DatabaseConsistency
   module Writers
     # The base class for writers
     class BaseWriter
-      attr_reader :results, :log_level
+      attr_reader :results, :log_level, :config
 
-      def initialize(results, log_level)
+      def initialize(results, log_level, config: Configuration.new)
         @results = results
         @log_level = log_level
+        @config = config
       end
 
       def write?(status)
@@ -19,8 +20,8 @@ module DatabaseConsistency
         log_level == 'DEBUG'
       end
 
-      def self.write(results, log_level)
-        new(results, log_level).write
+      def self.write(results, log_level, config: Configuration.new)
+        new(results, log_level, config: config).write
       end
     end
   end

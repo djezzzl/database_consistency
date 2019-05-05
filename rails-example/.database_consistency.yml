@@ -1,3 +1,6 @@
+DatabaseConsistencySettings:
+  color: true
+
 DatabaseConsistencyCheckers:
   MissingIndexChecker:
     enabled: true # 1st priority (completely turn off particular checker)
