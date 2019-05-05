@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.6.8] - 2019/05/05
+
+Improvements:
+- Add support of compound indexes to `MissingIndexChecker`
+- Add colored output
+- Removed welcome message from execution
+
 ### [0.6.7] - 2019/05/01
 
 Fixes:
