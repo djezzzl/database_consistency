@@ -1,5 +1,6 @@
 DatabaseConsistencySettings:
   color: true
+  log_level: DEBUG
 
 DatabaseConsistencyCheckers:
   MissingIndexChecker:

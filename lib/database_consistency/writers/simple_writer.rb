@@ -22,7 +22,7 @@ module DatabaseConsistency
 
       def msg(result)
         msg = "#{status_text(result)} #{key_text(result)} #{result.message}"
-        msg += " (checker: #{result.checker_name})" if debug?
+        msg += " (checker: #{result.checker_name})" if config.debug?
         msg
       end
 

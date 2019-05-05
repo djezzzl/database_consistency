@@ -62,7 +62,8 @@ Now, just start the script: `bundle exec ruby database_consistency_runner`.
 You can configure the gem to skip some of its checks using [.database_consistency.yml](rails-example/.database_consistency.yml) file.
 By default, every checker is enabled. 
 
-There is also a way to pass settings through environment variables (they will have priority over [.database_consistency.yml](rails-example/.database_consistency.yml) file).
+There is also a way to pass settings through environment variables 
+(they will have priority over settings from [.database_consistency.yml](rails-example/.database_consistency.yml) file).
 You can pass `LOG_LEVEL=DEBUG` and/or `COLOR=1`. 
 
 ## How it works?
