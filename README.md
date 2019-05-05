@@ -35,16 +35,11 @@ And then execute:
 bundle install
 ```
 
-Or install it yourself as:
-
-```bash
-gem install database_consistency
-```
-
 ## Usage
 
-In the root directory of your Rails project run `bundle exec database_consistency`. 
-To get a full output run `LOG_LEVEL=DEBUG bundle exec database_consistency`.
+In the root directory of your Rails project just run `bundle exec database_consistency`. 
+
+### Non Rails projects
 
 For any other framework or pure ruby, you can copy the following code and create a file `database_consistency_runner.rb`.
 
@@ -62,8 +57,14 @@ exit result
 
 Now, just start the script: `bundle exec ruby database_consistency_runner`.
 
-You can also configure the gem to skip some of its checks using [.database_consistency.yml](rails-example/.database_consistency.yml) file.
+## Configuration
+
+You can configure the gem to skip some of its checks using [.database_consistency.yml](rails-example/.database_consistency.yml) file.
 By default, every checker is enabled. 
+
+There is also a way to pass settings through environment variables 
+(they will have priority over settings from [.database_consistency.yml](rails-example/.database_consistency.yml) file).
+You can pass `LOG_LEVEL=DEBUG` and/or `COLOR=1`. 
 
 ## How it works?
 

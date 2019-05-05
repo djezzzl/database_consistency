@@ -16,6 +16,18 @@ module DatabaseConsistency
                        end
     end
 
+    def debug?
+      log_level.to_s.match?(/DEBUG/i)
+    end
+
+    def colored?
+      if ENV.key?('COLOR')
+        ENV['COLOR'].match?(/1|true|yes/)
+      else
+        settings && settings['color']
+      end
+    end
+
     # @return [Boolean]
     def enabled?(*path)
       current = configuration
@@ -35,5 +47,18 @@ module DatabaseConsistency
     private
 
     attr_reader :configuration
+
+    def settings
+      @settings ||= configuration['DatabaseConsistencySettings']
+    end
+
+    def log_level
+      @log_level ||=
+        if ENV.key?('LOG_LEVEL')
+          ENV['LOG_LEVEL']
+        else
+          settings && settings['log_level']
+        end
+    end
   end
 end

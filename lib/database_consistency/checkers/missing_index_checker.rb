@@ -34,8 +34,18 @@ module DatabaseConsistency
 
       def index
         @index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
-          index.columns[0] == association.foreign_key.to_s
+          index_keys(index) == association_keys
         end
+      end
+
+      def association_keys
+        @association_keys ||= [association.foreign_key, association.type].compact.map(&:to_s).sort
+      end
+
+      def index_keys(index)
+        return unless index.columns.is_a?(Array)
+
+        index.columns[0...association_keys.size].sort
       end
     end
   end
