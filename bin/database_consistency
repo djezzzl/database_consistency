@@ -22,10 +22,6 @@ Rails.application.eager_load! if defined?(Rails)
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'database_consistency'
 
-# Welcome message
-puts 'Thank you for using the gem. Any contribution is welcome https://github.com/djezzzl/database_consistency!'
-puts "(c) Evgeniy Demin <lawliet.djez@gmail.com>\n\n"
-
 # Process checks
 result = DatabaseConsistency.run
 exit result
