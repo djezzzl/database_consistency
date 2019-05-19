@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.6.9] - 2019/05/19
+
+Fixes: 
+- Return error code if output contains any failing message 
+
 ### [0.6.8] - 2019/05/05
 
 Improvements:
