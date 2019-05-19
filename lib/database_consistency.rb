@@ -38,7 +38,7 @@ module DatabaseConsistency
         config: configuration
       )
 
-      reports.empty? ? 0 : 1
+      reports.any? { |report| report.status == :fail } ? 1 : 0
     end
   end
 end
