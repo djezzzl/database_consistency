@@ -38,5 +38,5 @@ RSpec.shared_context 'database context' do |configuration|
 end
 
 RSpec.shared_context 'postgresql database context' do
-  include_context 'database context', adapter: 'postgresql', database: 'database_consistency_test'
+  include_context 'database context', postgresql_configuration
 end

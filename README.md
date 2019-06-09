@@ -1,6 +1,6 @@
 # DatabaseConsistency
 
-[![Build Status](https://travis-ci.org/djezzzl/database_consistency.svg?branch=master)](https://travis-ci.org/djezzzl/database_consistency)
+[![CircleCI](https://circleci.com/gh/djezzzl/database_consistency/tree/master.svg?style=svg)](https://circleci.com/gh/djezzzl/database_consistency/tree/master)
 [![Gem Version](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
 
 The main goal of the project is to provide an easy way to check the consistency of the 

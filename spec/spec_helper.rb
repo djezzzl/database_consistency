@@ -19,11 +19,38 @@ RSpec.configure do |config|
     File.join('spec/fixtures/files/', path)
   end
 
+  def mysql_configuration
+    {
+      adapter: 'mysql2',
+      database: 'database_consistency_test',
+      host: ENV['DB_HOST'] || '127.0.0.1',
+      username: ENV['DB_USER'],
+      password: ENV['DB_PASSWORD']
+    }
+  end
+
+  def sqlite_configuration
+    {
+      adapter: 'sqlite3',
+      database: ':memory:'
+    }
+  end
+
+  def postgresql_configuration
+    {
+      adapter: 'postgresql',
+      database: 'database_consistency_test',
+      host: ENV['DB_HOST'] || '127.0.0.1',
+      username: ENV['DB_USER'],
+      password: ENV['DB_PASSWORD']
+    }
+  end
+
   def test_each_database(&block)
     [
-      { adapter: 'sqlite3', database: ':memory:' },
-      { adapter: 'mysql2', database: 'database_consistency_test' },
-      { adapter: 'postgresql', database: 'database_consistency_test' }
+      sqlite_configuration,
+      mysql_configuration,
+      postgresql_configuration
     ].each do |configuration|
       context "with #{configuration[:adapter]} database" do
         include_context 'database context', configuration
