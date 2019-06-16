@@ -1,13 +1,15 @@
 # DatabaseConsistency
 
-[![CircleCI](https://circleci.com/gh/djezzzl/database_consistency/tree/master.svg?style=svg)](https://circleci.com/gh/djezzzl/database_consistency/tree/master)
 [![Gem Version](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
+[![CircleCI](https://circleci.com/gh/djezzzl/database_consistency/tree/master.svg?style=svg)](https://circleci.com/gh/djezzzl/database_consistency/tree/master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b22ff5ee2c37bff6e059/maintainability)](https://codeclimate.com/github/djezzzl/database_consistency/maintainability)
 
 The main goal of the project is to provide an easy way to check the consistency of the 
 database constraints with the application validations.
 
 Currently, we can:
 - find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
+- find missing length validations ([LengthConstraintChecker](#lengthconstraintchecker))
 - find missing presence validations ([NullConstraintChecker](#nullconstraintchecker))
 - find missing foreign keys for `BelongsTo` associations ([BelongsToPresenceChecker](#belongstopresencechecker))
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
@@ -16,10 +18,10 @@ Currently, we can:
 We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations)
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
-We support any framework or pure ruby which uses ActiveRecord. 
+We support any framework or pure ruby which uses [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord). 
 
-Check out the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable
-uniqueness validations and `BelongsTo` associations using ActiveRecord.
+**Check out** the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable
+uniqueness validations and `BelongsTo` associations using [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord).
 
 ## Installation
 
@@ -81,7 +83,18 @@ To avoid the inconsistency and be always sure your value won't be `null` you sho
 | at least one provided           | required | fail   |
 | at least one provided           | optional | ok     |
 | all missing                     | required | ok     |
-| all missing                     | optional | fail   |  
+| all missing                     | optional | fail   | 
+
+### LengthConstraintChecker
+
+Imagine your model has limit constraint on some field in the database but doesn't have 
+`validates :email, length: { maximum: <VALUE> }` validation. In that case, you're sure that you won't have values with exceeded length in the database.
+But each attempt to save the a value with exceeded length on that field will be rolled back with error raised and without `errors` on your object.
+Mostly, you'd like to catch it properly and for that length validator exists.
+
+We fail if any of following conditions are satisfied:
+- there is no length validation for the column
+- there is length validation for the column but with greater limit than in database, so some values will still throw an error
 
 ### NullConstraintChecker
 
@@ -135,6 +148,7 @@ We fail if the following conditions are satisfied:
 ```
 $ bundle exec database_consistency
 fail User code column is required in the database but do not have presence validator
+fail Company note column has limit in the database but do not have length validator
 fail User phone column should be required in the database
 fail User name column is required but there is possible null value insert
 fail User name+email model should have proper unique index in the database

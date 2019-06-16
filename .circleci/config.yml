@@ -5,10 +5,10 @@ jobs:
       - image: circleci/ruby:2.5.5
         environment:
           BUNDLE_PATH: vendor/bundle
-          AR_VERSION: "~> 4.2"
           DB_HOST: 127.0.0.1
           DB_USER: root
           DB_PASSWORD: ''
+          AR_VERSION: "~> 4.2"
           SQLITE_VERSION: "~> 1.3.9"
           MYSQL_VERSION: "~> 0.4.0"
 
