@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.0] - 2019/06/16
+
+Improvements:
+- Add support of `LengthConstraintChecker`
+
 ### [0.6.9] - 2019/05/19
 
 Fixes: 
