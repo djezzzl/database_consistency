@@ -35,6 +35,7 @@ module DatabaseConsistency
       def status_text(result)
         color = case result.status
                 when :ok then :green
+                when :warning then :yellow
                 when :fail then :red
                 end
 
