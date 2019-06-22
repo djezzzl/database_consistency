@@ -20,8 +20,9 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - column hasn't limit constraint
+      #  - column insn't string nor text
       def preconditions
-        !column.limit.nil?
+        !column.limit.nil? && %i[string text].include?(column.type)
       end
 
       # Table of possible statuses
