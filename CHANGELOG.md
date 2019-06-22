@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.1] - 2019/06/22
+
+Fix:
+- Ignore non-string columns for `LengthConstraintChecker`
+
 ### [0.7.0] - 2019/06/16
 
 Improvements:
