@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.7.2] - 2019/07/05
+
+Fix:
+- `bundle exec database_consistency` exits with fail if there was any error
+- Skip `MissingIndexChecker` when associated model doesn't exist
+
 ### [0.7.1] - 2019/06/22
 
 Fix:
