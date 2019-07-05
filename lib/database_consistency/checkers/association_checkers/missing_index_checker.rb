@@ -12,11 +12,14 @@ module DatabaseConsistency
       # We skip check when:
       #  - association isn't a `HasOne` or `HasMany`
       #  - association has `through` option
+      #  - associated class doesn't exist
       def preconditions
         %i[
           has_one
           has_many
-        ].include?(association.macro) && association.through_reflection.nil?
+        ].include?(association.macro) && association.through_reflection.nil? && association.klass
+      rescue NameError
+        false
       end
 
       # Table of possible statuses

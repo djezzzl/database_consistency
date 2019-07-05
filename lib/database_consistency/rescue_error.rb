@@ -3,13 +3,16 @@
 module DatabaseConsistency
   # The class writes error to the file
   class RescueError
-    attr_reader :error
-
     private_class_method :new
 
     def self.call(error)
       @singleton ||= new
       @singleton.call(error)
+    end
+
+    # @return [Boolean]
+    def self.empty?
+      @singleton.nil?
     end
 
     def initialize

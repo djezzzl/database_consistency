@@ -7,6 +7,15 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker do
   let(:association) { company_class.reflect_on_all_associations.first }
 
   test_each_database do
+    context 'when associated class does not exists' do
+      let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :something } }
+
+      it 'should work without error' do
+        expect(DatabaseConsistency::RescueError).not_to receive(:call)
+        expect(checker.report).to be_nil
+      end
+    end
+
     context 'with polymorphic association' do
       let!(:user_class) { define_class('User', :users) { |klass| klass.belongs_to :companable, polymorphic: true } }
 
