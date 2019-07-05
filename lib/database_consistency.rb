@@ -38,7 +38,7 @@ module DatabaseConsistency
         config: configuration
       )
 
-      reports.any? { |report| report.status == :fail } ? 1 : 0
+      reports.any? { |report| report.status == :fail } || !RescueError.empty? ? 1 : 0
     end
   end
 end
