@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.3] - 2019/07/24
+
+Fix:
+- Custom validators won't raise an error
+
 ### [0.7.2] - 2019/07/05
 
 Fix:
