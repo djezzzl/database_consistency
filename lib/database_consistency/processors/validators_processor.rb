@@ -13,11 +13,13 @@ module DatabaseConsistency
       private
 
       # @return [Array<Hash>]
-      def check
+      def check # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         Helper.parent_models.flat_map do |model|
           next unless configuration.enabled?(model)
 
           model.validators.flat_map do |validator|
+            next unless validator.respond_to?(:attributes)
+
             validator.attributes.flat_map do |attribute|
               enabled_checkers.map do |checker_class|
                 checker = checker_class.new(model, attribute, validator)
