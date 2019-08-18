@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.4] - 2019/08/18
+
+Improvements:
+- Add support of Rails 6
+
 ### [0.7.3] - 2019/07/24
 
 Fix:
