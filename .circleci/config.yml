@@ -108,12 +108,12 @@ jobs:
                               --format progress \
                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
 
-  ver6-0-0rc1:
+  ver6-0-0:
     docker:
       - image: circleci/ruby:2.6.3
         environment:
           BUNDLE_PATH: vendor/bundle
-          AR_VERSION: "= 6.0.0rc1"
+          AR_VERSION: ">= 6.0.0"
           DB_HOST: 127.0.0.1
           DB_USER: root
           DB_PASSWORD: ''
@@ -166,4 +166,4 @@ workflows:
     jobs:
       - ver4-2
       - ver5-2
-      - ver6-0-0rc1
+      - ver6-0-0

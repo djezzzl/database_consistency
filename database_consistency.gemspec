@@ -18,10 +18,10 @@ Gem::Specification.new do |spec|
   spec.files         = Dir['lib/**/*']
   spec.require_paths = ['lib']
   spec.executables   = ['database_consistency']
-  
+
   spec.required_ruby_version = '>= 2.4.0'
 
-  spec.add_dependency 'activerecord', '>= 3.2', '< 6'
+  spec.add_dependency 'activerecord', '>= 3.2'
 
   spec.add_development_dependency 'bundler', '> 1.16'
   spec.add_development_dependency 'mysql2', '~> 0.5'
