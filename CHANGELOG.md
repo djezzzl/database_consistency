@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.5] - 2019/10/12
+
+Bug: 
+- Fix eager loading for Zeitwerk
+
 ### [0.7.4] - 2019/08/18
 
 Improvements:
