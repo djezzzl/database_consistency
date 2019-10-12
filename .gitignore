@@ -18,5 +18,11 @@
 /rails-example/tmp
 /rails-example/log
 
+# Rails 6 Example
+/rails6-example/db/*.sqlite3
+/rails6-example/node_modules
+/rails6-example/log
+/rails6-example/tmp
+
 Gemfile.lock
 Gemfile.local
