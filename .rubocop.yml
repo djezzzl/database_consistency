@@ -4,6 +4,7 @@ Metrics/LineLength:
 AllCops:
   Exclude:
     - 'rails-example/**/*'
+    - 'rails6-example/**/*'
     - 'bin/**/*'
     - 'vendor/bundle/**/*'
   TargetRubyVersion: 2.5
