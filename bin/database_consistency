@@ -17,6 +17,8 @@ end
 
 # Load Rails models
 Rails.application.eager_load! if defined?(Rails)
+# Rails 6 support
+Zeitwerk::Loader.eager_load_all if defined?(Zeitwerk)
 
 # Require the gem
 $LOAD_PATH.unshift(File.expand_path('lib', __dir__))

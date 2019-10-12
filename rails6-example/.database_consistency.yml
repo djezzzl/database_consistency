@@ -1,0 +1,46 @@
+DatabaseConsistencySettings:
+  color: true
+  log_level: DEBUG
+
+DatabaseConsistencyCheckers:
+  MissingIndexChecker:
+    enabled: true # 1st priority (completely turn off particular checker)
+  MissingUniqueIndexChecker:
+    enabled: true
+  ColumnPresenceChecker:
+    enabled: true
+  NullConstraintChecker:
+    enabled: true
+  BelongsToPresenceChecker:
+    enabled: true
+
+User:
+  enabled: true # 2st priority (turn off checking User model)
+  phone:
+    enabled: true # 3rd priority (turn off phone checking phone field/attribute of User model)
+    ColumnPresenceChecker:
+      enabled: true # 4rd priority (turn off checker for phone field/attribute of User model)
+  name:
+    enabled: true
+  code:
+    enabled: true
+    NullConstraintChecker:
+      enabled: true
+  name+email:
+    MissingUniqueIndexChecker:
+      enabled: true
+
+Country:
+  users:
+    MissingIndexChecker:
+      enabled: true
+
+# Can be compact (example), "enabled: true" is default
+# User:
+#   phone:
+#     ColumnPresenceChecker:
+#       enabled: false
+#   name:
+#     enabled: false
+# Company:
+#   enabled: false
