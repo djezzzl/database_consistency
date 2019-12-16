@@ -5,6 +5,12 @@
 Bug: 
 - Fix eager loading for Zeitwerk
 
+### [0.7.6] - 2019/12/16
+
+Fix:
+- Make `ColumnPresenceChecker` to consider group of validators instead one by one.
+That decreases amount of false negative scenarios. 
+
 ### [0.7.4] - 2019/08/18
 
 Improvements:
