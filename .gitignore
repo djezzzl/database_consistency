@@ -13,6 +13,9 @@
 # RubyMine
 /.idea
 
+# Ruby Version
+.ruby-version
+
 # Rails Example
 /rails-example/db/*.sqlite3
 /rails-example/tmp
