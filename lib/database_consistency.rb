@@ -17,14 +17,16 @@ require 'database_consistency/checkers/column_checkers/column_checker'
 require 'database_consistency/checkers/column_checkers/null_constraint_checker'
 require 'database_consistency/checkers/column_checkers/length_constraint_checker'
 require 'database_consistency/checkers/validator_checkers/validator_checker'
-require 'database_consistency/checkers/validator_checkers/column_presence_checker'
 require 'database_consistency/checkers/validator_checkers/belongs_to_presence_checker'
 require 'database_consistency/checkers/validator_checkers/missing_unique_index_checker'
+require 'database_consistency/checkers/validators_fraction_checkers/validators_fraction_checker'
+require 'database_consistency/checkers/validators_fraction_checkers/column_presence_checker'
 
 require 'database_consistency/processors/base_processor'
 require 'database_consistency/processors/associations_processor'
 require 'database_consistency/processors/validators_processor'
 require 'database_consistency/processors/columns_processor'
+require 'database_consistency/processors/validators_fractions_processor'
 
 # The root module
 module DatabaseConsistency
