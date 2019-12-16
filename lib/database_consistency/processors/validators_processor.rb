@@ -5,7 +5,6 @@ module DatabaseConsistency
     # The class to process validators
     class ValidatorsProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::ColumnPresenceChecker,
         Checkers::BelongsToPresenceChecker,
         Checkers::MissingUniqueIndexChecker
       ].freeze

@@ -7,7 +7,7 @@ AllCops:
     - 'rails6-example/**/*'
     - 'bin/**/*'
     - 'vendor/bundle/**/*'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4
 
 Metrics/BlockLength:
   Exclude:

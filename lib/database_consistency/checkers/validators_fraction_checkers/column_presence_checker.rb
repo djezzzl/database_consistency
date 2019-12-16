@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # This class checks if presence validator has non-null constraint in the database
-    class ColumnPresenceChecker < ValidatorChecker
+    class ColumnPresenceChecker < ValidatorsFractionChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
       # Message templates
       CONSTRAINT_MISSING = 'column should be required in the database'
@@ -11,11 +11,15 @@ module DatabaseConsistency
 
       private
 
+      def filter(validator)
+        validator.kind == :presence
+      end
+
       # We skip check when:
-      #  - validator is not a presence validator
+      #  - there is no presence validators
       #  - there is no column in the database with given name
       def preconditions
-        validator.kind == :presence && column
+        validators.any? && column
       end
 
       # Table of possible statuses
@@ -27,7 +31,7 @@ module DatabaseConsistency
       # | all missing                     | optional | fail   |
       def check
         can_be_null = column.null
-        has_weak_option = validator.options.slice(*WEAK_OPTIONS).any?
+        has_weak_option = validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
 
         if can_be_null == has_weak_option
           report_template(:ok)
