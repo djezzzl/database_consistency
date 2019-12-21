@@ -15,11 +15,11 @@ DatabaseConsistencyCheckers:
     enabled: true
 
 User:
-  enabled: true # 2st priority (turn off checking User model)
+  enabled: true # 2nd priority (turn off checking User model)
   phone:
     enabled: true # 3rd priority (turn off phone checking phone field/attribute of User model)
     ColumnPresenceChecker:
-      enabled: true # 4rd priority (turn off checker for phone field/attribute of User model)
+      enabled: true # 4th priority (turn off checker for phone field/attribute of User model)
   name:
     enabled: true
   code:
