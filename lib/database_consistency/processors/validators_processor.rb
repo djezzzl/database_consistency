@@ -14,7 +14,7 @@ module DatabaseConsistency
       # @return [Array<Hash>]
       def check # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         Helper.parent_models.flat_map do |model|
-          next unless configuration.enabled?(model)
+          next unless configuration.enabled?(model.name.to_s)
 
           model.validators.flat_map do |validator|
             next unless validator.respond_to?(:attributes)

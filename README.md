@@ -15,10 +15,12 @@ Currently, we can:
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 
-We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations)
+We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
 We support any framework or pure ruby which uses [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord). 
+
+Check out our [FAQ](FAQ.md) section.
 
 **Check out** the [database_validations](https://github.com/toptal/database_validations) to have faster and reliable
 uniqueness validations and `BelongsTo` associations using [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord).

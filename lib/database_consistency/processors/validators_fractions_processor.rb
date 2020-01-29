@@ -13,7 +13,7 @@ module DatabaseConsistency
       # @return [Array<Hash>]
       def check
         Helper.parent_models.flat_map do |model|
-          next unless configuration.enabled?(model)
+          next unless configuration.enabled?(model.name.to_s)
 
           model._validators.flat_map do |attribute, validators|
             next unless attribute
