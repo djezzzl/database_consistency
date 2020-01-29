@@ -13,7 +13,7 @@ module DatabaseConsistency
 
       def check
         Helper.parent_models.flat_map do |model|
-          next unless configuration.enabled?(model)
+          next unless configuration.enabled?(model.name.to_s)
 
           model.columns.flat_map do |column|
             enabled_checkers.map do |checker_class|
