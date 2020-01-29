@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.7.7] - 2020/01/29
+
+Bug:
+- Fix configuration check
+
 ### [0.7.5] - 2019/10/12
 
 Bug: 
