@@ -70,5 +70,18 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
         )
       end
     end
+
+    context 'when association is different than belongs_to' do
+      let!(:entity_class) do
+        define_class do |klass|
+          klass.has_one :country
+          klass.validates :country, presence: true
+        end
+      end
+
+      specify do
+        expect(checker.report).to be_nil
+      end
+    end
   end
 end
