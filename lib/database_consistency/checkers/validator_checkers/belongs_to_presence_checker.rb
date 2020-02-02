@@ -13,7 +13,7 @@ module DatabaseConsistency
       #  - there is no belongs_to association with given name
       #  - belongs_to association is polymorphic
       def preconditions
-        validator.kind == :presence && association && !association.polymorphic?
+        validator.kind == :presence && association && association.belongs_to? && !association.polymorphic?
       end
 
       # Table of possible statuses
