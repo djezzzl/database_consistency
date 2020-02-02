@@ -1,14 +1,19 @@
 # Changelog
 
+### [0.7.8] - 2020/02/02
+
+Bug:
+- Fix BelongsToPresenceChecker to consider only `belongs_to` associations.
+
 ### [0.7.7] - 2020/01/29
 
 Bug:
-- Fix configuration check
+- Fix configuration check.
 
 ### [0.7.5] - 2019/10/12
 
 Bug: 
-- Fix eager loading for Zeitwerk
+- Fix eager loading for Zeitwerk.
 
 ### [0.7.6] - 2019/12/16
 
