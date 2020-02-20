@@ -7,7 +7,7 @@ jobs:
           BUNDLE_PATH: vendor/bundle
           DB_HOST: 127.0.0.1
           DB_USER: root
-          DB_PASSWORD: ''
+          DB_PASSWORD: database_consistency_password
           AR_VERSION: "~> 4.2"
           SQLITE_VERSION: "~> 1.3.9"
           MYSQL_VERSION: "~> 0.4.0"
@@ -16,13 +16,13 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: database_consistency_test
-          POSTGRES_PASSWORD: ''
+          POSTGRES_PASSWORD: database_consistency_password
 
       - image: circleci/mysql:5.6
         environment:
           MYSQL_ROOT_HOST: '%'
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
           MYSQL_USER: root
 
@@ -64,19 +64,19 @@ jobs:
           AR_VERSION: "~> 5.2"
           DB_HOST: 127.0.0.1
           DB_USER: root
-          DB_PASSWORD: ''
+          DB_PASSWORD: database_consistency_password
 
       - image: circleci/postgres:9.6
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: database_consistency_test
-          POSTGRES_PASSWORD: ''
+          POSTGRES_PASSWORD: database_consistency_password
 
       - image: circleci/mysql:5.6
         environment:
           MYSQL_ROOT_HOST: '%'
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
           MYSQL_USER: root
 
@@ -116,19 +116,19 @@ jobs:
           AR_VERSION: ">= 6.0.0"
           DB_HOST: 127.0.0.1
           DB_USER: root
-          DB_PASSWORD: ''
+          DB_PASSWORD: database_consistency_password
 
       - image: circleci/postgres:9.6
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: database_consistency_test
-          POSTGRES_PASSWORD: ''
+          POSTGRES_PASSWORD: database_consistency_password
 
       - image: circleci/mysql:5.6
         environment:
           MYSQL_ROOT_HOST: '%'
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
           MYSQL_USER: root
 
