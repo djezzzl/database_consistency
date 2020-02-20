@@ -109,7 +109,9 @@ We fail if the column satisfies the following conditions:
 - column is required in the database
 - column is not a primary key (we don't need need presence validators for primary keys)
 - model records timestamps and column's name is not `created_at` or `updated_at`
-- column is not used for any Presence or Inclusion validators or BelongsTo association
+- column is not used for any Presence or Inclusion validators 
+- column is not used for any Exclusion validators with `nil`
+- column is not used for BelongsTo association
 - column has not a default value
 - column has not a default function
 
