@@ -25,7 +25,8 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | missing    | fail   |
       #
-      # We consider PresenceValidation, InclusionValidation or BelongsTo association using this column
+      # We consider PresenceValidation, InclusionValidation, ExclusionValidation with nil,
+      # or BelongsTo association using this column
       def check
         if valid?
           report_template(:ok)
@@ -37,6 +38,7 @@ module DatabaseConsistency
       def valid?
         validator?(ActiveModel::Validations::PresenceValidator) ||
           validator?(ActiveModel::Validations::InclusionValidator) ||
+          nil_exclusion_validator? ||
           belongs_to_association?
       end
 
@@ -46,6 +48,13 @@ module DatabaseConsistency
 
       def timestamp_field?
         model.record_timestamps? && %w[created_at updated_at].include?(column.name)
+      end
+
+      def nil_exclusion_validator?
+        model.validators.grep(ActiveModel::Validations::ExclusionValidator).any? do |validator|
+          Helper.check_inclusion?(validator.attributes, column.name) &&
+            validator.options[:in].include?(nil)
+        end
       end
 
       def validator?(validator_class)
