@@ -1,9 +1,14 @@
 # Changelog
 
+### [0.7.9] - 2020/02/20
+
+Improvements:
+- `NullConstraintChecker` now considers `ExclusionValidator` with `nil`.
+
 ### [0.7.8] - 2020/02/02
 
 Bug:
-- Fix BelongsToPresenceChecker to consider only `belongs_to` associations.
+- Fix `BelongsToPresenceChecker` to consider only `belongs_to` associations.
 
 ### [0.7.7] - 2020/01/29
 
