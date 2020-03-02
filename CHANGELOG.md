@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.0] - 2020/03/02
+
+Improvements:
+- Introduce `PrimaryKeyTypeChecker`.
+
 ### [0.7.9] - 2020/02/20
 
 Improvements:
