@@ -6,7 +6,8 @@ module DatabaseConsistency
     class ColumnsProcessor < BaseProcessor
       CHECKERS = [
         Checkers::NullConstraintChecker,
-        Checkers::LengthConstraintChecker
+        Checkers::LengthConstraintChecker,
+        Checkers::PrimaryKeyTypeChecker
       ].freeze
 
       private

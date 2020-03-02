@@ -46,16 +46,14 @@ RSpec.configure do |config|
     }
   end
 
-  def test_each_database(&block)
-    [
-      sqlite_configuration,
-      mysql_configuration,
-      postgresql_configuration
-    ].each do |configuration|
-      context "with #{configuration[:adapter]} database" do
-        include_context 'database context', configuration
-        instance_eval(&block)
+  def test_each_database(databases = %i[sqlite mysql postgresql], &block)
+    databases
+      .map { |name| send("#{name}_configuration") }
+      .each do |configuration|
+        context "with #{configuration[:adapter]} database" do
+          include_context 'database context', configuration
+          instance_eval(&block)
+        end
       end
-    end
   end
 end
