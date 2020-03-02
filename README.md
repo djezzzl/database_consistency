@@ -14,6 +14,7 @@ Currently, we can:
 - find missing foreign keys for `BelongsTo` associations ([BelongsToPresenceChecker](#belongstopresencechecker))
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
+- find primary keys with integer/serial type ([PrimaryKeyTypeChecker](#primarykeytypechecker))
 
 We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
 
@@ -146,6 +147,15 @@ to get the associated instance can be very inefficient. Mostly, you'll need an i
 We fail if the following conditions are satisfied:
 - there is no index for the `HasOne` or `HasMany` association
 - it has a `through` option
+
+### PrimaryKeyTypeChecker
+
+ActiveRecord has changed its default types for primary keys ([PR](https://github.com/rails/rails/pull/26266/files)). 
+Given no one is immune to [problems short types may create](https://github.com/rails/rails/pull/26266/files), we 
+added a checker to identify those IDs.
+
+We fail if the following conditions are satisfied:
+- primary key type is not in the list: bigint, bigserial, uuid.  
 
 ## Example
 
