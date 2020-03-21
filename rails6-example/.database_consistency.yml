@@ -2,6 +2,14 @@ DatabaseConsistencySettings:
   color: true
   log_level: DEBUG
 
+# Ignore false positive from Rails' ActionText and ActiveStorage
+ActionText::RichText:
+  enabled: false
+ActiveStorage::Attachment:
+  enabled: false
+ActiveStorage::Blob:
+  enabled: false
+
 DatabaseConsistencyCheckers:
   MissingIndexChecker:
     enabled: true # 1st priority (completely turn off particular checker)
