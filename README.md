@@ -43,7 +43,7 @@ bundle install
 If you are using ActiveStorage and/or ActionText, run the installer to prevent false positives caused by these libraries.
 
 ```bash
-bundle exec rails generate database_consistency
+bundle exec database_consistency install
 ```
 
 ## Usage

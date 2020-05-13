@@ -1,9 +1,32 @@
 #!/usr/bin/env ruby
 
-base_dir = File.join(Dir.pwd, ARGV.first.to_s)
-
-unless File.realpath(base_dir).start_with?(Dir.pwd)
-  puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
+if ARGV.include?('install')
+  config_filename = '.database_consistency.yml'
+  rules = <<RULES
+# Ignore false positive from Rails' ActionText and ActiveStorage
+ActionText::RichText:
+  enabled: false
+ActiveStorage::Attachment:
+  enabled: false
+ActiveStorage::Blob:
+  enabled: false
+RULES
+  if File.exists?(config_filename) && File.foreach(config_filename).grep(Regexp.new(rules.lines.first.chomp)).any?
+    puts "#{config_filename} is already present"
+  else
+    file_exists = File.exists?(config_filename)
+    File.open(config_filename, 'a') do |file|
+      file << "\n" * 2 if file_exists
+      file << rules
+    end
+    puts "#{config_filename} #{file_exists ? 'updated' : 'added'}"
+  end
+  exit 0
+else
+  base_dir = File.join(Dir.pwd, ARGV.first.to_s)
+  unless File.realpath(base_dir).start_with?(Dir.pwd)
+    puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
+  end
 end
 
 # Load Rails project
