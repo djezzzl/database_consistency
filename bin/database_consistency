@@ -14,10 +14,10 @@ ActiveStorage::Attachment:
 ActiveStorage::Blob:
   enabled: false
 RULES
-  if File.exists?(config_filename) && File.foreach(config_filename).grep(Regexp.new(rules.lines.first.chomp)).any?
+  file_exists = File.exists?(config_filename)
+  if file_exists && File.foreach(config_filename).grep(Regexp.new(rules.lines.first.chomp)).any?
     puts "#{config_filename} is already present"
   else
-    file_exists = File.exists?(config_filename)
     File.open(config_filename, 'a') do |file|
       file << "\n" * 2 if file_exists
       file << rules
