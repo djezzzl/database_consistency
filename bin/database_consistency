@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
 if ARGV.include?('install')
-  config_filename = '.database_consistency.yml'
+  require_relative '../lib/database_consistency/configuration'
+
+  config_filename = DatabaseConsistency::Configuration::CONFIGURATION_PATH
+
   rules = <<RULES
 # Ignore false positive from Rails' ActionText and ActiveStorage
 ActionText::RichText:
