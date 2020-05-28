@@ -2,19 +2,9 @@
 
 if ARGV.include?('install')
   require_relative '../lib/database_consistency/configuration'
-
   config_filename = DatabaseConsistency::Configuration::CONFIGURATION_PATH
-
-  rules = <<RULES
-# Ignore false positive from Rails' ActionText and ActiveStorage
-ActionText::RichText:
-  enabled: false
-ActiveStorage::Attachment:
-  enabled: false
-ActiveStorage::Blob:
-  enabled: false
-RULES
   file_exists = File.exists?(config_filename)
+  rules = Pathname.new(__FILE__).dirname.join('..', 'lib', 'database_consistency', 'templates', 'rails_defaults.yml').read
   if file_exists && File.foreach(config_filename).grep(Regexp.new(rules.lines.first.chomp)).any?
     puts "#{config_filename} is already present"
   else
