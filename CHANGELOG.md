@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.1] - 2020/06/03
+
+Improvements:
+- Introduce `bundle exec database_consistency install`. Thanks [goulvench](https://github.com/goulvench) for implementing this.
+
 ### [0.8.0] - 2020/03/02
 
 Improvements:
