@@ -1,9 +1,25 @@
 #!/usr/bin/env ruby
 
-base_dir = File.join(Dir.pwd, ARGV.first.to_s)
-
-unless File.realpath(base_dir).start_with?(Dir.pwd)
-  puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
+if ARGV.include?('install')
+  require_relative '../lib/database_consistency/configuration'
+  config_filename = DatabaseConsistency::Configuration::CONFIGURATION_PATH
+  file_exists = File.exists?(config_filename)
+  rules = Pathname.new(__FILE__).dirname.join('..', 'lib', 'database_consistency', 'templates', 'rails_defaults.yml').read
+  if file_exists && File.foreach(config_filename).grep(Regexp.new(rules.lines.first.chomp)).any?
+    puts "#{config_filename} is already present"
+  else
+    File.open(config_filename, 'a') do |file|
+      file << "\n" * 2 if file_exists
+      file << rules
+    end
+    puts "#{config_filename} #{file_exists ? 'updated' : 'added'}"
+  end
+  exit 0
+else
+  base_dir = File.join(Dir.pwd, ARGV.first.to_s)
+  unless File.realpath(base_dir).start_with?(Dir.pwd)
+    puts "\nWarning! You are going out of current directory, ruby version may be wrong and some gems may be missing.\n"
+  end
 end
 
 # Load Rails project

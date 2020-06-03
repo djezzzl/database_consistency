@@ -40,6 +40,12 @@ And then execute:
 bundle install
 ```
 
+If you are using ActiveStorage and/or ActionText, run the installer to prevent false positives caused by these libraries.
+
+```bash
+bundle exec database_consistency install
+```
+
 ## Usage
 
 In the root directory of your Rails project just run `bundle exec database_consistency`. 
