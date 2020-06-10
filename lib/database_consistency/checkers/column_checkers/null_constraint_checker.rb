@@ -38,6 +38,7 @@ module DatabaseConsistency
       def valid?
         validator?(ActiveModel::Validations::PresenceValidator) ||
           validator?(ActiveModel::Validations::InclusionValidator) ||
+          numericality_validator_without_allow_nil? ||
           nil_exclusion_validator? ||
           belongs_to_association?
       end
@@ -54,6 +55,13 @@ module DatabaseConsistency
         model.validators.grep(ActiveModel::Validations::ExclusionValidator).any? do |validator|
           Helper.check_inclusion?(validator.attributes, column.name) &&
             validator.options[:in].include?(nil)
+        end
+      end
+
+      def numericality_validator_without_allow_nil?
+        model.validators.grep(ActiveModel::Validations::NumericalityValidator).any? do |validator|
+          Helper.check_inclusion?(validator.attributes, column.name) &&
+            !validator.options[:allow_nil]
         end
       end
 
