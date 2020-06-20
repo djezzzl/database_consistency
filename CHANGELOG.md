@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.2] - 2020/06/20
+
+Improvements:
+- Add consideration of numericality validator to `NullConstraintChecker`. Thanks [Bob Maerten](https://github.com/bobmaerten) for adding this. 
+
 ### [0.8.1] - 2020/06/03
 
 Improvements:
