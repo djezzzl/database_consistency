@@ -25,7 +25,7 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | missing    | fail   |
       #
-      # We consider PresenceValidation, InclusionValidation, ExclusionValidation with nil,
+      # We consider PresenceValidation, InclusionValidation, ExclusionValidation, NumericalityValidator with nil,
       # or BelongsTo association using this column
       def check
         if valid?

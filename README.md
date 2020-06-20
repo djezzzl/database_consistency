@@ -118,6 +118,7 @@ We fail if the column satisfies the following conditions:
 - model records timestamps and column's name is not `created_at` or `updated_at`
 - column is not used for any Presence or Inclusion validators 
 - column is not used for any Exclusion validators with `nil`
+- column is not used for any Numericality validators with `allow_nil` disabled
 - column is not used for BelongsTo association
 - column has not a default value
 - column has not a default function
