@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.8.3] - 2020/06/24
+
+Improvements:
+- Consider `on` option for `PresenceValidator` as weak for `ColumnPresenceChecker`
+- Support relations for `scope` for `MissingUniqueIndexChecker`
+
 ### [0.8.2] - 2020/06/20
 
 Improvements:
