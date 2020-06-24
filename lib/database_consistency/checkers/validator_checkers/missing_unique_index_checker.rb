@@ -48,7 +48,13 @@ module DatabaseConsistency
       end
 
       def index_columns
-        @index_columns ||= ([wrapped_attribute_name] + Array.wrap(validator.options[:scope])).map(&:to_s)
+        @index_columns ||= ([wrapped_attribute_name] + scope_columns).map(&:to_s)
+      end
+
+      def scope_columns
+        @scope_columns ||= Array.wrap(validator.options[:scope]).map do |scope_item|
+          model._reflect_on_association(scope_item)&.foreign_key || scope_item
+        end
       end
 
       def sorted_index_columns

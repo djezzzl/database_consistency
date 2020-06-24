@@ -72,6 +72,33 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
         end
       end
 
+      context 'when scope contains relation instead column' do
+        before do
+          define_database_with_entity do |table|
+            table.string :email
+            table.integer :country_id
+            table.index %i[country_id email], unique: true
+          end
+        end
+
+        let(:klass) do
+          define_class do |klass|
+            klass.validates :email, uniqueness: { scope: :country }
+            klass.belongs_to :country
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingUniqueIndexChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email+country_id',
+            status: :ok,
+            message: nil
+          )
+        end
+      end
+
       context 'when unique index is missing' do
         before do
           define_database_with_entity do |table|

@@ -75,6 +75,20 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
           message: 'column should be required in the database'
         )
       end
+
+      context 'when validator has "on" option specified' do
+        let(:klass) { define_class { |klass| klass.validates :email, presence: true, on: :update } }
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ColumnPresenceChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :ok,
+            message: nil
+          )
+        end
+      end
     end
   end
 end

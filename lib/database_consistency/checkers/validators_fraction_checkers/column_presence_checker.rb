@@ -4,7 +4,7 @@ module DatabaseConsistency
   module Checkers
     # This class checks if presence validator has non-null constraint in the database
     class ColumnPresenceChecker < ValidatorsFractionChecker
-      WEAK_OPTIONS = %i[allow_nil allow_blank if unless].freeze
+      WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
       # Message templates
       CONSTRAINT_MISSING = 'column should be required in the database'
       POSSIBLE_NULL = 'column is required but there is possible null value insert'
