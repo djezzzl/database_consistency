@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.4] - 2020/07/04
+
+Improvements:
+- `LengthConstraintChecker` now ignores array columns (PostgreSQL only) 
+
 ### [0.8.3] - 2020/06/24
 
 Improvements:
