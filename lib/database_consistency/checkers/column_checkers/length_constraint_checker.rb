@@ -21,8 +21,14 @@ module DatabaseConsistency
       # We skip check when:
       #  - column hasn't limit constraint
       #  - column insn't string nor text
+      #  - column is array (PostgreSQL only)
       def preconditions
-        !column.limit.nil? && %i[string text].include?(column.type)
+        !column.limit.nil? && %i[string text].include?(column.type) && !postgresql_array?
+      end
+
+      # @return [Boolean] true if it is an array (PostgreSQL only)
+      def postgresql_array?
+        column.respond_to?(:array) && column.array
       end
 
       # Table of possible statuses
