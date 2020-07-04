@@ -12,6 +12,20 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker do
     end
 
     context 'when validation is missing' do
+      let(:klass) { define_class { |klass| klass.validates :email, length: { maximum: 256 } } }
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'LengthConstraintChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :ok,
+          message: nil
+        )
+      end
+    end
+
+    context 'when validation is missing' do
       let(:klass) { define_class }
 
       specify do
