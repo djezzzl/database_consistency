@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.5] - 2020/09/21
+
+Improvements:
+- Introduce `ForeignKeyTypeChecker`. 
+
 ### [0.8.4] - 2020/07/04
 
 Improvements:

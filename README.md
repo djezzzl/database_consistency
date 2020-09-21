@@ -15,6 +15,7 @@ Currently, we can:
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 - find primary keys with integer/serial type ([PrimaryKeyTypeChecker](#primarykeytypechecker))
+- find mismatching primary key types with their foreign keys ([ForeignKeyTypeChecker](#foreignkeytypechecker))
 
 We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
 
@@ -164,6 +165,15 @@ added a checker to identify those IDs.
 We fail if the following conditions are satisfied:
 - primary key type is not in the list: bigint, bigserial, uuid.  
 
+### ForeignKeyTypeChecker
+
+It's dangerous to have foreign key type to be different than paired primary key type.
+Given no one is immune to [possible problems](https://m.signalvnoise.com/update-on-basecamp-3-being-stuck-in-read-only-as-of-nov-8-922am-cst/), 
+we added a checker to identify those mismatches.
+
+We fail if the following conditions are satisfied:
+- foreign key type is not the same as paired primary key. 
+
 ## Example
 
 ```
@@ -176,6 +186,7 @@ fail User name+email model should have proper unique index in the database
 fail User company model should have proper foreign key in the database
 fail Company user associated model should have proper index in the database
 fail Country users associated model should have proper index in the database
+fail Company user associated model key (company_id) with type (integer(4)) mismatches key (id) with type (integer)
 ```
 
 See [rails-example](rails-example) project for more details.
