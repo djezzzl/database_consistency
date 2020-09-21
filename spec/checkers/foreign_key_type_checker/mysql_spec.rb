@@ -43,7 +43,13 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, mysql: true
   end
 
   context 'with has_one association' do
-    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :user } }
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.has_one :user
+        # This is required for Rails 4
+        klass.primary_key = :id
+      end
+    end
 
     let(:associated) { :company_id }
     let(:base) { :id }
@@ -69,7 +75,13 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, mysql: true
   end
 
   context 'with has_many association' do
-    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users } }
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.has_many :users
+        # This is required for Rails 4
+        klass.primary_key = :id
+      end
+    end
 
     let(:associated) { :company_id }
     let(:base) { :id }
