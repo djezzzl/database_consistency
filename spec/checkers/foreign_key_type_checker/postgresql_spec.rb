@@ -31,16 +31,14 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     context 'when base key has integer type' do
       let(:base_type) { :integer }
-      let(:base_representation) { :integer }
 
-      include_examples 'check matches', { serial: :integer }, { bigserial: :bigint }
+      include_examples 'check matches', %i[serial], %i[bigserial]
     end
 
     context 'when base key has bigint type' do
       let(:base_type) { :bigint }
-      let(:base_representation) { :bigint }
 
-      include_examples 'check matches', { bigserial: :bigint }, { serial: :integer }
+      include_examples 'check matches', %i[bigserial], %i[serial]
     end
   end
 
@@ -65,16 +63,14 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     context 'when base key has serial type' do
       let(:base_type) { :serial }
-      let(:base_representation) { :integer }
 
-      include_examples 'check matches', { integer: :integer }, { bigint: :bigint }
+      include_examples 'check matches', %i[integer], %i[bigint]
     end
 
     context 'when base key has bigserial type' do
       let(:base_type) { :bigserial }
-      let(:base_representation) { :bigint }
 
-      include_examples 'check matches', { bigint: :bigint }, { integer: :integer }
+      include_examples 'check matches', %i[bigint], %i[integer]
     end
   end
 
@@ -99,16 +95,14 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     context 'when base key has serial type' do
       let(:base_type) { :serial }
-      let(:base_representation) { :integer }
 
-      include_examples 'check matches', { integer: :integer }, { bigint: :bigint }
+      include_examples 'check matches', %i[integer], %i[bigint]
     end
 
     context 'when base key has bigserial type' do
       let(:base_type) { :bigserial }
-      let(:base_representation) { :bigint }
 
-      include_examples 'check matches', { bigint: :bigint }, { integer: :integer }
+      include_examples 'check matches', %i[bigint], %i[integer]
     end
   end
 end

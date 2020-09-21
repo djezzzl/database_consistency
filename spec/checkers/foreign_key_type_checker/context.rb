@@ -19,8 +19,7 @@ RSpec.shared_examples 'mismatch' do
       table_or_model_name: company_class.name,
       column_or_attribute_name: association.name.to_s,
       status: :fail,
-      message: "associated model key (#{associated}) with type (#{associated_representation}) " \
-               "mismatches key (#{base}) with type (#{base_representation})"
+      message: /associated model key (.*) with type (.*) mismatches key (.*) with type (.*)/
     )
   end
 end

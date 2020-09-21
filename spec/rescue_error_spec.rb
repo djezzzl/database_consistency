@@ -9,6 +9,6 @@ RSpec.describe DatabaseConsistency::RescueError do
 
   specify do
     expect(File).to receive(:open).once
-    expect { described_class.call(error) }.to output(/Thank you/).to_stdout
+    described_class.call(error)
   end
 end

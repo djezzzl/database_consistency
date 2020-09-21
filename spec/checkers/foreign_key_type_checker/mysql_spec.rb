@@ -31,16 +31,14 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, mysql: true
 
     context 'when base key has integer type' do
       let(:base_type) { :integer }
-      let(:base_representation) { :int }
 
-      include_examples 'check matches', {}, { serial: 'bigint unsigned' }
+      include_examples 'check matches', [], %i[serial]
     end
 
     context 'when base key has bigint type' do
       let(:base_type) { :bigint }
-      let(:base_representation) { :bigint }
 
-      include_examples 'check matches', {}, { serial: 'bigint unsigned' }
+      include_examples 'check matches', [], %i[serial]
     end
   end
 
@@ -65,9 +63,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, mysql: true
 
     context 'when base key has serial type' do
       let(:base_type) { :serial }
-      let(:base_representation) { 'bigint unsigned' }
 
-      include_examples 'check matches', {}, { bigint: :bigint, integer: :int }
+      include_examples 'check matches', [], %i[bigint integer]
     end
   end
 
@@ -92,9 +89,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, mysql: true
 
     context 'when base key has serial type' do
       let(:base_type) { :serial }
-      let(:base_representation) { 'bigint unsigned' }
 
-      include_examples 'check matches', {}, { bigint: :bigint, integer: :int }
+      include_examples 'check matches', [], %i[bigint integer]
     end
   end
 end
