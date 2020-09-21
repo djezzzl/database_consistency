@@ -15,6 +15,10 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.include_context 'postgresql database context', :postgresql
+  config.include_context 'mysql database context', :mysql
+  config.include_context 'sqlite database context', :sqlite
+
   def file_fixture(path)
     File.join('spec/fixtures/files/', path)
   end

@@ -5,7 +5,8 @@ module DatabaseConsistency
     # The class to process associations
     class AssociationsProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::MissingIndexChecker
+        Checkers::MissingIndexChecker,
+        Checkers::ForeignKeyTypeChecker
       ].freeze
 
       private

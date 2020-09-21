@@ -33,7 +33,7 @@ module DatabaseConsistency
     private
 
     def filename
-      "database_consistency_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}"
+      @filename ||= "database_consistency_#{Time.now.strftime('%Y_%m_%d_%H_%M_%S')}"
     end
   end
 end

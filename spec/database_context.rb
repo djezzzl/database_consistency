@@ -40,3 +40,11 @@ end
 RSpec.shared_context 'postgresql database context' do
   include_context 'database context', postgresql_configuration
 end
+
+RSpec.shared_context 'mysql database context' do
+  include_context 'database context', mysql_configuration
+end
+
+RSpec.shared_context 'sqlite database context' do
+  include_context 'database context', sqlite_configuration
+end

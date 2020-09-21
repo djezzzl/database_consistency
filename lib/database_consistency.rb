@@ -10,10 +10,15 @@ require 'database_consistency/rescue_error'
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
 
+require 'database_consistency/databases/factory'
+require 'database_consistency/databases/types/base'
+require 'database_consistency/databases/types/sqlite'
+
 require 'database_consistency/checkers/base_checker'
 
 require 'database_consistency/checkers/association_checkers/association_checker'
 require 'database_consistency/checkers/association_checkers/missing_index_checker'
+require 'database_consistency/checkers/association_checkers/foreign_key_type_checker'
 
 require 'database_consistency/checkers/column_checkers/column_checker'
 require 'database_consistency/checkers/column_checkers/null_constraint_checker'
