@@ -14,7 +14,7 @@ module DatabaseConsistency
 
         # @return [String]
         def convert
-          TYPES[type]
+          TYPES[type] || type
         end
       end
     end
