@@ -17,8 +17,12 @@ module DatabaseConsistency
 
       private
 
+      # We skip check when:
+      #  - association is polymorphic association
+      #  - association has `through` option
+      #  - associated class doesn't exist
       def preconditions
-        !association.polymorphic? && association.klass.present?
+        !association.polymorphic? && association.through_reflection.nil? && association.klass.present?
       rescue NameError
         false
       end
@@ -75,7 +79,7 @@ module DatabaseConsistency
       #
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def column(model, column_name)
-        model.connection.columns(model.table_name).find { |column| column.name == column_name }
+        model.connection.columns(model.table_name).find { |column| column.name == column_name.to_s }
       end
 
       # @param [ActiveRecord::ConnectionAdapters::Column] column
@@ -90,11 +94,6 @@ module DatabaseConsistency
       # @return [String]
       def converted_type(column)
         database_factory.type(type(column)).convert
-      end
-
-      # @return [Boolean]
-      def supported_type?(column)
-        database_factory.type(type(column)).supported?
       end
 
       # @return [Boolean]
