@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.8.6] - 2020/09/22
+
+Bug:
+- Ignore `through` associations for `ForeignKeyTypeChecker`
+- Fix column finder for `ForeignKeyTypeChecker` 
+
 ### [0.8.5] - 2020/09/21
 
 Improvements:
