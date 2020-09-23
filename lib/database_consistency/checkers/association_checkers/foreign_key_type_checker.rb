@@ -44,19 +44,31 @@ module DatabaseConsistency
       def render_text
         INCONSISTENT_TYPE
           .gsub('%a_t', type(associated_column))
-          .gsub('%a_f', associated_key.to_s)
+          .gsub('%a_f', associated_key)
           .gsub('%b_t', type(base_column))
-          .gsub('%b_f', base_key.to_s)
+          .gsub('%b_f', base_key)
       end
 
       # @return [String]
       def base_key
-        @base_key ||= belongs_to_association? ? association.foreign_key : association.active_record_primary_key
+        @base_key ||= (
+          if belongs_to_association?
+            association.foreign_key
+          else
+            association.active_record_primary_key
+          end
+        ).to_s
       end
 
       # @return [String]
       def associated_key
-        @associated_key ||= belongs_to_association? ? association.active_record_primary_key : association.foreign_key
+        @associated_key ||= (
+          if belongs_to_association?
+            association.active_record_primary_key
+          else
+            association.foreign_key
+          end
+        ).to_s
       end
 
       # @return [ActiveRecord::ConnectionAdapters::Column]
@@ -79,7 +91,7 @@ module DatabaseConsistency
       #
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def column(model, column_name)
-        model.connection.columns(model.table_name).find { |column| column.name == column_name.to_s }
+        model.connection.columns(model.table_name).find { |column| column.name == column_name }
       end
 
       # @param [ActiveRecord::ConnectionAdapters::Column] column
