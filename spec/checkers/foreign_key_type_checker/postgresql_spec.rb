@@ -121,7 +121,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
         create_table :users, id: base
 
         create_table :users_companies do |t|
-          t.send(base, :user_id)
+          t.send(associated, :user_id)
           t.send(associated, :company_id)
         end
 
