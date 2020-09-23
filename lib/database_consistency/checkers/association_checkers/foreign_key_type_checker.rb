@@ -44,9 +44,9 @@ module DatabaseConsistency
       def render_text
         INCONSISTENT_TYPE
           .gsub('%a_t', type(associated_column))
-          .gsub('%a_f', associated_key)
+          .gsub('%a_f', associated_key.to_s)
           .gsub('%b_t', type(base_column))
-          .gsub('%b_f', base_key)
+          .gsub('%b_f', base_key.to_s)
       end
 
       # @return [String]
