@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.7] - 2020/09/23
+
+Bug:
+- Fix support for custom foreign keys for `ForeignKeyTypeChecker`. Thanks [Thierry Deo](https://github.com/tdeo) for the contribution.
+
 ### [0.8.6] - 2020/09/22
 
 Bug:
