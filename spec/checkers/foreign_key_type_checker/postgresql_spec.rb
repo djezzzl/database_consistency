@@ -105,4 +105,72 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
       include_examples 'check matches', %i[bigint], %i[integer]
     end
   end
+
+  context 'with has many through association' do
+    let!(:users_company_class) { define_class('UsersCompany', :users_companies) { |klass| klass.belongs_to :user; klass.belongs_to :company } }
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users_companies; klass.has_many :users, through: :users_companies } }
+
+    let(:associated) { :company_id }
+    let(:base) { :id }
+
+    before do
+      base = base_type
+      associated = associated_type
+
+      define_database do
+        create_table :users, id: base
+
+        create_table :users_companies do |t|
+          t.send(base, :user_id)
+          t.send(associated, :company_id)
+        end
+
+        create_table :companies, id: base
+      end
+    end
+
+    context 'when base key has serial type' do
+      let(:base_type) { :serial }
+
+      include_examples 'check matches', %i[integer], %i[bigint]
+    end
+
+    context 'when base key has bigserial type' do
+      let(:base_type) { :bigserial }
+
+      include_examples 'check matches', %i[bigint], %i[integer]
+    end
+  end
+
+  context 'with custome foreign_key' do
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users, foreign_key: :c_id } }
+
+    let(:associated) { :company_id }
+    let(:base) { :id }
+
+    before do
+      base = base_type
+      associated = associated_type
+
+      define_database do
+        create_table :users do |t|
+          t.send(associated, :c_id)
+        end
+
+        create_table :companies, id: base
+      end
+    end
+
+    context 'when base key has serial type' do
+      let(:base_type) { :serial }
+
+      include_examples 'check matches', %i[integer], %i[bigint]
+    end
+
+    context 'when base key has bigserial type' do
+      let(:base_type) { :bigserial }
+
+      include_examples 'check matches', %i[bigint], %i[integer]
+    end
+  end
 end
