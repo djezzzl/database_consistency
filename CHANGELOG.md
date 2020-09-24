@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.8.8] - 2020/09/24
+
+Bugs:
+- Remove HABTM support from `ForeignKeyTypeChecker`
+- Exclude HABTM classes for all checkers
+
 ### [0.8.7] - 2020/09/23
 
 Bug:
