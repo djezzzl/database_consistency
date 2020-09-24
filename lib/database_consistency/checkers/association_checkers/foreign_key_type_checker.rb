@@ -19,10 +19,14 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - association is polymorphic association
+      #  - association is has_and_belongs_to_many
       #  - association has `through` option
       #  - associated class doesn't exist
       def preconditions
-        !association.polymorphic? && association.through_reflection.nil? && association.klass.present?
+        !association.polymorphic? &&
+          association.through_reflection.nil? &&
+          association.klass.present? &&
+          association.macro != :has_and_belongs_to_many
       rescue NameError
         false
       end
@@ -91,7 +95,14 @@ module DatabaseConsistency
       #
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def column(model, column_name)
-        model.connection.columns(model.table_name).find { |column| column.name == column_name }
+        model.connection.columns(model.table_name).find { |column| column.name == column_name } ||
+          (raise Errors::MissingField, missing_field_error(model.table_name, column_name))
+      end
+
+      # @return [String]
+      def missing_field_error(table_name, column_name)
+        "Association (#{association.name}) of class (#{association.active_record}) relies on "\
+          "field (#{column_name}) of table (#{table_name}) but it is missing."
       end
 
       # @param [ActiveRecord::ConnectionAdapters::Column] column

@@ -42,6 +42,21 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
     end
   end
 
+  context 'when field is missing' do
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user } }
+
+    before do
+      define_database do
+        create_table :users
+        create_table :companies
+      end
+    end
+
+    it 'raises the missing field error' do
+      expect { checker.report(false) }.to raise_error(DatabaseConsistency::Errors::MissingField)
+    end
+  end
+
   context 'with has_one association' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :user } }
 
@@ -124,14 +139,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     before do
       define_database do
-        create_table :users, id: :serial
+        create_table :users
 
         create_table :users_companies do |t|
           t.integer :user_id
           t.integer :company_id
         end
 
-        create_table :companies, id: :serial
+        create_table :companies
+      end
+    end
+
+    it 'is not supported' do
+      expect(checker.report).to be_nil
+    end
+  end
+
+  context 'with has_and_belongs_to_many association' do
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.has_and_belongs_to_many :users
+      end
+    end
+
+    before do
+      define_database do
+        create_table :users
+
+        create_table :users_companies do |t|
+          t.integer :user_id
+          t.integer :company_id
+        end
+
+        create_table :companies
       end
     end
 
