@@ -16,16 +16,20 @@ module DatabaseConsistency
         @checker_name ||= name.split('::').last
       end
 
-      # @return [Hash, nil]
-      def report
+      # @param [Boolean] catch_errors
+      #
+      # @return [Hash, File, nil]
+      def report(catch_errors = true)
         return unless preconditions
 
         @report ||= check
       rescue StandardError => e
+        raise e unless catch_errors
+
         RescueError.call(e)
       end
 
-      # @return [Hash, nil]
+      # @return [Hash, File, nil]
       def report_if_enabled?(configuration)
         report if enabled?(configuration)
       end
@@ -62,7 +66,7 @@ module DatabaseConsistency
         raise NotImplementedError
       end
 
-      # @return [Hash]
+      # @return [OpenStruct]
       def report_template(status, message = nil)
         OpenStruct.new(
           checker_name: checker_name,
