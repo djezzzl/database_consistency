@@ -44,3 +44,24 @@ Country:
 #     enabled: false
 # Company:
 #   enabled: false
+
+
+# Concerns can be emulated using YAML's anchors and aliases
+
+# 1. Define an anchor before declaring concern-related settings
+DateConcern: &ignore_date_concern
+  date:
+    NullConstraintChecker:
+      enabled: false
+NameConcern: &ignore_name_concern
+  name:
+    ColumnPresenceChecker:
+      enabled: false
+
+# Models using concerns
+# 2. Now include the relevant settings using aliases
+Event:
+  <<: *ignore_date_concern
+  <<: *ignore_name_concern
+Poll:
+  <<: *ignore_date_concern
