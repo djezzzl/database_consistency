@@ -66,7 +66,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
             define_database_with_entity do |table|
               table.string :email
               table.string :phone
-              table.index 'lower(email), phone', unique: true
+              table.index "lower('email'), phone", unique: true
             end
           end
 

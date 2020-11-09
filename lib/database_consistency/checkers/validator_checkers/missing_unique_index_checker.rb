@@ -45,6 +45,7 @@ module DatabaseConsistency
                      .map(&:strip)
                      .map { |str| str.gsub(/lower\(/i, 'lower(') }
                      .map { |str| str.gsub(/\(([^)]+)\)::\w+/, '\1') }
+                     .map { |str| str.gsub(/'([^)]+)'::\w+/, '\1') }
       end
 
       def index_columns
