@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.9] - 2020/11/16
+
+Bugs:
+- Fix type casted fields comparison for `MissingUniqueIndexChecker`. Thanks [Artem Chubchenko](https://github.com/chubchenko) for reporting the issue. 
+
 ### [0.8.8] - 2020/09/24
 
 Bugs:
