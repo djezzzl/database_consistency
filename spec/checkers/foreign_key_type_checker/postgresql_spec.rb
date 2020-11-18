@@ -13,9 +13,6 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
   context 'with belongs_to association' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user } }
 
-    let(:associated) { :id }
-    let(:base) { :user_id }
-
     before do
       base = base_type
       associated = associated_type
@@ -60,9 +57,6 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
   context 'with has_one association' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :user } }
 
-    let(:associated) { :company_id }
-    let(:base) { :id }
-
     before do
       base = base_type
       associated = associated_type
@@ -91,9 +85,6 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
   context 'with has_many association' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users } }
-
-    let(:associated) { :company_id }
-    let(:base) { :id }
 
     before do
       base = base_type
@@ -183,9 +174,6 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
   context 'with custom foreign_key' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users, foreign_key: :c_id } }
 
-    let(:associated) { :company_id }
-    let(:base) { :id }
-
     before do
       base = base_type
       associated = associated_type
@@ -207,6 +195,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     context 'when base key has bigserial type' do
       let(:base_type) { :bigserial }
+
+      include_examples 'check matches', %i[bigint], %i[integer]
+    end
+  end
+
+  context 'with custom primary key' do
+    before do
+      base = base_type
+      associated = associated_type
+
+      define_database do
+        create_table :users, id: false do |t|
+          t.send(associated, :code)
+        end
+
+        create_table :companies do |t|
+          t.send(base, :user_code)
+        end
+      end
+    end
+
+    # So far, I  didn't find a way to rewrite `User` global class for `Company`s association
+    let!(:user_class) { define_class('User1', :users) { |klass| klass.primary_key = :code } }
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user, class_name: 'User1', foreign_key: :user_code } }
+
+    context 'when base key has integer type' do
+      let(:base_type) { :integer }
+
+      include_examples 'check matches', %i[integer], %i[bigint]
+    end
+
+    context 'when base key has bigint type' do
+      let(:base_type) { :bigint }
 
       include_examples 'check matches', %i[bigint], %i[integer]
     end
