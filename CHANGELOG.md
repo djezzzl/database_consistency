@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.10] - 2020/11/18
+
+Bugs:
+- Fix primary key for `ForeignKeyTypeChecker`.
+
 ### [0.8.9] - 2020/11/16
 
 Bugs:
