@@ -223,13 +223,13 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
     context 'when base key has integer type' do
       let(:base_type) { :integer }
 
-      include_examples 'check matches', %i[serial], %i[bigserial]
+      include_examples 'check matches', %i[integer], %i[bigint]
     end
 
     context 'when base key has bigint type' do
       let(:base_type) { :bigint }
 
-      include_examples 'check matches', %i[bigserial], %i[serial]
+      include_examples 'check matches', %i[bigint], %i[integer]
     end
   end
 end
