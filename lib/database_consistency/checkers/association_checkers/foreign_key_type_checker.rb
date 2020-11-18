@@ -59,7 +59,7 @@ module DatabaseConsistency
           if belongs_to_association?
             association.foreign_key
           else
-            association.active_record_primary_key
+            association.association_primary_key
           end
         ).to_s
       end
@@ -68,7 +68,7 @@ module DatabaseConsistency
       def associated_key
         @associated_key ||= (
           if belongs_to_association?
-            association.active_record_primary_key
+            association.association_primary_key
           else
             association.foreign_key
           end
