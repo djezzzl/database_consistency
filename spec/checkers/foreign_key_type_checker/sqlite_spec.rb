@@ -5,7 +5,7 @@ require_relative './context'
 RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: true do
   subject(:checker) { described_class.new(model, association) }
 
-  let!(:user_class) { define_class('User', :users) }
+  let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = :id } }
 
   let(:model) { company_class }
   let(:association) { company_class.reflect_on_all_associations.first }
