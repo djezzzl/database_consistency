@@ -200,7 +200,38 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
     end
   end
 
-  context 'with custom primary key' do
+  context 'has_many with custom primary key' do
+    before do
+      base = base_type
+      associated = associated_type
+
+      define_database do
+        create_table :users do |t|
+          t.send(associated, :company_code)
+        end
+
+        create_table :companies, id: false do |t|
+          t.send(base, :code)
+        end
+      end
+    end
+
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users, class_name: 'User', foreign_key: :company_code, primary_key: :code } }
+
+    context 'when base key has integer type' do
+      let(:base_type) { :integer }
+
+      include_examples 'check matches', %i[integer], %i[bigint]
+    end
+
+    context 'when base key has bigint type' do
+      let(:base_type) { :bigint }
+
+      include_examples 'check matches', %i[bigint], %i[integer]
+    end
+  end
+
+  context 'belongs_to with custom primary key' do
     before do
       base = base_type
       associated = associated_type
