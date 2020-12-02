@@ -8,7 +8,8 @@ module DatabaseConsistency
         ColumnsProcessor,
         ValidatorsProcessor,
         AssociationsProcessor,
-        ValidatorsFractionsProcessor
+        ValidatorsFractionsProcessor,
+        IndexesProcessor
       ].flat_map do |processor|
         processor.new(configuration).reports
       end
