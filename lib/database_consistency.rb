@@ -33,11 +33,15 @@ require 'database_consistency/checkers/validator_checkers/missing_unique_index_c
 require 'database_consistency/checkers/validators_fraction_checkers/validators_fraction_checker'
 require 'database_consistency/checkers/validators_fraction_checkers/column_presence_checker'
 
+require 'database_consistency/checkers/index_checkers/index_checker'
+require 'database_consistency/checkers/index_checkers/unique_index_checker'
+
 require 'database_consistency/processors/base_processor'
 require 'database_consistency/processors/associations_processor'
 require 'database_consistency/processors/validators_processor'
 require 'database_consistency/processors/columns_processor'
 require 'database_consistency/processors/validators_fractions_processor'
+require 'database_consistency/processors/indexes_processor'
 
 # The root module
 module DatabaseConsistency

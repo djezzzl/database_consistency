@@ -65,7 +65,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
           expect(checker.report).to have_attributes(
             checker_name: 'MissingUniqueIndexChecker',
             table_or_model_name: klass.name,
-            column_or_attribute_name: 'email+country',
+            column_or_attribute_name: 'country+email',
             status: :ok,
             message: nil
           )
@@ -92,7 +92,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
           expect(checker.report).to have_attributes(
             checker_name: 'MissingUniqueIndexChecker',
             table_or_model_name: klass.name,
-            column_or_attribute_name: 'email+country_id',
+            column_or_attribute_name: 'country_id+email',
             status: :ok,
             message: nil
           )
@@ -112,7 +112,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker do
           expect(checker.report).to have_attributes(
             checker_name: 'MissingUniqueIndexChecker',
             table_or_model_name: klass.name,
-            column_or_attribute_name: 'email+country',
+            column_or_attribute_name: 'country+email',
             status: :fail,
             message: 'model should have proper unique index in the database'
           )
