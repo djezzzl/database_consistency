@@ -30,47 +30,17 @@ module DatabaseConsistency
       end
 
       def valid?
-        uniqueness_validators = model.validators.select {|validator| validator.kind == :uniqueness }
+        uniqueness_validators = model.validators.select { |validator| validator.kind == :uniqueness }
 
         uniqueness_validators.any? do |validator|
           validator.attributes.any? do |attribute|
-            extract_index_columns(index.columns).sort == sorted_index_columns(attribute, validator)
+            sorted_index_columns == Helper.sorted_uniqueness_validator_columns(attribute, validator, model)
           end
         end
       end
 
-      # @return [Array<String>]
-      def extract_index_columns(index_columns)
-        return index_columns unless index_columns.is_a?(String)
-
-        index_columns.split(',')
-                     .map(&:strip)
-                     .map { |str| str.gsub(/lower\(/i, 'lower(') }
-                     .map { |str| str.gsub(/\(([^)]+)\)::\w+/, '\1') }
-                     .map { |str| str.gsub(/'([^)]+)'::\w+/, '\1') }
-      end
-
-      def index_columns(attribute, validator)
-        @index_columns ||= ([wrapped_attribute_name(attribute, validator)] + scope_columns(validator)).map(&:to_s)
-      end
-
-      def scope_columns(validator)
-        @scope_columns ||= Array.wrap(validator.options[:scope]).map do |scope_item|
-          model._reflect_on_association(scope_item)&.foreign_key || scope_item
-        end
-      end
-
-      def sorted_index_columns(attribute, validator)
-        @sorted_index_columns ||= index_columns(attribute, validator).sort
-      end
-
-      # @return [String]
-      def wrapped_attribute_name(attribute, validator)
-        if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive]
-          attribute
-        else
-          "lower(#{attribute})"
-        end
+      def sorted_index_columns
+        @sorted_index_columns ||= Helper.extract_index_columns(index.columns).sort
       end
     end
   end
