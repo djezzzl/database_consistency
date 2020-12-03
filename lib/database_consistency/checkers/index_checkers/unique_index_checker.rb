@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks missing presence validator
+    # This class checks missing uniqueness validator
     class UniqueIndexChecker < IndexChecker
       # Message templates
       VALIDATOR_MISSING = 'index is unique in the database but do not have uniqueness validator'
@@ -30,15 +30,46 @@ module DatabaseConsistency
       end
 
       def valid?
-        model.validators.grep(ActiveRecord::Validations::UniquenessValidator).any? do |validator|
-          # scope can be either nil, a symbol/string or an array of symbols/strings
-          scope = [validator.options&.dig(:scope)].flatten.compact
+        uniqueness_validators = model.validators.select {|validator| validator.kind == :uniqueness }
 
+        uniqueness_validators.any? do |validator|
           validator.attributes.any? do |attribute|
-            validator_attributes = ([attribute] + scope).compact.map(&:to_s)
-
-            (index_columns - validator_attributes).blank? && (validator_attributes - index_columns).blank?
+            extract_index_columns(index.columns).sort == sorted_index_columns(attribute, validator)
           end
+        end
+      end
+
+      # @return [Array<String>]
+      def extract_index_columns(index_columns)
+        return index_columns unless index_columns.is_a?(String)
+
+        index_columns.split(',')
+                     .map(&:strip)
+                     .map { |str| str.gsub(/lower\(/i, 'lower(') }
+                     .map { |str| str.gsub(/\(([^)]+)\)::\w+/, '\1') }
+                     .map { |str| str.gsub(/'([^)]+)'::\w+/, '\1') }
+      end
+
+      def index_columns(attribute, validator)
+        @index_columns ||= ([wrapped_attribute_name(attribute, validator)] + scope_columns(validator)).map(&:to_s)
+      end
+
+      def scope_columns(validator)
+        @scope_columns ||= Array.wrap(validator.options[:scope]).map do |scope_item|
+          model._reflect_on_association(scope_item)&.foreign_key || scope_item
+        end
+      end
+
+      def sorted_index_columns(attribute, validator)
+        @sorted_index_columns ||= index_columns(attribute, validator).sort
+      end
+
+      # @return [String]
+      def wrapped_attribute_name(attribute, validator)
+        if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive]
+          attribute
+        else
+          "lower(#{attribute})"
         end
       end
     end

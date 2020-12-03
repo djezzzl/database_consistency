@@ -18,12 +18,6 @@ module DatabaseConsistency
       def table_or_model_name
         @table_or_model_name ||= model.name.to_s
       end
-
-      private
-
-      def index_columns
-        index.columns.map(&:to_s)
-      end
     end
   end
 end
