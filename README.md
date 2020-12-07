@@ -11,6 +11,7 @@ Currently, we can:
 - find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
 - find missing length validations ([LengthConstraintChecker](#lengthconstraintchecker))
 - find missing presence validations ([NullConstraintChecker](#nullconstraintchecker))
+- find missing uniqueness validations ([UniqueIndexChecker](#uniqueindexchecker))
 - find missing foreign keys for `BelongsTo` associations ([BelongsToPresenceChecker](#belongstopresencechecker))
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
@@ -99,7 +100,7 @@ To avoid the inconsistency and be always sure your value won't be `null` you sho
 
 Imagine your model has limit constraint on some field in the database but doesn't have 
 `validates :email, length: { maximum: <VALUE> }` validation. In that case, you're sure that you won't have values with exceeded length in the database.
-But each attempt to save the a value with exceeded length on that field will be rolled back with error raised and without `errors` on your object.
+But each attempt to save a value with exceeded length on that field will be rolled back with error raised and without `errors` on your object.
 Mostly, you'd like to catch it properly and for that length validator exists.
 
 We fail if any of following conditions are satisfied:
@@ -123,6 +124,17 @@ We fail if the column satisfies the following conditions:
 - column is not used for BelongsTo association
 - column has not a default value
 - column has not a default function
+
+### UniqueIndexChecker
+
+Imagine your model has a uniq index in the database but doesn't have 
+`validates :email, uniqueness: true` validation. In that case, you're sure that you won't have duplicated values in the database.
+But each attempt to save a duplicated value on that field will be rolled back with error raised and without `errors` on your object.
+Mostly, you'd like to catch it properly and for that uniqueness validator exists.
+This checker also support unique index on multiple columns (which should have a `validates :email, uniqueness: { scope: :last_name }` validation).
+
+We fail if any of following conditions are satisfied:
+- there is no uniqueness validation for the column(s)
 
 ### BelongsToPresenceChecker
 
