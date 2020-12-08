@@ -127,7 +127,7 @@ We fail if the column satisfies the following conditions:
 
 ### UniqueIndexChecker
 
-Imagine your model has a uniq index in the database but doesn't have 
+Imagine your model has a unique index in the database but doesn't have 
 `validates :email, uniqueness: true` validation. In that case, you're sure that you won't have duplicated values in the database.
 But each attempt to save a duplicated value on that field will be rolled back with error raised and without `errors` on your object.
 Mostly, you'd like to catch it properly and for that uniqueness validator exists.
