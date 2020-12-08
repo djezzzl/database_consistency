@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.12] - 2020/12/8
+
+Improvements:
+- Implement `UniqueIndexChecker`. Thanks [Pierre Berard](https://github.com/Berardpi) for the contribution!
+
 ### [0.8.11] - 2020/11/19
 
 Bugs:
