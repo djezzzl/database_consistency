@@ -7,7 +7,7 @@ module DatabaseConsistency
       MISSING_INDEX = 'model should have proper unique index in the database'
 
       def column_or_attribute_name
-        @column_or_attribute_name ||= sorted_uniqueness_validator_columns.join('+')
+        @column_or_attribute_name ||= Helper.uniqueness_validator_columns(attribute, validator, model).join('+')
       end
 
       private

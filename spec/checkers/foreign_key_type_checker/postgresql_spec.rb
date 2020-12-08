@@ -216,7 +216,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
       end
     end
 
-    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users, class_name: 'User', foreign_key: :company_code, primary_key: :code } }
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.has_many :users, class_name: 'User', foreign_key: :company_code, primary_key: :code
+      end
+    end
 
     context 'when base key has integer type' do
       let(:base_type) { :integer }
@@ -247,7 +251,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
       end
     end
 
-    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :user, class_name: 'User', foreign_key: :company_code, primary_key: :code } }
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.has_one :user, class_name: 'User', foreign_key: :company_code, primary_key: :code
+      end
+    end
 
     context 'when base key has integer type' do
       let(:base_type) { :integer }
@@ -280,7 +288,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
 
     # So far, I  didn't find a way to rewrite `User` global class for `Company`s association
     let!(:user_class) { define_class('User1', :users) { |klass| klass.primary_key = :code } }
-    let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user, class_name: 'User1', foreign_key: :user_code } }
+    let!(:company_class) do
+      define_class('Company', :companies) do |klass|
+        klass.belongs_to :user, class_name: 'User1', foreign_key: :user_code
+      end
+    end
 
     context 'when base key has integer type' do
       let(:base_type) { :integer }
