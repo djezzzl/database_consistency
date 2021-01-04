@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.8.13] - 2021/01/04
+
+Improvements:
+- Ignore to ActiveStorage models on configuration template
+
 ### [0.8.12] - 2020/12/8
 
 Improvements:
