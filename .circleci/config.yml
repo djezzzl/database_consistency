@@ -114,6 +114,7 @@ jobs:
         environment:
           BUNDLE_PATH: vendor/bundle
           AR_VERSION: ">= 6.0.0"
+          PG_VERSION: '~> 1.1'
           DB_HOST: 127.0.0.1
           DB_USER: root
           DB_PASSWORD: database_consistency_password

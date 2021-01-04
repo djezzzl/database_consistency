@@ -19,4 +19,5 @@ else
   gem 'activerecord', ENV.fetch('AR_VERSION', '~> 5.2')
   gem 'mysql2', ENV.fetch('MYSQL_VERSION', '~> 0.5')
   gem 'sqlite3', ENV.fetch('SQLITE_VERSION', '~> 1.3')
+  gem 'pg', ENV.fetch('PG_VERSION', '~> 0.2')
 end
