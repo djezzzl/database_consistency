@@ -18,6 +18,7 @@ Currently, we can:
 - find primary keys with integer/serial type ([PrimaryKeyTypeChecker](#primarykeytypechecker))
 - find mismatching primary key types with their foreign keys ([ForeignKeyTypeChecker](#foreignkeytypechecker))
 - find redundant non-unique indexes ([RedundantIndexChecker](#redundantindexchecker))
+- find redundant uniqueness constraint ([RedundantUniqueIndexChecker](#redundantuniqueindexchecker))
 
 We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
 
@@ -189,12 +190,21 @@ We fail if the following conditions are satisfied:
 
 ### RedundantIndexChecker
 
-This checker helps to identify redundant non-unique indexes. Imagine, you have an index in the database
+This checker helps to identify redundant non-unique indexes. Assuming you have an index in the database
 that covers column A and another index that covers columns A and B (order is important). In this case,
 the first index may be removed as it is covered by second one.
 
 We fail if the following conditions are satisfied:
-- there is an index that covers current one.
+- there is an index that has prefix that consists the current one.
+
+### RedundantUniqueIndexChecker
+
+This checker helps to identify redundant uniqueness on some indexes. Assuming you have an unique index in the database
+that covers columns A and B (order is not important) and another unique index that covers column A only. In this case,
+the first unique constraint is redundant as it is covered by the second one.
+
+We fail if the following conditions are satisfied:
+- there is an unique index that consists only from columns for the current one.
 
 ## Example
 
@@ -210,6 +220,7 @@ fail Company user associated model should have proper index in the database
 fail Country users associated model should have proper index in the database
 fail Company user associated model key (company_id) with type (integer(4)) mismatches key (id) with type (integer)
 fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
+fail User index_users_on_name_and_slug index uniqueness is redundant as (index_users_on_slug) covers it
 ```
 
 See [rails-example](rails-example) project for more details.

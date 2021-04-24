@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2019_10_12_163954) do
     t.string "invitable_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "slug"], name: "index_users_on_name_and_slug", unique: true
     t.index ["phone", "slug"], name: "index_users_on_phone_and_slug"
     t.index ["phone"], name: "index_users_on_phone"
     t.index ["slug"], name: "index_users_on_slug", unique: true
