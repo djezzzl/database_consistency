@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.0.0] - 2021/04/24
+
+Improvements:
+- Implement `RedundantIndexChecker`.
+
 ### [0.8.13] - 2021/01/04
 
 Improvements:
