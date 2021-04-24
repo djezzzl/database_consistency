@@ -24,7 +24,6 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
-          MYSQL_USER: root
 
     steps:
       - checkout
@@ -78,7 +77,6 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
-          MYSQL_USER: root
 
     steps:
       - checkout
@@ -131,7 +129,6 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: database_consistency_password
           MYSQL_DATABASE: database_consistency_test
-          MYSQL_USER: root
 
     steps:
       - checkout

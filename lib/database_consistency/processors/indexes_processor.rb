@@ -5,7 +5,8 @@ module DatabaseConsistency
     # The class to process indexes
     class IndexesProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::UniqueIndexChecker
+        Checkers::UniqueIndexChecker,
+        Checkers::RedundantIndexChecker
       ].freeze
 
       private

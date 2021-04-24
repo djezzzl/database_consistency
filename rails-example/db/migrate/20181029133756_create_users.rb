@@ -16,6 +16,8 @@ class CreateUsers < ActiveRecord::Migration[5.2]
 
       t.foreign_key :countries
       t.index :slug, unique: true
+      t.index :phone
+      t.index %i[phone slug]
     end
   end
 end

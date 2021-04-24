@@ -35,6 +35,7 @@ require 'database_consistency/checkers/validators_fraction_checkers/column_prese
 
 require 'database_consistency/checkers/index_checkers/index_checker'
 require 'database_consistency/checkers/index_checkers/unique_index_checker'
+require 'database_consistency/checkers/index_checkers/redundant_index_checker'
 
 require 'database_consistency/processors/base_processor'
 require 'database_consistency/processors/associations_processor'
