@@ -18,6 +18,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.index :slug, unique: true
       t.index :phone
       t.index %i[phone slug]
+      t.index %i[name slug], unique: true
     end
   end
 end
