@@ -17,6 +17,7 @@ Currently, we can:
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 - find primary keys with integer/serial type ([PrimaryKeyTypeChecker](#primarykeytypechecker))
 - find mismatching primary key types with their foreign keys ([ForeignKeyTypeChecker](#foreignkeytypechecker))
+- find redundant non-unique indexes ([RedundantIndexChecker](#redundantindexchecker))
 
 We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
 
@@ -184,7 +185,16 @@ Given no one is immune to [possible problems](https://m.signalvnoise.com/update-
 we added a checker to identify those mismatches.
 
 We fail if the following conditions are satisfied:
-- foreign key type is not the same as paired primary key. 
+- foreign key type is not the same as paired primary key.
+
+### RedundantIndexChecker
+
+This checker helps to identify redundant non-unique indexes. Imagine, you have an index in the database
+that covers column A and another index that covers columns A and B (order is important). In this case,
+the first index may be removed as it is covered by second one.
+
+We fail if the following conditions are satisfied:
+- there is an index that covers current one.
 
 ## Example
 
@@ -199,6 +209,7 @@ fail User company model should have proper foreign key in the database
 fail Company user associated model should have proper index in the database
 fail Country users associated model should have proper index in the database
 fail Company user associated model key (company_id) with type (integer(4)) mismatches key (id) with type (integer)
+fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
 ```
 
 See [rails-example](rails-example) project for more details.
