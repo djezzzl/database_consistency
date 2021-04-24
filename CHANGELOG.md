@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.0] - 2021/04/24
+
+Improvements:
+- Implement `RedundantUniqueIndexChecker`.
+
 ### [1.0.0] - 2021/04/24
 
 Improvements:
