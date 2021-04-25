@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.1] - 2021/04/25
+
+Bugs:
+- Check `where` clauses in comparison in `RedundantIndexChecker` and `RedundantUniqueIndexChecker`.
+
 ### [1.1.0] - 2021/04/24
 
 Improvements:
