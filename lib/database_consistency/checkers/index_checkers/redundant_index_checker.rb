@@ -38,8 +38,12 @@ module DatabaseConsistency
           model.connection.indexes(model.table_name).find do |another_index|
             next if index.name == another_index.name
 
-            include_index_as_prefix?(another_index)
+            clause_equals?(another_index) && include_index_as_prefix?(another_index)
           end
+      end
+
+      def clause_equals?(another_index)
+        another_index.where == index.where
       end
 
       def include_index_as_prefix?(another_index)
