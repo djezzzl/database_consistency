@@ -210,17 +210,19 @@ We fail if the following conditions are satisfied:
 
 ```
 $ bundle exec database_consistency
-fail User code column is required in the database but do not have presence validator
-fail Company note column has limit in the database but do not have length validator
-fail User phone column should be required in the database
-fail User name column is required but there is possible null value insert
-fail User name+email model should have proper unique index in the database
-fail User company model should have proper foreign key in the database
-fail Company user associated model should have proper index in the database
-fail Country users associated model should have proper index in the database
-fail Company user associated model key (company_id) with type (integer(4)) mismatches key (id) with type (integer)
-fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
-fail User index_users_on_name_and_slug index uniqueness is redundant as (index_users_on_slug) covers it
+NullConstraintChecker fail User code column is required in the database but do not have presence validator
+LengthConstraintChecker fail Company note column has limit in the database but do not have length validator
+MissingUniqueIndexChecker fail User name+email model should have proper unique index in the database
+BelongsToPresenceChecker fail User company model should have proper foreign key in the database
+ForeignKeyTypeChecker fail User company associated model key (id) with type (integer) mismatches key (company_id) with type (integer(8))
+MissingIndexChecker fail Company user associated model should have proper index in the database
+ForeignKeyTypeChecker fail Company user associated model key (company_id) with type (integer(8)) mismatches key (id) with type (integer)
+MissingIndexChecker fail Country users associated model should have proper index in the database
+ColumnPresenceChecker fail User phone column should be required in the database
+ColumnPresenceChecker fail User name column is required but there is possible null value insert
+UniqueIndexChecker fail User index_users_on_name_and_slug index is unique in the database but do not have uniqueness validator
+RedundantUniqueIndexChecker fail User index_users_on_name_and_slug index uniqueness is redundant as (index_users_on_slug) covers it
+RedundantIndexChecker fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
 ```
 
 See [rails-example](rails-example) project for more details.
