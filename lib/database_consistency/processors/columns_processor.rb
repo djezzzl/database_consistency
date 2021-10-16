@@ -7,7 +7,8 @@ module DatabaseConsistency
       CHECKERS = [
         Checkers::NullConstraintChecker,
         Checkers::LengthConstraintChecker,
-        Checkers::PrimaryKeyTypeChecker
+        Checkers::PrimaryKeyTypeChecker,
+        Checkers::MissingNotNullConstraintChecker
       ].freeze
 
       private

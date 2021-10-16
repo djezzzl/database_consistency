@@ -206,6 +206,10 @@ the first unique constraint is redundant as it is covered by the second one.
 We fail if the following conditions are satisfied:
 - there is an unique index that consists only from columns for the current one.
 
+### MissingNotNullConstraintChecker
+
+This checker identifies tables with missing not-null constraint on a foreign key that is required in the model.
+
 ## Example
 
 ```

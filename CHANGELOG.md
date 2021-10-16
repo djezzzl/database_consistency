@@ -1,5 +1,8 @@
 # Changelog
 
+Improvements:
+- Implement `MissingNotNullConstraintChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the contribution!
+
 ### [1.1.1] - 2021/04/25
 
 Bugs:

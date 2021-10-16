@@ -22,6 +22,7 @@ require 'database_consistency/checkers/association_checkers/missing_index_checke
 require 'database_consistency/checkers/association_checkers/foreign_key_type_checker'
 
 require 'database_consistency/checkers/column_checkers/column_checker'
+require 'database_consistency/checkers/column_checkers/missing_not_null_constraint_checker'
 require 'database_consistency/checkers/column_checkers/null_constraint_checker'
 require 'database_consistency/checkers/column_checkers/length_constraint_checker'
 require 'database_consistency/checkers/column_checkers/primary_key_type_checker'
