@@ -1,7 +1,14 @@
 # Changelog
 
+### [1.1.3]
+
 Improvements:
 - Fix `ColumnPresenceChecker` to check association key columns. Thanks [Phil Pirozhkov](https://github.com/pirj) for the contribution!
+
+### [1.1.2] - 2021/08/03
+
+Improvements:
+- Change the messages structure to always show checker name.
 
 ### [1.1.1] - 2021/04/25
 
@@ -41,7 +48,7 @@ Bugs:
 ### [0.8.9] - 2020/11/16
 
 Bugs:
-- Fix type casted fields comparison for `MissingUniqueIndexChecker`. Thanks [Artem Chubchenko](https://github.com/chubchenko) for reporting the issue. 
+- Fix type casted fields comparison for `MissingUniqueIndexChecker`. Thanks [Artem Chubchenko](https://github.com/chubchenko) for reporting the issue.
 
 ### [0.8.8] - 2020/09/24
 
@@ -58,17 +65,17 @@ Bug:
 
 Bug:
 - Ignore `through` associations for `ForeignKeyTypeChecker`
-- Fix column finder for `ForeignKeyTypeChecker` 
+- Fix column finder for `ForeignKeyTypeChecker`
 
 ### [0.8.5] - 2020/09/21
 
 Improvements:
-- Introduce `ForeignKeyTypeChecker`. 
+- Introduce `ForeignKeyTypeChecker`.
 
 ### [0.8.4] - 2020/07/04
 
 Improvements:
-- `LengthConstraintChecker` now ignores array columns (PostgreSQL only) 
+- `LengthConstraintChecker` now ignores array columns (PostgreSQL only)
 
 ### [0.8.3] - 2020/06/24
 
@@ -79,7 +86,7 @@ Improvements:
 ### [0.8.2] - 2020/06/20
 
 Improvements:
-- Add consideration of numericality validator to `NullConstraintChecker`. Thanks [Bob Maerten](https://github.com/bobmaerten) for adding this. 
+- Add consideration of numericality validator to `NullConstraintChecker`. Thanks [Bob Maerten](https://github.com/bobmaerten) for adding this.
 
 ### [0.8.1] - 2020/06/03
 
@@ -108,14 +115,14 @@ Bug:
 
 ### [0.7.5] - 2019/10/12
 
-Bug: 
+Bug:
 - Fix eager loading for Zeitwerk.
 
 ### [0.7.6] - 2019/12/16
 
 Fix:
 - Make `ColumnPresenceChecker` to consider group of validators instead one by one.
-That decreases amount of false negative scenarios. 
+That decreases amount of false negative scenarios.
 
 ### [0.7.4] - 2019/08/18
 
@@ -145,8 +152,8 @@ Improvements:
 
 ### [0.6.9] - 2019/05/19
 
-Fixes: 
-- Return error code if output contains any failing message 
+Fixes:
+- Return error code if output contains any failing message
 
 ### [0.6.8] - 2019/05/05
 
@@ -163,7 +170,7 @@ Fixes:
 ### [0.6.6] - 2019/04/18
 
 Improvements:
-- Add support `case_sensitive: false` for `MissingUniqueIndexChecker` 
+- Add support `case_sensitive: false` for `MissingUniqueIndexChecker`
 
 ### [0.6.5] - 2019/01/30
 
@@ -227,7 +234,7 @@ Features:
 - Support flexible configuration (disable specified check for specified column)
 
 Breaking changes:
-- Configuration should be provided according to the new format 
+- Configuration should be provided according to the new format
 
 ### [0.2.5] - 2018/11/24
 
@@ -243,7 +250,7 @@ Features:
 
 Improvements:
 - Exclude columns with default value from PresenceMissingVerifier
- 
+
 Features:
 - Support configurations via yml file
 
