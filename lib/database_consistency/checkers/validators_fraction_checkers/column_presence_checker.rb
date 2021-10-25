@@ -7,6 +7,7 @@ module DatabaseConsistency
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
       # Message templates
       CONSTRAINT_MISSING = 'column should be required in the database'
+      ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING = 'association foreign key column should be required in the database'
       POSSIBLE_NULL = 'column is required but there is possible null value insert'
 
       private
@@ -15,11 +16,9 @@ module DatabaseConsistency
         validator.kind == :presence
       end
 
-      # We skip check when:
-      #  - there is no presence validators
-      #  - there is no column in the database with given name
+      # We skip the check when there are no presence validators
       def preconditions
-        validators.any? && column
+        validators.any?
       end
 
       # Table of possible statuses
@@ -33,17 +32,39 @@ module DatabaseConsistency
         can_be_null = column.null
         has_weak_option = validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
 
-        if can_be_null == has_weak_option
-          report_template(:ok)
-        elsif can_be_null
+        return report_template(:ok) if can_be_null == has_weak_option
+        return report_template(:fail, POSSIBLE_NULL) unless can_be_null
+
+        if regular_column
           report_template(:fail, CONSTRAINT_MISSING)
         else
-          report_template(:fail, POSSIBLE_NULL)
+          report_template(:fail, ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING)
         end
       end
 
       def column
-        @column ||= model.columns.select.find { |field| field.name == attribute.to_s }
+        @column ||= regular_column || association_reference_column ||
+                    (raise Errors::MissingField, "Missing column in #{model.table_name} for #{attribute}")
+      end
+
+      def regular_column
+        @regular_column ||= column_for_name(attribute.to_s)
+      end
+
+      def column_for_name(name)
+        model.columns.find { |field| field.name == name.to_s }
+      end
+
+      def association_reference_column
+        return unless association_reflection
+
+        column_for_name(association_reflection.foreign_key)
+      end
+
+      def association_reflection
+        model
+          .reflect_on_all_associations
+          .find { |reflection| reflection.belongs_to? && reflection.name == attribute }
       end
     end
   end
