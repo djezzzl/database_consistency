@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
-  subject(:checker) { described_class.new(model, attribute, validator) }
+RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker do
+  subject(:checker) { described_class.new(model, association) }
 
   let(:model) { entity_class }
-  let(:attribute) { :country }
-  let(:validator) { entity_class.validators.first }
+  let(:association) { entity_class.reflect_on_all_associations.first }
   let!(:country_class) { define_class('Country', :countries) }
   let!(:entity_class) do
     define_class do |klass|
       klass.belongs_to :country
-      klass.validates :country, presence: true
     end
   end
 
@@ -28,9 +26,9 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
 
           create_table :entities do |t|
             if ActiveRecord::VERSION::MAJOR >= 5 && ActiveRecord::Base.connection_config[:adapter] == 'mysql2'
-              t.bigint :country_id, null: false
+              t.bigint :country_id
             else
-              t.integer :country_id, null: false
+              t.integer :country_id
             end
 
             t.foreign_key :countries
@@ -40,7 +38,7 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
 
       specify do
         expect(checker.report).to have_attributes(
-          checker_name: 'BelongsToPresenceChecker',
+          checker_name: 'ForeignKeyChecker',
           table_or_model_name: entity_class.name,
           column_or_attribute_name: 'country',
           status: :ok,
@@ -55,18 +53,18 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
           create_table :countries
 
           create_table :entities do |t|
-            t.integer :country_id, null: false
+            t.integer :country_id
           end
         end
       end
 
       specify do
         expect(checker.report).to have_attributes(
-          checker_name: 'BelongsToPresenceChecker',
+          checker_name: 'ForeignKeyChecker',
           table_or_model_name: entity_class.name,
           column_or_attribute_name: 'country',
           status: :fail,
-          message: 'model should have proper foreign key in the database'
+          message: 'should have foreign key in the database'
         )
       end
     end
@@ -75,7 +73,18 @@ RSpec.describe DatabaseConsistency::Checkers::BelongsToPresenceChecker do
       let!(:entity_class) do
         define_class do |klass|
           klass.has_one :country
-          klass.validates :country, presence: true
+        end
+      end
+
+      specify do
+        expect(checker.report).to be_nil
+      end
+    end
+
+    context 'when association is polymorphic' do
+      let!(:entity_class) do
+        define_class do |klass|
+          klass.belongs_to :country, polymorphic: true
         end
       end
 

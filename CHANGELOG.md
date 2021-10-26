@@ -1,5 +1,8 @@
 # Changelog
 
+Improvements:
+- Fix `BelongsToPresenceChecker` to to be independent from presence validation and rename it to `ForeignKeyChecker` to better reflect what it does.
+
 ### [1.1.3]
 
 Improvements:
