@@ -12,7 +12,13 @@ module DatabaseConsistency
       #  - association isn't belongs_to association
       #  - association is polymorphic
       def preconditions
-        association.belongs_to? && !association.polymorphic?
+        supported? && association.belongs_to? && !association.polymorphic?
+      end
+
+      def supported?
+        return false if ActiveRecord::VERSION::MAJOR < 5 && ActiveRecord::Base.connection_config[:adapter] == 'sqlite3'
+
+        true
       end
 
       # Table of possible statuses

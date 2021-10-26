@@ -13,11 +13,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker do
   end
 
   test_each_database do
-    # before do
-    #   if ActiveRecord::VERSION::MAJOR < 5 && ActiveRecord::Base.connection_config[:adapter] == 'sqlite3'
-    #     skip('older versions are not supported with sqlite3')
-    #   end
-    # end
+    before do
+      if ActiveRecord::VERSION::MAJOR < 5 && ActiveRecord::Base.connection_config[:adapter] == 'sqlite3'
+        skip('older versions are not supported with sqlite3')
+      end
+    end
 
     context 'when foreign key is provided' do
       before do
