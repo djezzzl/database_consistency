@@ -19,6 +19,7 @@ require 'database_consistency/checkers/base_checker'
 
 require 'database_consistency/checkers/association_checkers/association_checker'
 require 'database_consistency/checkers/association_checkers/missing_index_checker'
+require 'database_consistency/checkers/association_checkers/foreign_key_checker'
 require 'database_consistency/checkers/association_checkers/foreign_key_type_checker'
 
 require 'database_consistency/checkers/column_checkers/column_checker'
@@ -27,7 +28,6 @@ require 'database_consistency/checkers/column_checkers/length_constraint_checker
 require 'database_consistency/checkers/column_checkers/primary_key_type_checker'
 
 require 'database_consistency/checkers/validator_checkers/validator_checker'
-require 'database_consistency/checkers/validator_checkers/belongs_to_presence_checker'
 require 'database_consistency/checkers/validator_checkers/missing_unique_index_checker'
 
 require 'database_consistency/checkers/validators_fraction_checkers/validators_fraction_checker'

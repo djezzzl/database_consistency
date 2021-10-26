@@ -6,6 +6,7 @@ module DatabaseConsistency
     class AssociationsProcessor < BaseProcessor
       CHECKERS = [
         Checkers::MissingIndexChecker,
+        Checkers::ForeignKeyChecker,
         Checkers::ForeignKeyTypeChecker
       ].freeze
 
