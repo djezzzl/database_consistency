@@ -11,8 +11,6 @@ DatabaseConsistencyCheckers:
     enabled: true
   NullConstraintChecker:
     enabled: true
-  BelongsToPresenceChecker:
-    enabled: true
 
 User:
   enabled: true # 2nd priority (turn off checking User model)
