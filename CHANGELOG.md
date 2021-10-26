@@ -1,9 +1,11 @@
 # Changelog
 
+### [1.1.4] - 2021/10/26
+
 Improvements:
 - Fix `BelongsToPresenceChecker` to to be independent from presence validation and rename it to `ForeignKeyChecker` to better reflect what it does.
 
-### [1.1.3]
+### [1.1.3] - 2021/10/25
 
 Improvements:
 - Fix `ColumnPresenceChecker` to check association key columns. Thanks [Phil Pirozhkov](https://github.com/pirj) for the contribution!
