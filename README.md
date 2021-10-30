@@ -141,7 +141,7 @@ We fail if any of following conditions are satisfied:
 
 ### ForeignKeyChecker
 
-Imagine your model has `belongs_to :user`. It can happen that the user it's being belonging may not be existing anymore in the database.
+Imagine your model has `belongs_to :user`. It can happen that the user, it's being belonging to, may not be existing anymore in the database.
 This could bring bugs and in order to ensure the data consistency, you need to have foreign key constraint in the database.
 
 We fail if the following conditions are satisfied:
