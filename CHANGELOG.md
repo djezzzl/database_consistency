@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.5] - 2021/10/31
+
+Improvements:
+- Extend `NullConstraintChecker` to check required belongs_to associations with explanatory message.
+
 ### [1.1.4] - 2021/10/26
 
 Improvements:
