@@ -6,6 +6,8 @@ module DatabaseConsistency
     class NullConstraintChecker < ColumnChecker
       # Message templates
       VALIDATOR_MISSING = 'column is required in the database but do not have presence validator'
+      ASSOCIATION_VALIDATOR_MISSING = 'column is required in the database but do '\
+                                      'not have presence validator for association (%a_n)'
 
       private
 
@@ -26,21 +28,23 @@ module DatabaseConsistency
       # | missing    | fail   |
       #
       # We consider PresenceValidation, InclusionValidation, ExclusionValidation, NumericalityValidator with nil,
-      # or BelongsTo association using this column
+      # or required BelongsTo association using this column
       def check
         if valid?
           report_template(:ok)
+        elsif belongs_to_association
+          report_template(:fail, ASSOCIATION_VALIDATOR_MISSING.gsub('%a_n', belongs_to_association.name.to_s))
         else
           report_template(:fail, VALIDATOR_MISSING)
         end
       end
 
       def valid?
-        validator?(ActiveModel::Validations::PresenceValidator) ||
-          validator?(ActiveModel::Validations::InclusionValidator) ||
+        validator?(:presence, column.name) ||
+          validator?(:inclusion, column.name) ||
           numericality_validator_without_allow_nil? ||
           nil_exclusion_validator? ||
-          belongs_to_association?
+          (belongs_to_association && validator?(:presence, belongs_to_association.name))
       end
 
       def primary_field?
@@ -52,28 +56,30 @@ module DatabaseConsistency
       end
 
       def nil_exclusion_validator?
-        model.validators.grep(ActiveModel::Validations::ExclusionValidator).any? do |validator|
-          Helper.check_inclusion?(validator.attributes, column.name) &&
+        model.validators.any? do |validator|
+          validator.kind == :exclusion &&
+            Helper.check_inclusion?(validator.attributes, column.name) &&
             validator.options[:in].include?(nil)
         end
       end
 
       def numericality_validator_without_allow_nil?
-        model.validators.grep(ActiveModel::Validations::NumericalityValidator).any? do |validator|
-          Helper.check_inclusion?(validator.attributes, column.name) &&
+        model.validators.any? do |validator|
+          validator.kind == :numericality &&
+            Helper.check_inclusion?(validator.attributes, column.name) &&
             !validator.options[:allow_nil]
         end
       end
 
-      def validator?(validator_class)
-        model.validators.grep(validator_class).any? do |validator|
-          Helper.check_inclusion?(validator.attributes, column.name)
+      def validator?(kind, attribute)
+        model.validators.any? do |validator|
+          validator.kind == kind && Helper.check_inclusion?(validator.attributes, attribute)
         end
       end
 
-      def belongs_to_association?
-        model.reflect_on_all_associations.grep(ActiveRecord::Reflection::BelongsToReflection).any? do |r|
-          Helper.check_inclusion?([r.foreign_key, r.foreign_type], column.name)
+      def belongs_to_association
+        @belongs_to_association ||= model.reflect_on_all_associations.find do |r|
+          r.belongs_to? && Helper.check_inclusion?([r.foreign_key, r.foreign_type], column.name)
         end
       end
     end
