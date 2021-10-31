@@ -124,7 +124,7 @@ We fail if the column satisfies the following conditions:
 - column is not used for any Presence or Inclusion validators
 - column is not used for any Exclusion validators with `nil`
 - column is not used for any Numericality validators with `allow_nil` disabled
-- column is not used for BelongsTo association
+- column is not used for required BelongsTo association
 - column has not a default value
 - column has not a default function
 
@@ -208,6 +208,7 @@ We fail if the following conditions are satisfied:
 ```
 $ bundle exec database_consistency
 NullConstraintChecker fail User code column is required in the database but do not have presence validator
+NullConstraintChecker fail User company_id column is required in the database but do not have presence validator for association (company)
 LengthConstraintChecker fail Company note column has limit in the database but do not have length validator
 MissingUniqueIndexChecker fail User name+email model should have proper unique index in the database
 ForeignKeyChecker fail User company should have foreign key in the database

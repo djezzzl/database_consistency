@@ -42,6 +42,52 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker do
       end
     end
 
+    context 'when has belongs_to association' do
+      if ActiveRecord::VERSION::MAJOR >= 5
+        required = { optional: false }
+        optional = { optional: true }
+      else
+        required = { required: true }
+        optional = { required: false }
+      end
+
+      before do
+        define_database do
+          create_table :companies, id: false do |t|
+            t.integer :user_id, null: false
+          end
+        end
+      end
+
+      context 'when association is required' do
+        let(:klass) { define_class('Company', :companies) { |klass| klass.belongs_to :user, **required } }
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'NullConstraintChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'user_id',
+            status: :ok,
+            message: nil
+          )
+        end
+      end
+
+      context 'when association is optional ' do
+        let(:klass) { define_class('Company', :companies) { |klass| klass.belongs_to :user, **optional } }
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'NullConstraintChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'user_id',
+            status: :fail,
+            message: 'column is required in the database but do not have presence validator for association (user)'
+          )
+        end
+      end
+    end
+
     context 'when has numericality validation with allow_nil' do
       let(:klass) { define_class { |klass| klass.validates_numericality_of :count, allow_nil: true } }
       subject(:checker) { described_class.new(model, klass.columns.last) }
