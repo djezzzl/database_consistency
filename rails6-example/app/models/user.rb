@@ -7,6 +7,9 @@ class User < ApplicationRecord
   validates :slug, uniqueness: true
   validates :name, uniqueness: { scope: :email }
 
+  validates :tmp, presence: true
+
+  belongs_to :something, class_name: 'Company'
   belongs_to :company, required: false
   belongs_to :country
   belongs_to :invitable, polymorphic: true

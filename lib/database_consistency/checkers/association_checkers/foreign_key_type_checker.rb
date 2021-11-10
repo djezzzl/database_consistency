@@ -42,6 +42,8 @@ module DatabaseConsistency
         else
           report_template(:fail, render_text)
         end
+      rescue Errors::MissingField => e
+        report_template(:fail, e.message)
       end
 
       # @return [String]
@@ -101,8 +103,8 @@ module DatabaseConsistency
 
       # @return [String]
       def missing_field_error(table_name, column_name)
-        "Association (#{association.name}) of class (#{association.active_record}) relies on "\
-          "field (#{column_name}) of table (#{table_name}) but it is missing."
+        "association (#{association.name}) of class (#{association.active_record}) relies on "\
+          "field (#{column_name}) of table (#{table_name}) but it is missing"
       end
 
       # @param [ActiveRecord::ConnectionAdapters::Column] column

@@ -40,11 +40,13 @@ module DatabaseConsistency
         else
           report_template(:fail, ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING)
         end
+      rescue Errors::MissingField => e
+        report_template(:fail, e.message)
       end
 
       def column
         @column ||= regular_column || association_reference_column ||
-                    (raise Errors::MissingField, "Missing column in #{model.table_name} for #{attribute}")
+                    (raise Errors::MissingField, "column (#{attribute}) is missing in table (#{model.table_name}) but used for presence validation")
       end
 
       def regular_column
