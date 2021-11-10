@@ -30,7 +30,7 @@ module DatabaseConsistency
       # | all missing                     | optional | fail   |
       def check
         can_be_null = column.null
-        has_weak_option = validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
+        has_weak_option = has_weak_option?
 
         return report_template(:ok) if can_be_null == has_weak_option
         return report_template(:fail, POSSIBLE_NULL) unless can_be_null
@@ -38,6 +38,10 @@ module DatabaseConsistency
         report_message
       rescue Errors::MissingField => e
         report_template(:fail, e.message)
+      end
+
+      def has_weak_option?
+        validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
       def report_message
