@@ -29,12 +29,6 @@ module DatabaseConsistency
       # | all missing                     | required | ok     |
       # | all missing                     | optional | fail   |
       def check
-        can_be_null = column.null
-        has_weak_option = has_weak_option?
-
-        return report_template(:ok) if can_be_null == has_weak_option
-        return report_template(:fail, POSSIBLE_NULL) unless can_be_null
-
         report_message
       rescue Errors::MissingField => e
         report_template(:fail, e.message)
@@ -45,6 +39,12 @@ module DatabaseConsistency
       end
 
       def report_message
+        can_be_null = column.null
+        has_weak_option = has_weak_option?
+
+        return report_template(:ok) if can_be_null == has_weak_option
+        return report_template(:fail, POSSIBLE_NULL) unless can_be_null
+
         if regular_column
           report_template(:fail, CONSTRAINT_MISSING)
         else
