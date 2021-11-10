@@ -221,6 +221,8 @@ ColumnPresenceChecker fail User name column is required but there is possible nu
 UniqueIndexChecker fail User index_users_on_name_and_slug index is unique in the database but do not have uniqueness validator
 RedundantUniqueIndexChecker fail User index_users_on_name_and_slug index uniqueness is redundant as (index_users_on_slug) covers it
 RedundantIndexChecker fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
+ColumnPresenceChecker fail User tmp column (tmp) is missing in table (users) but used for presence validation
+ForeignKeyTypeChecker fail User something association (something) of class (User) relies on field (something_id) of table (users) but it is missing
 ```
 
 See [rails-example](rails-example) project for more details.

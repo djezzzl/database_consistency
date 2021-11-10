@@ -29,8 +29,18 @@ module DatabaseConsistency
       # | all missing                     | required | ok     |
       # | all missing                     | optional | fail   |
       def check
+        report_message
+      rescue Errors::MissingField => e
+        report_template(:fail, e.message)
+      end
+
+      def has_weak_option?
+        validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
+      end
+
+      def report_message
         can_be_null = column.null
-        has_weak_option = validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
+        has_weak_option = has_weak_option?
 
         return report_template(:ok) if can_be_null == has_weak_option
         return report_template(:fail, POSSIBLE_NULL) unless can_be_null
@@ -44,7 +54,7 @@ module DatabaseConsistency
 
       def column
         @column ||= regular_column || association_reference_column ||
-                    (raise Errors::MissingField, "Missing column in #{model.table_name} for #{attribute}")
+                    (raise Errors::MissingField, "column (#{attribute}) is missing in table (#{model.table_name}) but used for presence validation")
       end
 
       def regular_column
