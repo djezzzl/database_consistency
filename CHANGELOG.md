@@ -1,5 +1,7 @@
 # Changelog
 
+### [1.1.6] - 2021/11/10
+
 Improvements:
 - Output error message for ColumnPresenceChecker and ForeignKeyTypeChecker instead raising an error when field is missing.
 
