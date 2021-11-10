@@ -1,4 +1,5 @@
-Metrics/LineLength:
+Layout:
+  Metrics/LineLength:
     Max: 120
 
 AllCops:

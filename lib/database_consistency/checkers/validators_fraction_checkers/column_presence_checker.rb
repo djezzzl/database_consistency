@@ -35,13 +35,17 @@ module DatabaseConsistency
         return report_template(:ok) if can_be_null == has_weak_option
         return report_template(:fail, POSSIBLE_NULL) unless can_be_null
 
+        report_message
+      rescue Errors::MissingField => e
+        report_template(:fail, e.message)
+      end
+
+      def report_message
         if regular_column
           report_template(:fail, CONSTRAINT_MISSING)
         else
           report_template(:fail, ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING)
         end
-      rescue Errors::MissingField => e
-        report_template(:fail, e.message)
       end
 
       def column

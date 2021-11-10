@@ -49,8 +49,14 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
       end
     end
 
-    it 'raises the missing field error' do
-      expect { checker.report(false) }.to raise_error(DatabaseConsistency::Errors::MissingField)
+    it 'outputs the missing field error' do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyTypeChecker',
+        table_or_model_name: company_class.name,
+        column_or_attribute_name: association.name.to_s,
+        status: :fail,
+        message: 'association (user) of class (Company) relies on field (user_id) of table (companies) but it is missing'
+      )
     end
   end
 
