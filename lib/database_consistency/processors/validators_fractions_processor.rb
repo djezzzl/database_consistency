@@ -17,6 +17,7 @@ module DatabaseConsistency
 
           model._validators.flat_map do |attribute, validators|
             next unless attribute
+            next if model.reflect_on_association(attribute)&.has_one?
 
             enabled_checkers.map do |checker_class|
               checker = checker_class.new(model, attribute, validators)
