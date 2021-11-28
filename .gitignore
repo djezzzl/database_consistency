@@ -27,5 +27,5 @@
 /rails6-example/log
 /rails6-example/tmp
 
-Gemfile.lock
+*.lock
 Gemfile.local
