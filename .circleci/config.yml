@@ -5,11 +5,11 @@ executors:
     description: The default executor used for the build jobs
     parameters:
       tag:
-        description: The cimg/ruby Docker image version tag
+        description: The circleci/ruby Docker image version tag
         type: string
         default: latest
     docker:
-      - image: cimg/ruby:<< parameters.tag >>
+      - image: circleci/ruby:<< parameters.tag >>
       - image: circleci/postgres:latest-ram
         environment:
           POSTGRES_USER: root
