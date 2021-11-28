@@ -10,12 +10,12 @@ executors:
         default: latest
     docker:
       - image: cimg/ruby:<< parameters.tag >>
-      - image: circleci/postgres:alpine-ram
+      - image: circleci/postgres:latest-ram
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: database_consistency_test
           POSTGRES_PASSWORD: database_consistency_password
-      - image: circleci/mysql:ram
+      - image: circleci/mysql:latest-ram
         environment:
           MYSQL_ROOT_HOST: "%"
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
