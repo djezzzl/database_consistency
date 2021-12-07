@@ -1,0 +1,4 @@
+Country:
+  users:
+    MissingIndexChecker:
+      enabled: false

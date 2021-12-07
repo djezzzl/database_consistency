@@ -81,6 +81,59 @@ There is also a way to pass settings through environment variables
 (they will have priority over settings from [.database_consistency.yml](rails-example/.database_consistency.yml) file).
 You can pass `LOG_LEVEL=DEBUG` and/or `COLOR=1`.
 
+### Multiple configuration files
+
+It's common scenario to have few configuration files - e.g. one is convenient setup and other is list of temporarily disabled checks that are subject to fix (TODOs). You can run the check with multiple configuration files by passing them in `-c path_to_config` or `--config=path_to_config` using built in `database_consistency` script:
+```ruby
+bundle exec database_consistency -c db_consistency_todo.yml -c db_consistency_another_todo.yml
+```
+Default `.database_consistency.yml` config is always used and included first in this case.
+
+Or in your custom script:
+```ruby
+require 'database_consistency'
+# Notice that here you need to explicitely pass '.database_consistency.yml' if you want it to be used along with others
+result = DatabaseConsistency.run(['.database_consistency.yml', 'db_consistency_todo.yml', 'db_consistency_another_todo.yml'])
+exit result
+
+# If you need only '.database_consistency.yml' you don't have to explicitely pass it
+DatabaseConsistency.run # same as `DatabaseConsistency.run('.database_consistency.yml')
+```
+
+The order of files is important - latest given has the highest priority. That means if we have these config files:
+```yaml
+User:
+  email:
+    ColumnPresenceChecker:
+      enabled: false
+```
+```yaml
+User:
+  code:
+    NullConstraintChecker:
+      enabled: false
+    MissingIndexChecker:
+      enabled: false
+```
+```yaml
+User:
+  code:
+    NullConstraintChecker:
+      enabled: true
+```
+Applying them in given order is the same as having this one config file:
+```yaml
+User:
+  email:
+    ColumnPresenceChecker:
+      enabled: false
+  code:
+    NullConstraintChecker:
+      enabled: true
+    MissingIndexChecker:
+      enabled: false
+```
+
 ## How it works?
 
 ### ColumnPresenceChecker

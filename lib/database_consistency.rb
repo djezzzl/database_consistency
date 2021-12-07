@@ -48,8 +48,8 @@ require 'database_consistency/processors/indexes_processor'
 # The root module
 module DatabaseConsistency
   class << self
-    def run
-      configuration = Configuration.new
+    def run(*args)
+      configuration = Configuration.new(*args)
       reports = Processors.reports(configuration)
 
       Writers::SimpleWriter.write(

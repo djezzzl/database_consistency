@@ -86,4 +86,20 @@ RSpec.describe DatabaseConsistency::Configuration do
       include_examples 'checker', false
     end
   end
+
+  context 'when multiple files are given' do
+    subject(:configuration) do
+      described_class.new([
+        file_fixture('compact_checker_disabled.yml'),
+        file_fixture('todo.yml'),
+        file_fixture('todo_override.yml')
+      ])
+    end
+
+    it 'merges settings with last one given having the highest priority' do
+      expect(configuration).not_to be_enabled('User', 'email', 'ColumnPresenceChecker')
+      expect(configuration).not_to be_enabled('User', 'code', 'MissingIndexChecker')
+      expect(configuration).to be_enabled('User', 'code', 'NullConstraintChecker')
+    end
+  end
 end

@@ -1,0 +1,6 @@
+User:
+  code:
+    NullConstraintChecker:
+      enabled: false
+    MissingIndexChecker:
+      enabled: false
