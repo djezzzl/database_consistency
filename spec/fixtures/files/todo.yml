@@ -4,3 +4,6 @@ User:
       enabled: false
     MissingIndexChecker:
       enabled: false
+  data:
+    MissingIndexChecker:
+      enabled: true

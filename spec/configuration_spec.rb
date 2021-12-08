@@ -99,6 +99,7 @@ RSpec.describe DatabaseConsistency::Configuration do
     it 'merges settings with last one given having the highest priority' do
       expect(configuration).not_to be_enabled('User', 'email', 'ColumnPresenceChecker')
       expect(configuration).not_to be_enabled('User', 'code', 'MissingIndexChecker')
+      expect(configuration).not_to be_enabled('User', 'data', 'MissingIndexChecker')
       expect(configuration).to be_enabled('User', 'code', 'NullConstraintChecker')
     end
   end

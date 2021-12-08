@@ -2,3 +2,6 @@ User:
   code:
     NullConstraintChecker:
       enabled: true
+  data:
+    MissingIndexChecker:
+      enabled: false

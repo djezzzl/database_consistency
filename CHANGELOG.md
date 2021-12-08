@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.7] - 2021/12/08
+
+Improvements:
+- Add multiple files configuration support. Thanks [Artem Piankov](https://github.com/iBublik) for the contribution!
+
 ### [1.1.6] - 2021/11/10
 
 Improvements:
