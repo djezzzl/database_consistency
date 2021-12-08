@@ -5,15 +5,20 @@ require 'yaml'
 module DatabaseConsistency
   # The class to access configuration options
   class Configuration
-    CONFIGURATION_PATH = '.database_consistency.yml'
+    DEFAULT_PATH = '.database_consistency.yml'
 
-    def initialize(filepath = CONFIGURATION_PATH)
-      @configuration = if filepath && File.exist?(filepath)
-                         data = YAML.load_file(filepath)
-                         data.is_a?(Hash) ? data : {}
-                       else
-                         {}
-                       end
+    def initialize(filepaths = DEFAULT_PATH)
+      @configuration = Array(filepaths).each_with_object({}) do |filepath, result|
+        content =
+          if filepath && File.exist?(filepath)
+            data = YAML.load_file(filepath)
+            data.is_a?(Hash) ? data : {}
+          else
+            {}
+          end
+
+        combine_configs!(result, content)
+      end
     end
 
     def debug?
@@ -47,6 +52,16 @@ module DatabaseConsistency
     private
 
     attr_reader :configuration
+
+    def combine_configs!(config, new_config)
+      config.merge!(new_config) do |_key, val, new_val|
+        if val.is_a?(Hash) && new_val.is_a?(Hash)
+          combine_configs!(val, new_val)
+        else
+          new_val
+        end
+      end
+    end
 
     def settings
       @settings ||= configuration['DatabaseConsistencySettings']
