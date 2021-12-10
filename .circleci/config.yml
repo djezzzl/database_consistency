@@ -87,6 +87,13 @@ workflows:
             - checkout
           matrix:
             parameters:
+              gemfile: [
+                "gemfiles/ar_4_2.gemfile",
+                "gemfiles/ar_5_2.gemfile",
+                "gemfiles/ar_6_0.gemfile",
+                "gemfiles/ar_6_1.gemfile",
+                "gemfiles/ar_main.gemfile"
+              ]
               ruby-version: [
                 "2.4",
                 "2.5",
@@ -94,13 +101,6 @@ workflows:
                 "2.7",
                 "3.0",
                 "latest"
-              ]
-              gemfile: [
-                "gemfiles/ar_4_2.gemfile",
-                "gemfiles/ar_5_2.gemfile",
-                "gemfiles/ar_6_0.gemfile",
-                "gemfiles/ar_6_1.gemfile",
-                "gemfiles/ar_main.gemfile"
               ]
             exclude:
               - ruby-version: "2.4"
