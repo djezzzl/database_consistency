@@ -79,7 +79,7 @@ jobs:
 
 workflows:
   version: 2
-  default: &default
+  default:
     jobs:
       - checkout
       - build:
@@ -88,7 +88,7 @@ workflows:
           matrix:
             parameters:
               gemfile: [
-                "gemfiles/ar_4_2.gemfile",
+                "gemfiles/ar_14_2.gemfile",
                 "gemfiles/ar_5_2.gemfile",
                 "gemfiles/ar_6_0.gemfile",
                 "gemfiles/ar_6_1.gemfile",
