@@ -52,6 +52,9 @@ jobs:
       - attach_workspace:
           at: ~/dc
       - run:
+          name: Use ruby << parameters.ruby-version >>
+          command: ruby --version
+      - run:
           name: Use << parameters.gemfile >> as the Gemfile
           command: bundle config --global gemfile << parameters.gemfile >>
       - run:
