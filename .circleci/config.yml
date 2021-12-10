@@ -113,4 +113,4 @@ workflows:
                 gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.6"
                 gemfile: "gemfiles/ar_main.gemfile"
-          name: build-ruby-<< matrix.ruby-version >>/ar-<< matrix.gemfile >>
+          name: build-ruby-<< matrix.ruby-version >>-ar-<< matrix.gemfile >>
