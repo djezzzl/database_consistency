@@ -7,10 +7,6 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 # Specify your gem's dependencies in database_consistency.gemspec
 gemspec
 
-group :test do
-  gem 'rspec_junit_formatter', '~> 0.4.1'
-end
-
 local_gemfile = 'Gemfile.local'
 
 if File.exist?(local_gemfile)
