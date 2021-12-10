@@ -23,6 +23,14 @@ RSpec.configure do |config|
     File.join('spec/fixtures/files/', path)
   end
 
+  def adapter
+    if ActiveRecord::Base.respond_to?(:connection_config)
+      ActiveRecord::Base.connection_config[:adapter]
+    else
+      ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
+    end
+  end
+
   def mysql_configuration
     {
       adapter: 'mysql2',

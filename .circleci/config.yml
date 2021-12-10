@@ -97,7 +97,7 @@ workflows:
                 "gemfiles/ar_5_2.gemfile",
                 "gemfiles/ar_6_0.gemfile",
                 "gemfiles/ar_6_1.gemfile",
-                "gemfiles/ar_7_0.gemfile"
+                "gemfiles/ar_main.gemfile"
               ]
             exclude:
               - ruby-version: "2.4"
@@ -105,9 +105,9 @@ workflows:
               - ruby-version: "2.4"
                 gemfile: "gemfiles/ar_6_1.gemfile"
               - ruby-version: "2.4"
-                gemfile: "gemfiles/ar_7_0.gemfile"
+                gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.5"
-                gemfile: "gemfiles/ar_7_0.gemfile"
+                gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.6"
-                gemfile: "gemfiles/ar_7_0.gemfile"
+                gemfile: "gemfiles/ar_main.gemfile"
           name: build-ruby-<< matrix.ruby-version >>/ar-<< matrix.gemfile >>

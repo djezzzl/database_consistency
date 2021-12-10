@@ -16,7 +16,7 @@ module DatabaseConsistency
       end
 
       def supported?
-        return false if ActiveRecord::VERSION::MAJOR < 5 && ActiveRecord::Base.connection_config[:adapter] == 'sqlite3'
+        return false if ActiveRecord::VERSION::MAJOR < 5 && Helper.adapter == 'sqlite3'
 
         true
       end
