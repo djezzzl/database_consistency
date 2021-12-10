@@ -5,6 +5,14 @@ module DatabaseConsistency
   module Helper
     module_function
 
+    def adapter
+      if ActiveRecord::Base.respond_to?(:connection_config)
+        ActiveRecord::Base.connection_config[:adapter]
+      else
+        ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
+      end
+    end
+
     # Returns list of models to check
     def models
       ActiveRecord::Base.descendants.delete_if(&:abstract_class?).delete_if do |klass|

@@ -52,6 +52,9 @@ jobs:
       - attach_workspace:
           at: ~/dc
       - run:
+          name: Use ruby << parameters.ruby-version >>
+          command: ruby --version
+      - run:
           name: Use << parameters.gemfile >> as the Gemfile
           command: bundle config --global gemfile << parameters.gemfile >>
       - run:
@@ -76,7 +79,7 @@ jobs:
 
 workflows:
   version: 2
-  default: &default
+  default:
     jobs:
       - checkout
       - build:
@@ -84,6 +87,13 @@ workflows:
             - checkout
           matrix:
             parameters:
+              gemfile: [
+                "gemfiles/ar_4_2.gemfile",
+                "gemfiles/ar_5_2.gemfile",
+                "gemfiles/ar_6_0.gemfile",
+                "gemfiles/ar_6_1.gemfile",
+                "gemfiles/ar_main.gemfile"
+              ]
               ruby-version: [
                 "2.4",
                 "2.5",
@@ -92,22 +102,25 @@ workflows:
                 "3.0",
                 "latest"
               ]
-              gemfile: [
-                "gemfiles/ar_4_2.gemfile",
-                "gemfiles/ar_5_2.gemfile",
-                "gemfiles/ar_6_0.gemfile",
-                "gemfiles/ar_6_1.gemfile",
-                "gemfiles/ar_7_0.gemfile"
-              ]
             exclude:
               - ruby-version: "2.4"
                 gemfile: "gemfiles/ar_6_0.gemfile"
               - ruby-version: "2.4"
                 gemfile: "gemfiles/ar_6_1.gemfile"
               - ruby-version: "2.4"
-                gemfile: "gemfiles/ar_7_0.gemfile"
+                gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.5"
-                gemfile: "gemfiles/ar_7_0.gemfile"
+                gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.6"
-                gemfile: "gemfiles/ar_7_0.gemfile"
-          name: build-ruby-<< matrix.ruby-version >>/ar-<< matrix.gemfile >>
+                gemfile: "gemfiles/ar_main.gemfile"
+              - ruby-version: "2.7"
+                gemfile: "gemfiles/ar_4_2.gemfile"
+              - ruby-version: "3.0"
+                gemfile: "gemfiles/ar_4_2.gemfile"
+              - ruby-version: "3.0"
+                gemfile: "gemfiles/ar_5_2.gemfile"
+              - ruby-version: "latest"
+                gemfile: "gemfiles/ar_4_2.gemfile"
+              - ruby-version: "latest"
+                gemfile: "gemfiles/ar_5_2.gemfile"
+          name: << matrix.gemfile >>-build-ruby-<< matrix.ruby-version >>

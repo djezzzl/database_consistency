@@ -14,7 +14,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker do
 
   test_each_database do
     before do
-      if ActiveRecord::VERSION::MAJOR < 5 && ActiveRecord::Base.connection_config[:adapter] == 'sqlite3'
+      if ActiveRecord::VERSION::MAJOR < 5 && adapter == 'sqlite3'
         skip('older versions are not supported with sqlite3')
       end
     end
@@ -25,7 +25,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker do
           create_table :countries
 
           create_table :entities do |t|
-            if ActiveRecord::VERSION::MAJOR >= 5 && ActiveRecord::Base.connection_config[:adapter] == 'mysql2'
+            if ActiveRecord::VERSION::MAJOR >= 5 && adapter == 'mysql2'
               t.bigint :country_id
             else
               t.integer :country_id
