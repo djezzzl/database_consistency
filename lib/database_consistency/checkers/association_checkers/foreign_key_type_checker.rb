@@ -6,15 +6,6 @@ module DatabaseConsistency
     class ForeignKeyTypeChecker < AssociationChecker
       INCONSISTENT_TYPE = 'associated model key (%a_f) with type (%a_t) mismatches key (%b_f) with type (%b_t)'
 
-      TYPES = {
-        'serial' => 'integer',
-        'integer' => 'integer',
-        'int' => 'integer',
-        'bigserial' => 'bigint',
-        'bigint' => 'bigint',
-        'bigint unsigned' => 'bigint unsigned'
-      }.freeze
-
       private
 
       # We skip check when:
@@ -37,7 +28,7 @@ module DatabaseConsistency
       # | consistent   | ok     |
       # | inconsistent | fail   |
       def check
-        if converted_type(base_column) == converted_type(associated_column)
+        if converted_type(associated_column).cover?(converted_type(base_column))
           report_template(:ok)
         else
           report_template(:fail, render_text)
@@ -116,9 +107,9 @@ module DatabaseConsistency
 
       # @param [ActiveRecord::ConnectionAdapters::Column]
       #
-      # @return [String]
+      # @return [DatabaseConsistency::Databases::Types::Base]
       def converted_type(column)
-        database_factory.type(type(column)).convert
+        database_factory.type(type(column))
       end
 
       # @return [Boolean]

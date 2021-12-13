@@ -12,7 +12,7 @@ Currently, we can:
 - find missing length validations ([LengthConstraintChecker](#lengthconstraintchecker))
 - find missing presence validations ([NullConstraintChecker](#nullconstraintchecker))
 - find missing uniqueness validations ([UniqueIndexChecker](#uniqueindexchecker))
-- find missing foreign keys for `BelongsTo` associations ([ForeignKeyTypeChecker](#foreignkeychecker))
+- find missing foreign keys for `BelongsTo` associations ([ForeignKeyChecker](#foreignkeychecker))
 - find missing unique indexes for uniqueness validation ([MissingUniqueIndexChecker](#missinguniqueindexchecker))
 - find missing index for `HasOne` and `HasMany` associations ([MissingIndexChecker](#missingindexchecker))
 - find primary keys with integer/serial type ([PrimaryKeyTypeChecker](#primarykeytypechecker))
