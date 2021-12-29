@@ -231,12 +231,12 @@ We fail if the following conditions are satisfied:
 
 ### ForeignKeyTypeChecker
 
-It's dangerous to have foreign key type to be different than paired primary key type.
+It's dangerous to have foreign key type to be smaller than paired primary key type.
 Given no one is immune to [possible problems](https://m.signalvnoise.com/update-on-basecamp-3-being-stuck-in-read-only-as-of-nov-8-922am-cst/),
 we added a checker to identify those mismatches.
 
 We fail if the following conditions are satisfied:
-- foreign key type is not the same as paired primary key.
+- foreign key type is less than a paired primary key.
 
 ### RedundantIndexChecker
 

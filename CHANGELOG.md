@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.8] - 2021/12/29
+
+Improvements:
+- Allow `ForeignKeyTypeChecker` to cover smaller types. Thanks [Artem Piankov](https://github.com/iBublik) for the contribution!
+
 ### [1.1.7] - 2021/12/08
 
 Improvements:
