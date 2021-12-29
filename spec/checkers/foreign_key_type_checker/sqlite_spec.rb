@@ -26,8 +26,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
       end
     end
 
-    context 'when primary key has integer type' do
-      let(:primary_key_type) { :integer }
+    context 'when primary key has serial type' do
+      let(:primary_key_type) { :serial }
 
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
@@ -42,8 +42,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
       end
     end
 
-    context 'when primary key has bigint type' do
-      let(:primary_key_type) { :bigint }
+    context 'when primary key has bigserial type' do
+      let(:primary_key_type) { :bigserial }
 
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
