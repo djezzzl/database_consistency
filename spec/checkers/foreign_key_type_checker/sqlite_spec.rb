@@ -13,32 +13,50 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
   context 'with belongs_to association' do
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user } }
 
-    let(:associated) { :id }
-    let(:base) { :user_id }
-
     before do
-      base = base_type
-      associated = associated_type
+      pk_type = primary_key_type
+      fk_type = foreign_key_type
 
       define_database do
-        create_table :users, id: associated
+        create_table :users, id: pk_type
 
         create_table :companies do |t|
-          t.send(base, :user_id)
+          t.send(fk_type, :user_id)
         end
       end
     end
 
-    context 'when base key has integer type' do
-      let(:base_type) { :integer }
+    context 'when primary key has integer type' do
+      let(:primary_key_type) { :integer }
 
-      include_examples 'check matches', %i[serial bigserial], %i[]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        include_examples 'match'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
 
-    context 'when base key has bigint type' do
-      let(:base_type) { :bigint }
+    context 'when primary key has bigint type' do
+      let(:primary_key_type) { :bigint }
 
-      include_examples 'check matches', %i[bigserial], %i[serial]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        # bigint primary key is transformed to integer in SQLite
+        include_examples 'match'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
   end
 
@@ -51,32 +69,49 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
       end
     end
 
-    let(:associated) { :company_id }
-    let(:base) { :id }
-
     before do
-      base = base_type
-      associated = associated_type
+      pk_type = primary_key_type
+      fk_type = foreign_key_type
 
       define_database do
         create_table :users do |t|
-          t.send(associated, :company_id)
+          t.send(fk_type, :company_id)
         end
 
-        create_table :companies, id: base
+        create_table :companies, id: pk_type
       end
     end
 
-    context 'when base key has serial type' do
-      let(:base_type) { :serial }
+    context 'when primary key type has serial type' do
+      let(:primary_key_type) { :serial }
 
-      include_examples 'check matches', %i[integer bigint], %i[]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        include_examples 'match'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
 
-    context 'when base key has bigserial type' do
-      let(:base_type) { :bigserial }
+    context 'when primary key type has bigserial type' do
+      let(:primary_key_type) { :bigserial }
 
-      include_examples 'check matches', %i[bigint], %i[integer]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        include_examples 'mismatch'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
   end
 
@@ -89,32 +124,49 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
       end
     end
 
-    let(:associated) { :company_id }
-    let(:base) { :id }
-
     before do
-      base = base_type
-      associated = associated_type
+      pk_type = primary_key_type
+      fk_type = foreign_key_type
 
       define_database do
         create_table :users do |t|
-          t.send(associated, :company_id)
+          t.send(fk_type, :company_id)
         end
 
-        create_table :companies, id: base
+        create_table :companies, id: pk_type
       end
     end
 
-    context 'when base key has serial type' do
-      let(:base_type) { :serial }
+    context 'when primary key type has serial type' do
+      let(:primary_key_type) { :serial }
 
-      include_examples 'check matches', %i[integer bigint], %i[]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        include_examples 'match'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
 
-    context 'when base key has bigserial type' do
-      let(:base_type) { :bigserial }
+    context 'when primary key type has bigserial type' do
+      let(:primary_key_type) { :bigserial }
 
-      include_examples 'check matches', %i[bigint], %i[integer]
+      context 'when foreign key type has integer type' do
+        let(:foreign_key_type) { :integer }
+
+        include_examples 'mismatch'
+      end
+
+      context 'when foreign key type has bigint type' do
+        let(:foreign_key_type) { :bigint }
+
+        include_examples 'match'
+      end
     end
   end
 end

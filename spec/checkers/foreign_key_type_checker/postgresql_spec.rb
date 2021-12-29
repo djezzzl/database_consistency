@@ -55,7 +55,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql:
         table_or_model_name: company_class.name,
         column_or_attribute_name: association.name.to_s,
         status: :fail,
-        message: 'association (user) of class (Company) relies on field (user_id) of table (companies) but it is missing'
+        message: 'association (user) of class (Company) relies on field (user_id) of table (companies) but it is missing' # rubocop:disable Layout/LineLength
       )
     end
   end

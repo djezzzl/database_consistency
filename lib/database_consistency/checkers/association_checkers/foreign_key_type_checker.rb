@@ -48,33 +48,21 @@ module DatabaseConsistency
 
       # @return [String]
       def primary_key
-        @primary_key ||= (
-          if belongs_to_association?
-            association.association_primary_key
-          else
-            association.association_primary_key
-          end
-        ).to_s
+        @primary_key ||= association.association_primary_key.to_s
       end
 
       # @return [String]
       def associated_key
-        @associated_key ||= (
-          if belongs_to_association?
-            association.foreign_key
-          else
-            association.foreign_key
-          end
-        ).to_s
+        @associated_key ||= association.foreign_key.to_s
       end
 
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def primary_column
         @primary_column ||= if belongs_to_association?
-                           column(association.klass, primary_key)
-                         else
-                           column(association.active_record, primary_key)
-                         end
+                              column(association.klass, primary_key)
+                            else
+                              column(association.active_record, primary_key)
+                            end
       end
 
       # @return [ActiveRecord::ConnectionAdapters::Column]

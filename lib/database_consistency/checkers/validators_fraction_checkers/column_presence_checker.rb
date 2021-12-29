@@ -34,13 +34,13 @@ module DatabaseConsistency
         report_template(:fail, e.message)
       end
 
-      def has_weak_option?
+      def weak_option?
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
       def report_message
         can_be_null = column.null
-        has_weak_option = has_weak_option?
+        has_weak_option = weak_option?
 
         return report_template(:ok) if can_be_null == has_weak_option
         return report_template(:fail, POSSIBLE_NULL) unless can_be_null
@@ -53,8 +53,9 @@ module DatabaseConsistency
       end
 
       def column
-        @column ||= regular_column || association_reference_column ||
-                    (raise Errors::MissingField, "column (#{attribute}) is missing in table (#{model.table_name}) but used for presence validation")
+        @column ||= regular_column ||
+                    association_reference_column ||
+                    (raise Errors::MissingField, "column (#{attribute}) is missing in table (#{model.table_name}) but used for presence validation") # rubocop:disable Layout/LineLength
       end
 
       def regular_column
