@@ -8,8 +8,9 @@ module DatabaseConsistency
         attr_reader :type
 
         COVERED_TYPES = {
-          'bigint' => %w[integer bigint]
-        }
+          'bigint' => %w[integer bigint],
+          'integer' => %w[integer smallint]
+        }.freeze
 
         # @param [String] type
         def initialize(type)

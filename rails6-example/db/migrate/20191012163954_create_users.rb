@@ -9,6 +9,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :slug, null: false
       t.integer :company_id, null: false, limit: 8
       t.integer :country_id, null: false
+      t.integer :organization_id, null: false
       t.integer :invitable_id, null: false
       t.string :invitable_type, null: false
 

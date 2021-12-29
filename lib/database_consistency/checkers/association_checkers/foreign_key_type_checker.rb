@@ -2,9 +2,9 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks if association's foreign key type is the same as associated model's primary key
+    # This class checks if association's foreign key type covers associated model's primary key (same or bigger)
     class ForeignKeyTypeChecker < AssociationChecker
-      INCONSISTENT_TYPE = 'associated model key (%a_f) with type (%a_t) mismatches key (%b_f) with type (%b_t)'
+      INCONSISTENT_TYPE = "foreign key (%a_f) with type (%a_t) doesn't cover primary key (%b_f) with type (%b_t)"
 
       private
 
@@ -23,12 +23,12 @@ module DatabaseConsistency
       end
 
       # Table of possible statuses
-      # | type         | status |
-      # | ------------ | ------ |
-      # | consistent   | ok     |
-      # | inconsistent | fail   |
+      # | type          | status |
+      # | ------------- | ------ |
+      # | covers        | ok     |
+      # | doesn't cover | fail   |
       def check
-        if converted_type(associated_column).cover?(converted_type(base_column))
+        if converted_type(associated_column).cover?(converted_type(primary_column))
           report_template(:ok)
         else
           report_template(:fail, render_text)
@@ -42,40 +42,40 @@ module DatabaseConsistency
         INCONSISTENT_TYPE
           .gsub('%a_t', type(associated_column))
           .gsub('%a_f', associated_key)
-          .gsub('%b_t', type(base_column))
-          .gsub('%b_f', base_key)
+          .gsub('%b_t', type(primary_column))
+          .gsub('%b_f', primary_key)
       end
 
       # @return [String]
-      def base_key
-        @base_key ||= (
-          if belongs_to_association?
-            association.foreign_key
-          else
-            association.active_record_primary_key
-          end
-        ).to_s
+      def primary_key
+        @primary_key ||= if belongs_to_association?
+                           association.association_primary_key
+                         else
+                           association.active_record_primary_key
+                         end.to_s
       end
 
       # @return [String]
       def associated_key
-        @associated_key ||= (
-          if belongs_to_association?
-            association.association_primary_key
-          else
-            association.foreign_key
-          end
-        ).to_s
+        @associated_key ||= association.foreign_key.to_s
       end
 
       # @return [ActiveRecord::ConnectionAdapters::Column]
-      def base_column
-        @base_column ||= column(association.active_record, base_key)
+      def primary_column
+        @primary_column ||= if belongs_to_association?
+                              column(association.klass, primary_key)
+                            else
+                              column(association.active_record, primary_key)
+                            end
       end
 
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def associated_column
-        @associated_column ||= column(association.klass, associated_key)
+        @associated_column ||= if belongs_to_association?
+                                 column(association.active_record, associated_key)
+                               else
+                                 column(association.klass, associated_key)
+                               end
       end
 
       # @return [DatabaseConsistency::Databases::Factory]
