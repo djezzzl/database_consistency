@@ -8,7 +8,8 @@ module DatabaseConsistency
         attr_reader :type
 
         COVERED_TYPES = {
-          'bigint' => %w[integer bigint]
+          'bigint' => %w[integer bigint],
+          'integer' => %w[integer smallint]
         }
 
         # @param [String] type
@@ -25,6 +26,11 @@ module DatabaseConsistency
         #
         # @return [Boolean]
         def cover?(other_type)
+          p 'AAA'
+          p convert
+          p other_type.convert
+          p 'GGG'
+
           (COVERED_TYPES[convert] || [convert]).include?(other_type.convert)
         end
       end

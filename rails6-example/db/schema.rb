@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_12_163954) do
+ActiveRecord::Schema.define(version: 2021_12_29_101039) do
 
   create_table "companies", force: :cascade do |t|
     t.boolean "available", default: false, null: false
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 2019_10_12_163954) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+# Could not dump table "organizations" because of following StandardError
+#   Unknown type 'bigserial' for column 'id'
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
@@ -34,6 +37,7 @@ ActiveRecord::Schema.define(version: 2019_10_12_163954) do
     t.string "slug", null: false
     t.integer "company_id", limit: 8, null: false
     t.integer "country_id", null: false
+    t.integer "organization_id", null: false
     t.integer "invitable_id", null: false
     t.string "invitable_type", null: false
     t.datetime "created_at", precision: 6, null: false

@@ -7,9 +7,10 @@ module DatabaseConsistency
       class Sqlite < Base
         TYPES = {
           'bigserial' => 'bigint',
-          'bigint' => 'bigint',
           'serial' => 'integer',
-          'integer' => 'integer'
+          'integer(8)' => 'bigint',
+          'integer(4)' => 'integer',
+          'integer(2)' => 'smallint'
         }.freeze
 
         # @return [String]
