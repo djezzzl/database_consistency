@@ -32,7 +32,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
     context 'when base key has integer type' do
       let(:base_type) { :integer }
 
-      include_examples 'check matches', %i[serial], %i[bigserial]
+      include_examples 'check matches', %i[serial bigserial], %i[]
     end
 
     context 'when base key has bigint type' do
@@ -70,7 +70,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
     context 'when base key has serial type' do
       let(:base_type) { :serial }
 
-      include_examples 'check matches', %i[integer], %i[bigint]
+      include_examples 'check matches', %i[integer bigint], %i[]
     end
 
     context 'when base key has bigserial type' do
@@ -108,7 +108,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
     context 'when base key has serial type' do
       let(:base_type) { :serial }
 
-      include_examples 'check matches', %i[integer], %i[bigint]
+      include_examples 'check matches', %i[integer bigint], %i[]
     end
 
     context 'when base key has bigserial type' do

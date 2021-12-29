@@ -7,6 +7,10 @@ module DatabaseConsistency
       class Base
         attr_reader :type
 
+        COVERED_TYPES = {
+          'bigint' => %w[integer bigint]
+        }
+
         # @param [String] type
         def initialize(type)
           @type = type
@@ -15,6 +19,13 @@ module DatabaseConsistency
         # @return [String]
         def convert
           type
+        end
+
+        # @param [DatabaseConsistency::Databases::Types::Base]
+        #
+        # @return [Boolean]
+        def cover?(other_type)
+          (COVERED_TYPES[convert] || [convert]).include?(other_type.convert)
         end
       end
     end
