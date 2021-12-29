@@ -87,6 +87,14 @@ RSpec.describe DatabaseConsistency::Configuration do
     end
   end
 
+  context 'with YAML alias' do
+    let(:file_path) { 'alias.yml' }
+
+    include_examples 'model', true
+    include_examples 'key', false
+    include_examples 'checker', false
+  end
+
   context 'when multiple files are given' do
     subject(:configuration) do
       described_class.new([

@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.10] - 2022/01/06
+
+Improvements:
+- Allow aliases in YAML config file for Ruby 3.1
+
 ### [1.1.9] - 2021/12/29 
 
 - Fixed 1.1.8
