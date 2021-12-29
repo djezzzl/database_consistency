@@ -48,8 +48,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, sqlite: tru
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        # bigint primary key is transformed to integer in SQLite
-        include_examples 'match'
+        include_examples 'mismatch'
       end
 
       context 'when foreign key type has bigint type' do
