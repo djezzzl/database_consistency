@@ -1,0 +1,9 @@
+OnlyPresenceCheckerOnEmail: &only_presence_checker_on_email
+  email:
+    enabled: false
+    ColumnPresenceChecker:
+      enabled: true
+
+User:
+  enabled: true
+  <<: *only_presence_checker_on_email

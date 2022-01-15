@@ -11,7 +11,7 @@ module DatabaseConsistency
       @configuration = Array(filepaths).each_with_object({}) do |filepath, result|
         content =
           if filepath && File.exist?(filepath)
-            data = YAML.load_file(filepath)
+            data = load_yaml_config_file(filepath)
             data.is_a?(Hash) ? data : {}
           else
             {}
@@ -52,6 +52,14 @@ module DatabaseConsistency
     private
 
     attr_reader :configuration
+
+    def load_yaml_config_file(filepath)
+      if YAML.respond_to?(:safe_load_file)
+        YAML.safe_load_file(filepath, aliases: true)
+      else
+        YAML.load_file(filepath)
+      end
+    end
 
     def combine_configs!(config, new_config)
       config.merge!(new_config) do |_key, val, new_val|
