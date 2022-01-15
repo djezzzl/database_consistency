@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.11] - 2022/01/15
+
+Fixes:
+- ColumnPresenceChecker no longer fails on `has_one :something, required: true`.
+
 ### [1.1.10] - 2022/01/06
 
 Improvements:
