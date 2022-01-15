@@ -18,7 +18,11 @@ module DatabaseConsistency
 
       # We skip the check when there are no presence validators
       def preconditions
-        validators.any?
+        validators.any? && !association?
+      end
+
+      def association?
+        model._reflect_on_association(attribute)&.macro == :has_one
       end
 
       # Table of possible statuses

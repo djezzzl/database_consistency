@@ -10,7 +10,14 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
 
     context 'when null constraint is provided' do
       before do
-        define_database_with_entity { |table| table.string :email, null: false }
+        define_database do
+          create_table :entities do |table|
+            table.string :email, null: false
+          end
+          create_table :country do |table|
+            table.belongs_to :entity
+          end
+        end
       end
 
       let(:klass) { define_class { |klass| klass.validates :email, presence: true } }
@@ -97,6 +104,17 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
     else
       required = { required: true }
       optional = { required: false }
+    end
+
+    if ActiveRecord::VERSION::MAJOR >= 6
+      context 'when has validation on has_one association' do
+        let(:klass) { define_class { |klass| klass.has_one :country, required: true } }
+        let(:attribute) { :country }
+
+        specify do
+          expect(checker.report).to be_nil
+        end
+      end
     end
 
     context 'when null constraint is missing for the association key' do
