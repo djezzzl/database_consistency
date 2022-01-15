@@ -1,5 +1,5 @@
 class Company < ApplicationRecord
-  has_one :user
+  has_one :user, required: true
   has_one :something # not exists
 
   class CustomValidator < ActiveModel::Validator
