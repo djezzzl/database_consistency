@@ -106,12 +106,14 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker do
       optional = { required: false }
     end
 
-    context 'when has validation on has_one association' do
-      let(:klass) { define_class { |klass| klass.has_one :country, required: true } }
-      let(:attribute) { :country }
+    if ActiveRecord::VERSION::MAJOR >= 6
+      context 'when has validation on has_one association' do
+        let(:klass) { define_class { |klass| klass.has_one :country, required: true } }
+        let(:attribute) { :country }
 
-      specify do
-        expect(checker.report).to be_nil
+        specify do
+          expect(checker.report).to be_nil
+        end
       end
     end
 
