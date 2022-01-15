@@ -9,10 +9,13 @@ module DatabaseConsistency
       private
 
       # We skip check when:
+      #  - underlying models belong to different databases
       #  - association isn't belongs_to association
       #  - association is polymorphic
       def preconditions
-        supported? && association.belongs_to? && !association.polymorphic?
+        supported? &&
+          model.connection_db_config.name == association.klass.connection_db_config.name &&
+          association.belongs_to? && !association.polymorphic?
       end
 
       def supported?
