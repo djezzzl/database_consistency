@@ -14,8 +14,12 @@ module DatabaseConsistency
       #  - association is polymorphic
       def preconditions
         supported? &&
-          model.connection_db_config.name == association.klass.connection_db_config.name &&
-          association.belongs_to? && !association.polymorphic?
+          association.belongs_to? && !association.polymorphic? &&
+          same_database?
+      end
+
+      def same_database?
+        Helper.connection_config(model) == Helper.connection_config(association.klass)
       end
 
       def supported?

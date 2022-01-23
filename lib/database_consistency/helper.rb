@@ -13,6 +13,14 @@ module DatabaseConsistency
       end
     end
 
+    def connection_config(klass)
+      if klass.respond_to?(:connection_config)
+        klass.connection_config
+      else
+        klass.connection_db_config.configuration_hash
+      end
+    end
+
     # Returns list of models to check
     def models
       ActiveRecord::Base.descendants.delete_if(&:abstract_class?).delete_if do |klass|
