@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.executables   = ['database_consistency']
 
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = '>= 2.4.0' # rubocop:disable Gemspec/RequiredRubyVersion
 
   spec.add_dependency 'activerecord', '>= 3.2'
 
