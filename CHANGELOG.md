@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.12] - 2022/01/23
+
+Fixes:
+- `ForeignKeyChecker` no longer check cases when model is part of another database. Thanks [Muhammad Usman](https://github.com/uxxman) for the contribution!
+
 ### [1.1.11] - 2022/01/15
 
 Fixes:
@@ -8,7 +13,7 @@ Fixes:
 ### [1.1.10] - 2022/01/06
 
 Improvements:
-- Allow aliases in YAML config file for Ruby 3.1. Thanks [jlestavel](https://github.com/jlestavel) or the contribution!
+- Allow aliases in YAML config file for Ruby 3.1. Thanks [jlestavel](https://github.com/jlestavel) for the contribution!
 
 ### [1.1.9] - 2021/12/29 
 
