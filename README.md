@@ -321,6 +321,78 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git
 tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Funding
+
+### Open Collective Backers
+
+You're an individual who wants to support the project with a monthly donation. Your logo will be available on the Github page. [[Become a backer](https://opencollective.com/database_consistency#backer)]
+
+<a href="https://opencollective.com/database_consistency/backer/0/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/0/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/1/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/1/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/2/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/2/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/3/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/3/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/4/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/4/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/5/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/5/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/6/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/6/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/7/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/7/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/8/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/8/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/9/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/9/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/10/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/10/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/11/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/11/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/12/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/12/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/13/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/13/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/14/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/14/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/15/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/15/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/16/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/16/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/17/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/17/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/18/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/18/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/19/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/19/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/20/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/20/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/21/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/21/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/22/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/22/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/23/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/23/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/24/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/24/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/25/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/25/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/26/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/26/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/27/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/27/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/28/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/28/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/backer/29/website" target="_blank"><img src="https://opencollective.com/database_consistency/backer/29/avatar.svg"></a>
+
+### Open Collective Sponsors
+
+You're an organization that wants to support the project with a monthly donation. Your logo will be available on the Github page. [[Become a sponsor](https://opencollective.com/database_consistency#sponsor)]
+
+<a href="https://opencollective.com/database_consistency/sponsor/0/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/1/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/2/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/3/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/4/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/5/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/6/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/7/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/8/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/9/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/9/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/10/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/10/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/11/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/11/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/12/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/12/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/13/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/13/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/14/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/14/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/15/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/15/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/16/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/16/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/17/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/17/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/18/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/18/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/19/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/19/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/20/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/20/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/21/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/21/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/22/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/22/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/23/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/23/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/24/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/24/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/25/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/25/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/26/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/26/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/27/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/27/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/28/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/28/avatar.svg"></a>
+<a href="https://opencollective.com/database_consistency/sponsor/29/website" target="_blank"><img src="https://opencollective.com/database_consistency/sponsor/29/avatar.svg"></a>
+
 ## Contributing
 
 [Bug reports](https://github.com/djezzzl/database_consistency/issues) and [pull requests](https://github.com/djezzzl/database_consistency/pulls) are welcome on GitHub.
