@@ -3,6 +3,7 @@
 [![Gem Version](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
 [![CircleCI](https://circleci.com/gh/djezzzl/database_consistency/tree/master.svg?style=svg)](https://circleci.com/gh/djezzzl/database_consistency/tree/master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b22ff5ee2c37bff6e059/maintainability)](https://codeclimate.com/github/djezzzl/database_consistency/maintainability)
+[![](https://opencollective.com/database_consistency/tiers/badge.svg)](https://opencollective.com/database_consistency#support)
 
 The main goal of the project is to provide an easy way to check the consistency of the
 database constraints with the application validations.
