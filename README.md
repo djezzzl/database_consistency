@@ -8,6 +8,8 @@
 The main goal of the project is to provide an easy way to check the consistency of the
 database constraints with the application validations.
 
+> [Toptal](https://www.toptal.com#snag-only-shrewd-web-development-experts) is hiring! [Join](https://www.toptal.com#snag-only-shrewd-web-development-experts) as Freelancer or [write me](mailto:lawliet.djez@gmail.com) if you want to join Core team.
+
 Currently, we can:
 - find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
 - find missing length validations ([LengthConstraintChecker](#lengthconstraintchecker))
