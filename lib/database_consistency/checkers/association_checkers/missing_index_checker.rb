@@ -6,6 +6,7 @@ module DatabaseConsistency
     class MissingIndexChecker < AssociationChecker
       # Message templates
       MISSING_INDEX = 'associated model should have proper index in the database'
+      MISSING_UNIQUE_INDEX = 'associated model should have proper unique index in the database'
 
       private
 
@@ -28,11 +29,31 @@ module DatabaseConsistency
       # | persisted    | ok     |
       # | missing      | fail   |
       def check
+        if unique_has_one_association?
+          check_unique_has_one
+        else
+          check_remaining
+        end
+      end
+
+      def check_unique_has_one
+        if index&.unique
+          report_template(:ok)
+        else
+          report_template(:fail, MISSING_UNIQUE_INDEX)
+        end
+      end
+
+      def check_remaining
         if index
           report_template(:ok)
         else
           report_template(:fail, MISSING_INDEX)
         end
+      end
+
+      def unique_has_one_association?
+        association.scope.nil? && association.macro == :has_one && !association.options[:as].present?
       end
 
       def index
