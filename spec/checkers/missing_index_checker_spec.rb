@@ -153,9 +153,10 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker do
             define_database do
               create_table :users do |t|
                 t.integer :company_id
-                t.index [:company_id], unique: true, name: 'unique_index'
-                t.index [:company_id]
               end
+
+              add_index :users, [:company_id], unique: true, name: 'unique_index'
+              add_index :users, [:company_id], name: 'not_unique_index'
 
               create_table :companies
             end
