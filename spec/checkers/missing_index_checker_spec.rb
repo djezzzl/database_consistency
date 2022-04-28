@@ -124,7 +124,56 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker do
           end
         end
 
-        context 'when not unique index is provided' do
+        context 'when bigger unique index is provided' do
+          before do
+            define_database do
+              create_table :users do |t|
+                t.integer :company_id
+                t.integer :something
+                t.index [:company_id, :something], unique: true
+              end
+
+              create_table :companies
+            end
+          end
+
+          specify do
+            expect(checker.report).to have_attributes(
+              checker_name: 'MissingIndexChecker',
+              table_or_model_name: company_class.name,
+              column_or_attribute_name: 'user',
+              status: :fail,
+              message: 'associated model should have proper unique index in the database'
+            )
+          end
+        end
+
+        context 'when many indexes are provided' do
+          before do
+            define_database do
+              create_table :users do |t|
+                t.integer :company_id
+              end
+
+              add_index :users, [:company_id], unique: true, name: 'unique_index'
+              add_index :users, [:company_id], name: 'not_unique_index'
+
+              create_table :companies
+            end
+          end
+
+          specify do
+            expect(checker.report).to have_attributes(
+              checker_name: 'MissingIndexChecker',
+              table_or_model_name: company_class.name,
+              column_or_attribute_name: 'user',
+              status: :ok,
+              message: nil
+            )
+          end
+        end
+
+        context 'when unique index is provided' do
           before do
             define_database do
               create_table :users do |t|
