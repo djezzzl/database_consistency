@@ -37,7 +37,7 @@ module DatabaseConsistency
       end
 
       def check_unique_has_one
-        if index&.unique
+        if unique_index
           report_template(:ok)
         else
           report_template(:fail, MISSING_UNIQUE_INDEX)
@@ -56,9 +56,15 @@ module DatabaseConsistency
         association.scope.nil? && association.macro == :has_one && !association.options[:as].present?
       end
 
+      def unique_index
+        @unique_index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
+          index_keys(index) == association_keys && index.unique
+        end
+      end
+
       def index
         @index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
-          index_keys(index) == association_keys
+          index_keys(index, limit: 2) == association_keys
         end
       end
 
@@ -66,10 +72,16 @@ module DatabaseConsistency
         @association_keys ||= [association.foreign_key, association.type].compact.map(&:to_s).sort
       end
 
-      def index_keys(index)
+      def index_keys(index, limit: nil)
         return unless index.columns.is_a?(Array)
 
-        index.columns[0...association_keys.size].sort
+        columns = index.columns
+
+        if limit
+          columns.first(limit).sort
+        else
+          columns
+        end
       end
     end
   end
