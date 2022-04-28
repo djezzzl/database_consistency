@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.13] - 2022/04/28
+
+Improvements:
+- `MissingIndexChecker` checks for unique indexes for `has_one` associations. 
+
 ### [1.1.12] - 2022/01/23
 
 Fixes:

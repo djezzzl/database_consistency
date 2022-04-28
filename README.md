@@ -219,6 +219,8 @@ We fail if the following conditions are satisfied:
 Imagine your model has a `has_one :user` association but has no index in the database. In this case querying the database
 to get the associated instance can be very inefficient. Mostly, you'll need an index to process such queries fast.
 
+Additionally, `has_one` associations should be unique on the database level to avoid unexpected behaviour.
+
 We fail if the following conditions are satisfied:
 - there is no index for the `HasOne` or `HasMany` association
 - it has a `through` option
