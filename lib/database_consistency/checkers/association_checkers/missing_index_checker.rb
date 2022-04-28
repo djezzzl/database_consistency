@@ -64,7 +64,7 @@ module DatabaseConsistency
 
       def index
         @index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
-          index_keys(index, limit: 2) == association_keys
+          index_keys(index, limit: association_keys.size) == association_keys
         end
       end
 
