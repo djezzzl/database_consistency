@@ -7,6 +7,7 @@ module DatabaseConsistency
       attr_reader :model, :attribute, :validators
 
       def initialize(model, attribute, validators)
+        super()
         @model = model
         @attribute = attribute
         @validators = validators.select(&method(:filter))

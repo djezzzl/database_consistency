@@ -7,6 +7,7 @@ module DatabaseConsistency
       attr_reader :model, :index
 
       def initialize(model, index)
+        super()
         @model = model
         @index = index
       end

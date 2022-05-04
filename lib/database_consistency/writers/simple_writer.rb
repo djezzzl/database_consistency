@@ -12,6 +12,12 @@ module DatabaseConsistency
         red: "\e[31m"
       }.freeze
 
+      COLOR_BY_STATUS = {
+        ok: :green,
+        warning: :yellow,
+        fail: :red
+      }.freeze
+
       def write
         results.each do |result|
           next unless write?(result.status)
@@ -31,11 +37,7 @@ module DatabaseConsistency
       end
 
       def status_text(result)
-        color = case result.status
-                when :ok then :green
-                when :warning then :yellow
-                when :fail then :red
-                end
+        color = COLOR_BY_STATUS[result.status]
 
         colorize(result.status, color)
       end

@@ -7,6 +7,7 @@ module DatabaseConsistency
       attr_reader :model, :column
 
       def initialize(model, column)
+        super()
         @model = model
         @column = column
       end

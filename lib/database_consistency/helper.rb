@@ -23,8 +23,10 @@ module DatabaseConsistency
 
     # Returns list of models to check
     def models
-      ActiveRecord::Base.descendants.delete_if(&:abstract_class?).delete_if do |klass|
-        !klass.connection.table_exists?(klass.table_name) || klass.name.include?('HABTM_')
+      ActiveRecord::Base.descendants.delete_if(&:abstract_class?).select do |klass|
+        klass.connection.table_exists?(klass.table_name) &&
+          !klass.name.include?('HABTM_') &&
+          project_klass?(klass)
       end
     end
 
@@ -33,6 +35,15 @@ module DatabaseConsistency
       models.group_by(&:table_name).each_value.map do |models|
         models.min_by { |model| models.include?(model.superclass) ? 1 : 0 }
       end
+    end
+
+    # @param klass [ActiveRecord::Base]
+    #
+    # @return [Boolean]
+    def project_klass?(klass)
+      return true unless Module.respond_to?(:const_source_location) && defined?(Bundler)
+
+      Module.const_source_location(klass.to_s).first.include?(Bundler.bundle_path.to_s)
     end
 
     # @return [Boolean]

@@ -7,6 +7,7 @@ module DatabaseConsistency
       attr_reader :model, :association
 
       def initialize(model, association)
+        super()
         @model = model
         @association = association
       end
