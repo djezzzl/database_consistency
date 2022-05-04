@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.1.15] - 2022/05/04
+
+Improvements:
+- For Ruby 2.7+ ignore models that come from Bundler.
+
 ### [1.1.14] - 2022/04/28
 
 Fixes:
