@@ -19,7 +19,7 @@ module DatabaseConsistency
       # @param [Boolean] catch_errors
       #
       # @return [Hash, File, nil]
-      def report(catch_errors = true)
+      def report(catch_errors: true)
         return unless preconditions
 
         @report ||= check
