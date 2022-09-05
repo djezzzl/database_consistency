@@ -27,6 +27,14 @@ RSpec.describe DatabaseConsistency::Configuration do
     end
   end
 
+  shared_examples 'global checker' do |value|
+    context 'global checker' do
+      specify do
+        expect(configuration.enabled?('DatabaseConsistencyCheckers', 'ColumnPresenceChecker')).to eq(value)
+      end
+    end
+  end
+
   shared_examples 'key' do |value|
     context 'key' do
       specify do
@@ -67,8 +75,8 @@ RSpec.describe DatabaseConsistency::Configuration do
     let(:file_path) { 'model_disabled.yml' }
 
     include_examples 'model', false
-    include_examples 'key', false
-    include_examples 'checker', false
+    include_examples 'key', true
+    include_examples 'checker', true
   end
 
   context 'when key is disabled' do
@@ -76,7 +84,7 @@ RSpec.describe DatabaseConsistency::Configuration do
 
     include_examples 'model', true
     include_examples 'key', false
-    include_examples 'checker', false
+    include_examples 'checker', true
 
     context 'when compact' do
       let(:file_path) { 'compact_checker_disabled.yml' }
@@ -87,12 +95,30 @@ RSpec.describe DatabaseConsistency::Configuration do
     end
   end
 
+  context 'with all option enabled' do
+    let(:file_path) { 'all_enabled.yml' }
+
+    include_examples 'global checker', true
+    include_examples 'model', true
+    include_examples 'key', true
+    include_examples 'checker', false
+  end
+
+  context 'with all option disabled' do
+    let(:file_path) { 'all_disabled.yml' }
+
+    include_examples 'global checker', true
+    include_examples 'model', false
+    include_examples 'key', false
+    include_examples 'checker', true
+  end
+
   context 'with YAML alias' do
     let(:file_path) { 'alias.yml' }
 
     include_examples 'model', true
     include_examples 'key', false
-    include_examples 'checker', false
+    include_examples 'checker', true
   end
 
   context 'when multiple files are given' do
