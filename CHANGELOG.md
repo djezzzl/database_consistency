@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.2.0] - 2022/09/05
+
+Improvements:
+- Add global configuration support. Now it's possible to disable everything in one line and enable some on demand.
+
+Breaking changes:
+- The priority of configuration has changed. Please see the [configuration file example](rails-example/.database_consistency.yml) for details.
+
 ### [1.1.15] - 2022/05/04
 
 Improvements:
