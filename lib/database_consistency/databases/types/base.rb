@@ -14,7 +14,7 @@ module DatabaseConsistency
 
         # @param [String] type
         def initialize(type)
-          @type = type
+          @type = type.downcase
         end
 
         # @return [String]

@@ -79,7 +79,7 @@ jobs:
 
 workflows:
   version: 2
-  default:
+  default: &default
     jobs:
       - checkout
       - build:
@@ -95,22 +95,12 @@ workflows:
                 "gemfiles/ar_main.gemfile"
               ]
               ruby-version: [
-                "2.4",
-                "2.5",
                 "2.6",
                 "2.7",
                 "3.0",
                 "latest"
               ]
             exclude:
-              - ruby-version: "2.4"
-                gemfile: "gemfiles/ar_6_0.gemfile"
-              - ruby-version: "2.4"
-                gemfile: "gemfiles/ar_6_1.gemfile"
-              - ruby-version: "2.4"
-                gemfile: "gemfiles/ar_main.gemfile"
-              - ruby-version: "2.5"
-                gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.6"
                 gemfile: "gemfiles/ar_main.gemfile"
               - ruby-version: "2.7"
@@ -124,3 +114,13 @@ workflows:
               - ruby-version: "latest"
                 gemfile: "gemfiles/ar_5_2.gemfile"
           name: << matrix.gemfile >>-build-ruby-<< matrix.ruby-version >>
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    <<: *default

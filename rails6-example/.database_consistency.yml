@@ -2,17 +2,12 @@ DatabaseConsistencySettings:
   color: true
   log_level: DEBUG
 
-# Ignore false positive from Rails' ActionText and ActiveStorage
-ActionText::RichText:
-  enabled: false
-ActiveStorage::Attachment:
-  enabled: false
-ActiveStorage::Blob:
-  enabled: false
-
+# Everything is enabled by default.
 DatabaseConsistencyCheckers:
+  All:
+    enabled: true # You can disable everything until you explicitly enable it with any option below.
   MissingIndexChecker:
-    enabled: true # 1st priority (completely turn off particular checker)
+    enabled: true # Enables/disables the checker entirely/globally. If disabled here, nothing can enable it back.
   MissingUniqueIndexChecker:
     enabled: true
   ColumnPresenceChecker:
@@ -21,11 +16,11 @@ DatabaseConsistencyCheckers:
     enabled: true
 
 User:
-  enabled: true # 2st priority (turn off checking User model)
+  enabled: true # Enables/disables checks for the whole model. This can be overwritten by deeper configuration (latest configuration has highest priority).
   phone:
-    enabled: true # 3rd priority (turn off phone checking phone field/attribute of User model)
+    enabled: true # Enables/disables checks for the field. This can be overwritten by deeper configuration (latest configuration has highest priority).
     ColumnPresenceChecker:
-      enabled: true # 4rd priority (turn off checker for phone field/attribute of User model)
+      enabled: true # Enables/disables specific checker for the field. This has the highest priority (except globally disabled checkers).
   name:
     enabled: true
   code:
@@ -50,3 +45,24 @@ Country:
 #     enabled: false
 # Company:
 #   enabled: false
+
+
+# Concerns can be emulated using YAML's anchors and aliases
+
+# 1. Define an anchor before declaring concern-related settings
+DateConcern: &ignore_date_concern
+  date:
+    NullConstraintChecker:
+      enabled: false
+NameConcern: &ignore_name_concern
+  name:
+    ColumnPresenceChecker:
+      enabled: false
+
+# Models using concerns
+# 2. Now include the relevant settings using aliases
+Event:
+  <<: *ignore_date_concern
+  <<: *ignore_name_concern
+Poll:
+  <<: *ignore_date_concern

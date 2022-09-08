@@ -1,0 +1,10 @@
+DatabaseConsistencyCheckers:
+  All:
+    enabled: false
+  ColumnPresenceChecker:
+    enabled: true
+
+User:
+  email:
+    ColumnPresenceChecker:
+      enabled: true

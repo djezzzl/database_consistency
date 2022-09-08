@@ -37,21 +37,29 @@ module DatabaseConsistency
     def enabled?(*path)
       current = configuration
 
+      value = global_enabling
+
       path.each do |key|
         current = current[key.to_s]
-        return true unless current.is_a?(Hash)
+        return value unless current.is_a?(Hash)
 
         next if current['enabled'].nil?
 
-        return false unless current['enabled']
+        value = current['enabled']
       end
 
-      true
+      value
     end
 
     private
 
     attr_reader :configuration
+
+    def global_enabling
+      value = configuration.dig('DatabaseConsistencyCheckers', 'All', 'enabled')
+
+      value.nil? ? true : value
+    end
 
     def load_yaml_config_file(filepath)
       if YAML.respond_to?(:safe_load_file)
