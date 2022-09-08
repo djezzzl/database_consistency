@@ -79,7 +79,7 @@ jobs:
 
 workflows:
   version: 2
-  default:
+  default: &default
     jobs:
       - checkout
       - build:
@@ -114,3 +114,13 @@ workflows:
               - ruby-version: "latest"
                 gemfile: "gemfiles/ar_5_2.gemfile"
           name: << matrix.gemfile >>-build-ruby-<< matrix.ruby-version >>
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    <<: *default
