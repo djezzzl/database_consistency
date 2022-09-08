@@ -5,6 +5,12 @@
 Improvements:
 - Add global configuration support. Now it's possible to disable everything in one line and enable some on demand.
 
+Fixes:
+- Fix `ForeignKeyTypeChecker` for newest SQLite.
+
+Support:
+- Ruby 2.4 and Ruby 2.5 are removed from CI but they should be still working fine.
+
 Breaking changes:
 - The priority of configuration has changed. Please see the [configuration file example](rails-example/.database_consistency.yml) for details.
 
