@@ -24,17 +24,22 @@ end
 require 'optparse'
 
 config = [default_config]
+options = {}
 opt_parser = OptionParser.new do |opts|
   opts.banner = <<-DESC
   Usage: database_consistency install - run installation
          database_consistency [options]
   DESC
 
-  opts.on('-cFILE', '--config=FILE', 'Use additional configuration file') do |f|
+  opts.on('-cFILE', '--config=FILE', 'Use additional configuration file.') do |f|
     config << f
   end
 
-  opts.on('-h', '--help', 'Prints this help') do
+  opts.on('-g', '--generate-todo', 'Generate TODO file with every failing check disabled. You can pass existing configurations so the generated file will have only new failures.') do |f|
+    options[:todo] = true
+  end
+
+  opts.on('-h', '--help', 'Prints this help.') do
     puts opts
     exit
   end
@@ -66,5 +71,5 @@ $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'database_consistency'
 
 # Process checks
-code = DatabaseConsistency.run(config)
+code = DatabaseConsistency.run(config, **options)
 exit code

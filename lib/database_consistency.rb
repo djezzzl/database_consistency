@@ -10,6 +10,7 @@ require 'database_consistency/errors'
 
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
+require 'database_consistency/writers/todo_writer'
 
 require 'database_consistency/databases/factory'
 require 'database_consistency/databases/types/base'
@@ -48,16 +49,19 @@ require 'database_consistency/processors/indexes_processor'
 # The root module
 module DatabaseConsistency
   class << self
-    def run(*args)
+    def run(*args, **opts)
       configuration = Configuration.new(*args)
       reports = Processors.reports(configuration)
 
-      Writers::SimpleWriter.write(
-        reports,
-        config: configuration
-      )
+      if opts[:todo]
+        Writers::TodoWriter.write(reports, config: configuration)
 
-      reports.any? { |report| report.status == :fail } || !RescueError.empty? ? 1 : 0
+        0
+      else
+        Writers::SimpleWriter.write(reports, config: configuration)
+
+        reports.any? { |report| report.status == :fail } || !RescueError.empty? ? 1 : 0
+      end
     end
   end
 end

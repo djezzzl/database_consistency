@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.2.1] - 2022/09/05
+
+Improvements:
+- Add TODO generation.
+
 ### [1.2.0] - 2022/09/05
 
 Improvements:
