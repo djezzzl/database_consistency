@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, sqlite: true do
+RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite do
   subject(:checker) { described_class.new(model, association) }
 
   let(:model) { entity_class }

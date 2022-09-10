@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Helper do
+RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
   subject { described_class.first_level_associations(child) }
 
   describe '#first_level_associations' do

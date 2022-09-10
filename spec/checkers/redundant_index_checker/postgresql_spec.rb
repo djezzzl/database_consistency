@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, postgresql: true do
+RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql do
   subject(:checker) { described_class.new(model, index) }
 
   let(:model) { define_class }
