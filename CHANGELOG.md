@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.2.2] - 2022/09/10
+
+Improvements:
+- Catch errors on processors so they don't break the whole run.
+
+Fixes:
+- Fix `IndexProcessor` to support multiple databases.
+
 ### [1.2.1] - 2022/09/05
 
 Improvements:
