@@ -25,8 +25,13 @@ module DatabaseConsistency
       end
 
       # @return [Array<Hash>]
-      def reports
+      def reports(catch_errors: true)
         @reports ||= check
+      rescue StandardError => e
+        raise e unless catch_errors
+
+        RescueError.call(e)
+        []
       end
 
       # @return [Array<Class>]

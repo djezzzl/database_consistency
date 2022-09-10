@@ -16,7 +16,7 @@ module DatabaseConsistency
         Helper.parent_models.flat_map do |model|
           next unless configuration.enabled?(model.name.to_s)
 
-          indexes = ActiveRecord::Base.connection.indexes(model.table_name)
+          indexes = model.connection.indexes(model.table_name)
 
           indexes.flat_map do |index|
             enabled_checkers.map do |checker_class|
