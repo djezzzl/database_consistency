@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, sqlite: true do
+RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :sqlite do
   subject(:checker) { described_class.new(model, index) }
 
   let(:model) { define_class }

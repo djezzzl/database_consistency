@@ -2,7 +2,7 @@
 
 require_relative './context'
 
-RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, postgresql: true do
+RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql do
   subject(:checker) { described_class.new(model, association) }
 
   let!(:user_class) { define_class('User', :users) }

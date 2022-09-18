@@ -68,11 +68,25 @@ jobs:
           name: Waiting for MySQL to be ready
           command: dockerize -wait tcp://localhost:3306 -timeout 2m
       - run:
-          name: Running RSpec
+          name: Running RSpec on SQLite
           command: |
             bundle exec rspec --profile 10 \
                               --format RspecJunitFormatter \
-                              --out test_results/rspec.xml \
+                              --out test_results/sqlite-rspec.xml \
+                              --format progress
+      - run:
+          name: Running RSpec on MySQL
+          command: |
+            DATABASE=mysql bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/mysql-rspec.xml \
+                              --format progress
+      - run:
+          name: Running RSpec on PostgreSQL
+          command: |
+            DATABASE=postgresql bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/postgresql-rspec.xml \
                               --format progress
       - store_test_results:
           path: test_results

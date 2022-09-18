@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, mysql: true do
+RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :mysql do
   subject(:checker) { described_class.new(model, index) }
 
   let(:model) { define_class }

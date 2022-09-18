@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Configuration do
+RSpec.describe DatabaseConsistency::Configuration, :sqlite, :mysql, :postgresql do
   subject(:configuration) { described_class.new(file_fixture(file_path)) }
 
   shared_examples 'checker' do |value|

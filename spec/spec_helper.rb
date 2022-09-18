@@ -15,9 +15,17 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.include_context 'postgresql database context', :postgresql
-  config.include_context 'mysql database context', :mysql
-  config.include_context 'sqlite database context', :sqlite
+  case ENV['DATABASE']
+  when 'mysql'
+    config.inclusion_filter.add(mysql: true)
+    config.include_context 'mysql database context'
+  when 'postgresql'
+    config.inclusion_filter.add(postgresql: true)
+    config.include_context 'postgresql database context'
+  else
+    config.inclusion_filter.add(sqlite: true)
+    config.include_context 'sqlite database context'
+  end
 
   def file_fixture(path)
     File.join('spec/fixtures/files/', path)
@@ -56,16 +64,5 @@ RSpec.configure do |config|
       username: ENV['DB_USER'],
       password: ENV['DB_PASSWORD']
     }
-  end
-
-  def test_each_database(databases = %i[sqlite mysql postgresql], &block)
-    databases
-      .map { |name| send("#{name}_configuration") }
-      .each do |configuration|
-        context "with #{configuration[:adapter]} database" do
-          include_context 'database context', configuration
-          instance_eval(&block)
-        end
-      end
   end
 end

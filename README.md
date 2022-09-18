@@ -137,6 +137,11 @@ User:
       enabled: false
 ```
 
+### TODO generation
+
+You can generate TODO file with the following command: `bundle exec database_consistency -g`. 
+It works fine with passed/existing configurations and will generate the configuration only for failing. 
+
 ## How it works?
 
 ### ColumnPresenceChecker
@@ -320,7 +325,13 @@ psql postgres
 postgres=# CREATE DATABASE database_consistency_test;
 ```
 
-Then, run `bundle exec rspec` to run the tests.
+Then, run `DATABASE=<adapter name> bundle exec rspec` to run the tests for the specified database.
+Available options are:
+- `mysql`
+- `postgresql`
+- `sqlite`
+
+Default is `sqlite`. 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version,
 update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git
