@@ -137,6 +137,11 @@ User:
       enabled: false
 ```
 
+### TODO generation
+
+You can generate TODO file with the following command: `bundle exec database_consistency -g`. 
+It works fine with passed/existing configurations and will generate the configuration only for failing. 
+
 ## How it works?
 
 ### ColumnPresenceChecker
