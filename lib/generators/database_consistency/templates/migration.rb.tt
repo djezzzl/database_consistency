@@ -1,0 +1,5 @@
+class <%= migration_class_name %> < ActiveRecord::Migration<%= migration_version %>
+  def change
+    # your migration
+  end
+end
