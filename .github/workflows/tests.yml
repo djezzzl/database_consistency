@@ -1,0 +1,87 @@
+name: RSpec tests
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: root
+          POSTGRES_DB: database_consistency_test
+          POSTGRES_PASSWORD: database_consistency_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: database_consistency_password
+          MYSQL_DATABASE: database_consistency_test
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: database_consistency_password
+
+    strategy:
+      matrix:
+        ruby-version:
+          - '2.6'
+          - '2.7'
+          - '3.0'
+          - 'head'
+        gemfile:
+          - 'gemfiles/ar_4_2.gemfile'
+          - 'gemfiles/ar_5_2.gemfile'
+          - 'gemfiles/ar_6_0.gemfile'
+          - 'gemfiles/ar_6_1.gemfile'
+          - 'gemfiles/ar_main.gemfile'
+        exclude:
+          - ruby-version: '2.6'
+            gemfile: 'gemfiles/ar_main.gemfile'
+          - ruby-version: '2.7'
+            gemfile: 'gemfiles/ar_4_2.gemfile'
+          - ruby-version: '3.0'
+            gemfile: 'gemfiles/ar_4_2.gemfile'
+          - ruby-version: '3.0'
+            gemfile: 'gemfiles/ar_5_2.gemfile'
+          - ruby-version: 'head'
+            gemfile: 'gemfiles/ar_4_2.gemfile'
+          - ruby-version: 'head'
+            gemfile: 'gemfiles/ar_5_2.gemfile'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+
+      - name: Use << parameters.gemfile >> as the Gemfile
+        run: bundle config --global gemfile ${{ matrix.gemfile }}
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run SQLite tests
+        run: bundle exec rspec
+
+      - name: Run MySQL tests
+        run: DATABASE=mysql bundle exec rspec
+
+      - name: Run PostgreSQL tests
+        run: DATABASE=postgresql bundle exec rspec
