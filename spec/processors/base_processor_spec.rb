@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe DatabaseConsistency::Processors::BaseProcessor do
   subject(:processor) { dummy_processor.new }
 

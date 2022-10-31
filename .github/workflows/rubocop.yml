@@ -1,0 +1,25 @@
+name: Rubocop
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run Rubocop
+        run: bundle exec rubocop
