@@ -25,7 +25,9 @@ module DatabaseConsistency
         association_missing_index: 'associated model should have proper index in the database',
         length_validator_missing: 'column has limit in the database but do not have length validator',
         length_validator_greater_limit: 'column has greater limit in the database than in length validator',
-        length_validator_lower_limit: 'column has lower limit in the database than in length validator'
+        length_validator_lower_limit: 'column has lower limit in the database than in length validator',
+        null_constraint_association_misses_validator: 'column is required in the database but do not have presence validator for association %<association_name>s', # rubocop:disable Layout/LineLength
+        null_constraint_misses_validator: 'column is required in the database but do not have presence validator'
       }.freeze
 
       def write

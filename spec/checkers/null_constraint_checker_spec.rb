@@ -22,7 +22,8 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'column is required in the database but do not have presence validator'
+        error_slug: :null_constraint_misses_validator,
+        error_message: nil
       )
     end
   end
@@ -36,7 +37,8 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :ok,
-        message: nil
+        error_slug: nil,
+        error_message: nil
       )
     end
   end
@@ -67,7 +69,8 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user_id',
           status: :ok,
-          message: nil
+          error_slug: nil,
+          error_message: nil
         )
       end
     end
@@ -81,7 +84,9 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user_id',
           status: :fail,
-          message: 'column is required in the database but do not have presence validator for association (user)'
+          error_slug: :null_constraint_association_misses_validator,
+          error_message: nil,
+          association_name: 'user'
         )
       end
     end
@@ -97,7 +102,8 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'count',
         status: :fail,
-        message: 'column is required in the database but do not have presence validator'
+        error_slug: :null_constraint_misses_validator,
+        error_message: nil
       )
     end
   end
@@ -112,7 +118,8 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'count',
         status: :ok,
-        message: nil
+        error_slug: nil,
+        error_message: nil
       )
     end
   end
