@@ -67,13 +67,14 @@ module DatabaseConsistency
       end
 
       # @return [DatabaseConsistency::Report]
-      def report_template(status, message = nil)
+      def report_template(status, message = nil, slug = nil)
         Report.new(
           checker_name: checker_name,
           table_or_model_name: table_or_model_name,
           column_or_attribute_name: column_or_attribute_name,
           status: status,
-          message: message
+          message: message,
+          slug: slug
         )
       end
     end

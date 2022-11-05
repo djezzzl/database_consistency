@@ -61,7 +61,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         table_or_model_name: entity_class.name,
         column_or_attribute_name: 'country',
         status: :fail,
-        message: 'should have foreign key in the database'
+        slug: :missing_foreign_key
       )
     end
   end

@@ -18,6 +18,10 @@ module DatabaseConsistency
         fail: :red
       }.freeze
 
+      SLUG_TO_MESSAGE = {
+        missing_foreign_key: 'should have foreign key in the database'
+      }.freeze
+
       def write
         results.each do |result|
           next unless write?(result.status)
@@ -27,10 +31,14 @@ module DatabaseConsistency
       end
 
       def msg(result)
-        "#{result.checker_name} #{status_text(result)} #{key_text(result)} #{result.message}"
+        "#{result.checker_name} #{status_text(result)} #{key_text(result)} #{message_text(result)}"
       end
 
       private
+
+      def message_text(result)
+        SLUG_TO_MESSAGE[result.slug] || result.message
+      end
 
       def key_text(result)
         "#{colorize(result.table_or_model_name, :blue)} #{colorize(result.column_or_attribute_name, :yellow)}"

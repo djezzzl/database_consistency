@@ -7,6 +7,7 @@ module DatabaseConsistency
     :column_or_attribute_name,
     :status,
     :message,
+    :slug,
     keyword_init: true
   )
 end
