@@ -66,9 +66,9 @@ module DatabaseConsistency
           status: status,
           error_slug: error_slug,
           error_message: nil,
-          fk_type: type(associated_column),
+          fk_type: converted_type(associated_column).type,
           fk_name: associated_key,
-          pk_type: type(primary_column),
+          pk_type: converted_type(primary_column).type,
           pk_name: primary_key,
           **report_attributes
         )

@@ -40,7 +40,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_id'
           )
         end
@@ -82,7 +82,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_id'
           )
         end
@@ -147,7 +147,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -189,7 +189,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -254,7 +254,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -296,7 +296,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
