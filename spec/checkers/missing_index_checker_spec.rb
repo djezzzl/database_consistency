@@ -40,7 +40,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
               table_or_model_name: company_class.name,
               column_or_attribute_name: 'user',
               status: :fail,
-              message: 'associated model should have proper index in the database'
+              error_slug: :association_missing_index,
+              error_message: nil
             )
           end
         end
@@ -64,7 +65,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
               table_or_model_name: company_class.name,
               column_or_attribute_name: 'user',
               status: :ok,
-              message: nil
+              error_slug: nil,
+              error_message: nil
             )
           end
         end
@@ -95,7 +97,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'user',
             status: :fail,
-            message: 'associated model should have proper unique index in the database'
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
           )
         end
       end
@@ -118,7 +121,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'user',
             status: :fail,
-            message: 'associated model should have proper unique index in the database'
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
           )
         end
       end
@@ -142,7 +146,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'user',
             status: :fail,
-            message: 'associated model should have proper unique index in the database'
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
           )
         end
       end
@@ -167,7 +172,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'user',
             status: :ok,
-            message: nil
+            error_slug: nil,
+            error_message: nil
           )
         end
       end
@@ -190,7 +196,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'user',
             status: :ok,
-            message: nil
+            error_slug: nil,
+            error_message: nil
           )
         end
       end
@@ -216,7 +223,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'users',
             status: :fail,
-            message: 'associated model should have proper index in the database'
+            error_slug: :association_missing_index,
+            error_message: nil
           )
         end
       end
@@ -239,7 +247,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
             table_or_model_name: company_class.name,
             column_or_attribute_name: 'users',
             status: :ok,
-            message: nil
+            error_slug: nil,
+            error_message: nil
           )
         end
       end

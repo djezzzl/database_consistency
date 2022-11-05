@@ -20,7 +20,9 @@ module DatabaseConsistency
 
       SLUG_TO_MESSAGE = {
         missing_foreign_key: 'should have foreign key in the database',
-        inconsistent_types: "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s" # rubocop:disable Layout/LineLength
+        inconsistent_types: "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s", # rubocop:disable Layout/LineLength
+        has_one_missing_unique_index: 'associated model should have proper unique index in the database',
+        association_missing_index: 'associated model should have proper index in the database'
       }.freeze
 
       def write

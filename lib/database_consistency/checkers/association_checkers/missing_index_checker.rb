@@ -4,10 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key has index in the database
     class MissingIndexChecker < AssociationChecker
-      # Message templates
-      MISSING_INDEX = 'associated model should have proper index in the database'
-      MISSING_UNIQUE_INDEX = 'associated model should have proper unique index in the database'
-
       private
 
       # We skip check when:
@@ -40,7 +36,7 @@ module DatabaseConsistency
         if unique_index
           report_template(:ok)
         else
-          report_template(:fail, MISSING_UNIQUE_INDEX)
+          report_template(:fail, error_slug: :has_one_missing_unique_index)
         end
       end
 
@@ -48,7 +44,7 @@ module DatabaseConsistency
         if index
           report_template(:ok)
         else
-          report_template(:fail, MISSING_INDEX)
+          report_template(:fail, error_slug: :association_missing_index)
         end
       end
 
