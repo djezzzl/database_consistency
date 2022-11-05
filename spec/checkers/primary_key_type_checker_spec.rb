@@ -20,7 +20,8 @@ RSpec.describe DatabaseConsistency::Checkers::PrimaryKeyTypeChecker, :mysql, :po
         table_or_model_name: klass.name,
         column_or_attribute_name: 'id',
         status: :ok,
-        message: nil
+        error_slug: nil,
+        error_message: nil
       )
     end
   end
@@ -38,7 +39,8 @@ RSpec.describe DatabaseConsistency::Checkers::PrimaryKeyTypeChecker, :mysql, :po
         table_or_model_name: klass.name,
         column_or_attribute_name: 'id',
         status: :fail,
-        message: 'column has int/serial type but recommended to have bigint/bigserial/uuid'
+        error_slug: :small_primary_key,
+        error_message: nil
       )
     end
   end
