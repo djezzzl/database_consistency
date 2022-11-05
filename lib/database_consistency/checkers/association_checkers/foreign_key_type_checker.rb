@@ -4,7 +4,26 @@ module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key type covers associated model's primary key (same or bigger)
     class ForeignKeyTypeChecker < AssociationChecker
-      INCONSISTENT_TYPE = "foreign key (%a_f) with type (%a_t) doesn't cover primary key (%b_f) with type (%b_t)"
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :pk_name, :pk_type, :fk_name, :fk_type
+
+        def initialize(fk_name: nil, fk_type: nil, pk_name: nil, pk_type: nil, **args)
+          super(**args)
+          @fk_name = fk_name
+          @fk_type = fk_type
+          @pk_name = pk_name
+          @pk_type = pk_type
+        end
+
+        def attributes
+          super.merge(
+            fk_name: fk_name,
+            fk_type: fk_type,
+            pk_name: pk_name,
+            pk_type: pk_type
+          )
+        end
+      end
 
       private
 
@@ -27,23 +46,32 @@ module DatabaseConsistency
       # | ------------- | ------ |
       # | covers        | ok     |
       # | doesn't cover | fail   |
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if converted_type(associated_column).cover?(converted_type(primary_column))
           report_template(:ok)
         else
-          report_template(:fail, render_text)
+          report_template(:fail, error_slug: :inconsistent_types)
         end
       rescue Errors::MissingField => e
-        report_template(:fail, e.message)
+        Report.new(
+          status: :fail,
+          error_slug: nil,
+          error_message: e.message,
+          **report_attributes
+        )
       end
 
-      # @return [String]
-      def render_text
-        INCONSISTENT_TYPE
-          .gsub('%a_t', type(associated_column))
-          .gsub('%a_f', associated_key)
-          .gsub('%b_t', type(primary_column))
-          .gsub('%b_f', primary_key)
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          fk_type: type(associated_column),
+          fk_name: associated_key,
+          pk_type: type(primary_column),
+          pk_name: primary_key,
+          **report_attributes
+        )
       end
 
       # @return [String]

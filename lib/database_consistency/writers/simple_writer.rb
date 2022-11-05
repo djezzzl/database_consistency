@@ -19,7 +19,8 @@ module DatabaseConsistency
       }.freeze
 
       SLUG_TO_MESSAGE = {
-        missing_foreign_key: 'should have foreign key in the database'
+        missing_foreign_key: 'should have foreign key in the database',
+        inconsistent_types: "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s" # rubocop:disable Layout/LineLength
       }.freeze
 
       def write
@@ -37,7 +38,7 @@ module DatabaseConsistency
       private
 
       def message_text(result)
-        SLUG_TO_MESSAGE[result.slug] || result.message
+        SLUG_TO_MESSAGE[result.error_slug] % result.attributes || result.error_message
       end
 
       def key_text(result)
