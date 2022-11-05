@@ -30,7 +30,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
           table_or_model_name: klass.name,
           column_or_attribute_name: 'lower(email)',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -48,7 +49,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
           table_or_model_name: klass.name,
           column_or_attribute_name: 'lower(email)',
           status: :fail,
-          message: 'model should have proper unique index in the database'
+          error_message: nil,
+          error_slug: :missing_unique_slug
         )
       end
     end
@@ -73,7 +75,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
             table_or_model_name: klass.name,
             column_or_attribute_name: 'lower(email)+phone',
             status: :ok,
-            message: nil
+            error_message: nil,
+            error_slug: nil
           )
         end
       end
@@ -92,7 +95,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
             table_or_model_name: klass.name,
             column_or_attribute_name: 'lower(email)+phone',
             status: :fail,
-            message: 'model should have proper unique index in the database'
+            error_message: nil,
+            error_slug: :missing_unique_slug
           )
         end
       end
