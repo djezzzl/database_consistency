@@ -24,7 +24,7 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql
           column_or_attribute_name: 'index',
           status: :fail,
           error_message: nil,
-          error_slug: nil,
+          error_slug: :redundant_index,
           index_name: 'another_index'
         )
     end

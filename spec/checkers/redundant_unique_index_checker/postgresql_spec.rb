@@ -70,7 +70,7 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :fail,
-          error_slug: nil,
+          error_slug: :redundant_unique_index,
           error_message: nil
         )
     end

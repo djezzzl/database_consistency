@@ -50,7 +50,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
           column_or_attribute_name: 'lower(email)',
           status: :fail,
           error_message: nil,
-          error_slug: :missing_unique_slug
+          error_slug: :missing_unique_index
         )
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
             column_or_attribute_name: 'lower(email)+phone',
             status: :fail,
             error_message: nil,
-            error_slug: :missing_unique_slug
+            error_slug: :missing_unique_index
           )
         end
       end
