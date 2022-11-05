@@ -35,7 +35,7 @@ module DatabaseConsistency
         if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
           report_template(:ok)
         else
-          report_template(:fail, nil, :missing_foreign_key)
+          report_template(:fail, error_slug: :missing_foreign_key)
         end
       end
     end
