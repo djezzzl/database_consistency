@@ -19,7 +19,8 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker, :sqlite, 
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :ok,
-        message: nil
+        error_slug: nil,
+        error_message: nil
       )
     end
   end
@@ -33,7 +34,8 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker, :sqlite, 
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'column has limit in the database but do not have length validator'
+        error_slug: :length_validator_missing,
+        error_message: nil
       )
     end
   end
@@ -47,7 +49,8 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker, :sqlite, 
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :warning,
-        message: 'column has greater limit in the database than in length validator'
+        error_slug: :length_validator_greater_limit,
+        error_message: nil
       )
     end
   end
@@ -61,7 +64,8 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker, :sqlite, 
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'column has lower limit in the database than in length validator'
+        error_slug: :length_validator_lower_limit,
+        error_message: nil
       )
     end
   end

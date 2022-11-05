@@ -22,7 +22,10 @@ module DatabaseConsistency
         missing_foreign_key: 'should have foreign key in the database',
         inconsistent_types: "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s", # rubocop:disable Layout/LineLength
         has_one_missing_unique_index: 'associated model should have proper unique index in the database',
-        association_missing_index: 'associated model should have proper index in the database'
+        association_missing_index: 'associated model should have proper index in the database',
+        length_validator_missing: 'column has limit in the database but do not have length validator',
+        length_validator_greater_limit: 'column has greater limit in the database than in length validator',
+        length_validator_lower_limit: 'column has lower limit in the database than in length validator'
       }.freeze
 
       def write
