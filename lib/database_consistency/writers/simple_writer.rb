@@ -53,7 +53,7 @@ module DatabaseConsistency
       private
 
       def message_text(result)
-        SLUG_TO_MESSAGE[result.error_slug] % result.attributes || result.error_message
+        (SLUG_TO_MESSAGE[result.error_slug] || result.error_message || '') % result.attributes
       end
 
       def key_text(result)

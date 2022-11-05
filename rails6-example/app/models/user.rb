@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   validates :tmp, presence: true
 
-  belongs_to :something, class_name: 'Company'
+  belongs_to :something, class_name: 'Company', foreign_key: :company_id
   belongs_to :company, required: false
   belongs_to :country
   belongs_to :invitable, polymorphic: true
