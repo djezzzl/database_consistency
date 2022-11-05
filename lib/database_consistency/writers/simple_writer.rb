@@ -30,7 +30,8 @@ module DatabaseConsistency
         null_constraint_misses_validator: 'column is required in the database but do not have presence validator',
         small_primary_key: 'column has int/serial type but recommended to have bigint/bigserial/uuid',
         redundant_index: 'index is redundant as %<index_name>s covers it',
-        redundant_unique_index: 'index uniqueness is redundant as %<index_name>s covers it'
+        redundant_unique_index: 'index uniqueness is redundant as %<index_name>s covers it',
+        missing_uniqueness_validation: 'index is unique in the database but do not have uniqueness validator'
       }.freeze
 
       def write
