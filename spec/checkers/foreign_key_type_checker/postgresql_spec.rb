@@ -38,9 +38,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_id'
           )
         end
@@ -57,7 +57,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'user_id'
@@ -80,9 +80,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_id'
           )
         end
@@ -99,7 +99,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'user_id'
@@ -167,7 +167,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -209,7 +209,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -272,7 +272,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -314,7 +314,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_id'
           )
         end
@@ -432,7 +432,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: nil,
             pk_type: 'serial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'c_id'
           )
         end
@@ -474,7 +474,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigserial',
             pk_name: 'id',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'c_id'
           )
         end
@@ -537,9 +537,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_code'
           )
         end
@@ -556,7 +556,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
             fk_type: 'bigint',
             fk_name: 'company_code'
@@ -581,7 +581,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigint',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_code'
           )
         end
@@ -644,9 +644,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_code'
           )
         end
@@ -663,7 +663,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
             fk_type: 'bigint',
             fk_name: 'company_code'
@@ -688,7 +688,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigint',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'company_code'
           )
         end
@@ -753,9 +753,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_code'
           )
         end
@@ -772,7 +772,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'INTEGER',
+            pk_type: 'integer',
             pk_name: 'code',
             fk_type: 'bigint',
             fk_name: 'user_code'
@@ -797,7 +797,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             error_slug: :inconsistent_types,
             pk_type: 'bigint',
             pk_name: 'code',
-            fk_type: 'INTEGER',
+            fk_type: 'integer',
             fk_name: 'user_code'
           )
         end
