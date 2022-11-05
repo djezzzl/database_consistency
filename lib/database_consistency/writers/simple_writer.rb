@@ -32,7 +32,10 @@ module DatabaseConsistency
         redundant_index: 'index is redundant as %<index_name>s covers it',
         redundant_unique_index: 'index uniqueness is redundant as %<index_name>s covers it',
         missing_uniqueness_validation: 'index is unique in the database but do not have uniqueness validator',
-        missing_unique_index: 'model should have proper unique index in the database'
+        missing_unique_index: 'model should have proper unique index in the database',
+        possible_null: 'column is required but there is possible null value insert',
+        null_constraint_missing: 'column should be required in the database',
+        association_missing_null_constraint: 'association foreign key column should be required in the database'
       }.freeze
 
       def write

@@ -27,7 +27,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :ok,
-        message: nil
+        error_message: nil,
+        error_slug: nil
       )
     end
 
@@ -40,7 +41,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :fail,
-          message: 'column is required but there is possible null value insert'
+          error_message: nil,
+          error_slug: :possible_null
         )
       end
     end
@@ -59,7 +61,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -78,7 +81,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
         table_or_model_name: klass.name,
         column_or_attribute_name: 'email',
         status: :fail,
-        message: 'column should be required in the database'
+        error_message: nil,
+        error_slug: :null_constraint_missing
       )
     end
 
@@ -91,7 +95,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -132,7 +137,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user',
           status: :fail,
-          message: 'association foreign key column should be required in the database'
+          error_message: nil,
+          error_slug: :association_missing_null_constraint
         )
       end
     end
@@ -162,7 +168,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
