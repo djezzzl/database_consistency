@@ -77,10 +77,10 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             checker_name: 'ForeignKeyTypeChecker',
             table_or_model_name: company_class.name,
             column_or_attribute_name: association.name.to_s,
-            status: :ok,
+            status: :fail,
             error_message: nil,
-            error_slug: nil,
-            pk_type: 'integer',
+            error_slug: :inconsistent_types,
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'user_id'
@@ -99,7 +99,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'integer',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'user_id'
@@ -165,7 +165,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'company_id'
@@ -184,7 +184,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'company_id'
@@ -207,7 +207,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :fail,
             error_message: nil,
             error_slug: :inconsistent_types,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'company_id'
@@ -226,7 +226,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'company_id'
@@ -270,7 +270,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'company_id'
@@ -289,7 +289,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'company_id'
@@ -312,7 +312,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :fail,
             error_message: nil,
             error_slug: :inconsistent_types,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'company_id'
@@ -331,7 +331,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'company_id'
@@ -430,7 +430,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'c_id'
@@ -449,7 +449,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'serial',
+            pk_type: 'integer',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'c_id'
@@ -472,7 +472,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :fail,
             error_message: nil,
             error_slug: :inconsistent_types,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'integer',
             fk_name: 'c_id'
@@ -491,7 +491,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
             status: :ok,
             error_message: nil,
             error_slug: nil,
-            pk_type: 'bigserial',
+            pk_type: 'bigint',
             pk_name: 'id',
             fk_type: 'bigint',
             fk_name: 'c_id'
