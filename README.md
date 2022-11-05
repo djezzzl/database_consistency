@@ -1,8 +1,8 @@
 # DatabaseConsistency
 
 [![Gem Version](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
-![Tests](https://github.com/djezzzl/database_consistency/actions/workflows/tests.yml/badge.svg)
-![Rubocop](https://github.com/djezzzl/database_consistency/actions/workflows/rubocop.yml/badge.svg)
+![Tests](https://github.com/djezzzl/database_consistency/actions/workflows/tests.yml/badge.svg?branch=master)
+![Rubocop](https://github.com/djezzzl/database_consistency/actions/workflows/rubocop.yml/badge.svg?branch=master)
 [![](https://opencollective.com/database_consistency/tiers/badge.svg)](https://opencollective.com/database_consistency#support)
 
 The main goal of the project is to provide an easy way to check the consistency of the

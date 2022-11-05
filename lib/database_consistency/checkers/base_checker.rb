@@ -66,15 +66,22 @@ module DatabaseConsistency
         raise NotImplementedError
       end
 
-      # @return [OpenStruct]
-      def report_template(status, message = nil)
-        OpenStruct.new(
+      # @return [DatabaseConsistency::Report]
+      def report_template(status, error_slug: nil, error_message: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: error_message,
+          **report_attributes
+        )
+      end
+
+      def report_attributes
+        {
           checker_name: checker_name,
           table_or_model_name: table_or_model_name,
-          column_or_attribute_name: column_or_attribute_name,
-          status: status,
-          message: message
-        )
+          column_or_attribute_name: column_or_attribute_name
+        }
       end
     end
   end

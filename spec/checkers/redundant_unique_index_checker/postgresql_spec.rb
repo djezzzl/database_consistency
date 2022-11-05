@@ -23,7 +23,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :fail,
-          message: 'index uniqueness is redundant as (another_index) covers it'
+          error_slug: :redundant_unique_index,
+          error_message: nil
         )
     end
   end
@@ -46,7 +47,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :ok,
-          message: nil
+          error_slug: nil,
+          error_message: nil
         )
     end
   end
@@ -68,7 +70,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :fail,
-          message: 'index uniqueness is redundant as (another_index) covers it'
+          error_slug: :redundant_unique_index,
+          error_message: nil
         )
     end
   end
@@ -90,7 +93,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :ok,
-          message: nil
+          error_slug: nil,
+          error_message: nil
         )
     end
   end
@@ -127,7 +131,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           table_or_model_name: model.name,
           column_or_attribute_name: 'index',
           status: :ok,
-          message: nil
+          error_slug: nil,
+          error_message: nil
         )
     end
   end

@@ -4,9 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
     class PrimaryKeyTypeChecker < ColumnChecker
-      # Message templates
-      VALIDATOR_MISSING = 'column has int/serial type but recommended to have bigint/bigserial/uuid'
-
       private
 
       VALID_TYPES = %w[bigserial bigint uuid].freeze
@@ -28,7 +25,7 @@ module DatabaseConsistency
         if valid?
           report_template(:ok)
         else
-          report_template(:fail, VALIDATOR_MISSING)
+          report_template(:fail, error_slug: :small_primary_key)
         end
       end
 

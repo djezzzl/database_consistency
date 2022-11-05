@@ -24,7 +24,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -42,7 +43,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email',
           status: :fail,
-          message: 'model should have proper unique index in the database'
+          error_message: nil,
+          error_slug: :missing_unique_index
         )
       end
     end
@@ -66,7 +68,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email+country',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -93,7 +96,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email+country_id',
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -113,7 +117,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
           table_or_model_name: klass.name,
           column_or_attribute_name: 'email+country',
           status: :fail,
-          message: 'model should have proper unique index in the database'
+          error_message: nil,
+          error_slug: :missing_unique_index
         )
       end
     end

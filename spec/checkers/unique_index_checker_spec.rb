@@ -26,7 +26,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -40,7 +41,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :fail,
-          message: 'index is unique in the database but do not have uniqueness validator'
+          error_message: nil,
+          error_slug: :missing_uniqueness_validation
         )
       end
     end
@@ -65,7 +67,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -79,7 +82,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -93,7 +97,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :fail,
-          message: 'index is unique in the database but do not have uniqueness validator'
+          error_message: nil,
+          error_slug: :missing_uniqueness_validation
         )
       end
     end
@@ -119,7 +124,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -133,7 +139,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :ok,
-          message: nil
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
@@ -147,7 +154,8 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
           table_or_model_name: klass.name,
           column_or_attribute_name: index_name,
           status: :fail,
-          message: 'index is unique in the database but do not have uniqueness validator'
+          error_message: nil,
+          error_slug: :missing_uniqueness_validation
         )
       end
     end

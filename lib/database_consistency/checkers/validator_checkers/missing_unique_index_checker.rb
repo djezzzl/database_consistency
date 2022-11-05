@@ -4,8 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks if uniqueness validator has unique index in the database
     class MissingUniqueIndexChecker < ValidatorChecker
-      MISSING_INDEX = 'model should have proper unique index in the database'
-
       def column_or_attribute_name
         @column_or_attribute_name ||= Helper.uniqueness_validator_columns(attribute, validator, model).join('+')
       end
@@ -27,7 +25,7 @@ module DatabaseConsistency
         if unique_index
           report_template(:ok)
         else
-          report_template(:fail, MISSING_INDEX)
+          report_template(:fail, error_slug: :missing_unique_index)
         end
       end
 

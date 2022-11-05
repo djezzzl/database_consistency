@@ -4,8 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks if non polymorphic +belongs_to+ association has foreign key constraint
     class ForeignKeyChecker < AssociationChecker
-      MISSING_FOREIGN_KEY = 'should have foreign key in the database'
-
       private
 
       # We skip check when:
@@ -37,7 +35,7 @@ module DatabaseConsistency
         if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
           report_template(:ok)
         else
-          report_template(:fail, MISSING_FOREIGN_KEY)
+          report_template(:fail, error_slug: :missing_foreign_key)
         end
       end
     end

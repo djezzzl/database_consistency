@@ -4,11 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
     class LengthConstraintChecker < ColumnChecker
-      # Message templates
-      VALIDATOR_MISSING = 'column has limit in the database but do not have length validator'
-      GREATER_LIMIT = 'column has greater limit in the database than in length validator'
-      LOWER_LIMIT = 'column has lower limit in the database than in length validator'
-
       VALIDATOR_CLASS =
         if defined?(ActiveRecord::Validations::LengthValidator)
           ActiveRecord::Validations::LengthValidator
@@ -38,14 +33,14 @@ module DatabaseConsistency
       # | small      | warning |
       # | missing    | fail    |
       def check
-        return report_template(:fail, VALIDATOR_MISSING) unless validator
+        return report_template(:fail, error_slug: :length_validator_missing) unless validator
 
         if valid?(:==)
           report_template(:ok)
         elsif valid?(:<)
-          report_template(:warning, GREATER_LIMIT)
+          report_template(:warning, error_slug: :length_validator_greater_limit)
         else
-          report_template(:fail, LOWER_LIMIT)
+          report_template(:fail, error_slug: :length_validator_lower_limit)
         end
       end
 

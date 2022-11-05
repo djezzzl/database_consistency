@@ -4,8 +4,18 @@ module DatabaseConsistency
   module Checkers
     # This class checks redundant database indexes
     class RedundantUniqueIndexChecker < IndexChecker
-      # Message templates
-      REDUNDANT_UNIQUE_INDEX = 'index uniqueness is redundant as (%index) covers it'
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :index_name
+
+        def initialize(index_name:, **args)
+          super(**args)
+          @index_name = index_name
+        end
+
+        def attributes
+          super.merge(index_name: index_name)
+        end
+      end
 
       private
 
@@ -23,14 +33,16 @@ module DatabaseConsistency
       #
       def check
         if covered_by_index
-          report_template(:fail, render_message)
+          Report.new(
+            status: :fail,
+            error_slug: :redundant_unique_index,
+            error_message: nil,
+            index_name: covered_by_index.name,
+            **report_attributes
+          )
         else
           report_template(:ok)
         end
-      end
-
-      def render_message
-        REDUNDANT_UNIQUE_INDEX.sub('%index', covered_by_index.name)
       end
 
       def covered_by_index

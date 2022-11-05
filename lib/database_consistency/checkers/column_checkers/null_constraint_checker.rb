@@ -4,10 +4,18 @@ module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
     class NullConstraintChecker < ColumnChecker
-      # Message templates
-      VALIDATOR_MISSING = 'column is required in the database but do not have presence validator'
-      ASSOCIATION_VALIDATOR_MISSING = 'column is required in the database but do '\
-                                      'not have presence validator for association (%a_n)'
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :association_name
+
+        def initialize(association_name:, **args)
+          super(**args)
+          @association_name = association_name
+        end
+
+        def attributes
+          super.merge(association_name: association_name)
+        end
+      end
 
       private
 
@@ -29,13 +37,19 @@ module DatabaseConsistency
       #
       # We consider PresenceValidation, InclusionValidation, ExclusionValidation, NumericalityValidator with nil,
       # or required BelongsTo association using this column
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if valid?
           report_template(:ok)
         elsif belongs_to_association
-          report_template(:fail, ASSOCIATION_VALIDATOR_MISSING.gsub('%a_n', belongs_to_association.name.to_s))
+          Report.new(
+            status: :fail,
+            error_slug: :null_constraint_association_misses_validator,
+            error_message: nil,
+            association_name: belongs_to_association.name.to_s,
+            **report_attributes
+          )
         else
-          report_template(:fail, VALIDATOR_MISSING)
+          report_template(:fail, error_slug: :null_constraint_misses_validator)
         end
       end
 

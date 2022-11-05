@@ -5,10 +5,6 @@ module DatabaseConsistency
     # This class checks if presence validator has non-null constraint in the database
     class ColumnPresenceChecker < ValidatorsFractionChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
-      # Message templates
-      CONSTRAINT_MISSING = 'column should be required in the database'
-      ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING = 'association foreign key column should be required in the database'
-      POSSIBLE_NULL = 'column is required but there is possible null value insert'
 
       private
 
@@ -35,7 +31,7 @@ module DatabaseConsistency
       def check
         report_message
       rescue Errors::MissingField => e
-        report_template(:fail, e.message)
+        report_template(:fail, error_message: e.message)
       end
 
       def weak_option?
@@ -47,12 +43,12 @@ module DatabaseConsistency
         has_weak_option = weak_option?
 
         return report_template(:ok) if can_be_null == has_weak_option
-        return report_template(:fail, POSSIBLE_NULL) unless can_be_null
+        return report_template(:fail, error_slug: :possible_null) unless can_be_null
 
         if regular_column
-          report_template(:fail, CONSTRAINT_MISSING)
+          report_template(:fail, error_slug: :null_constraint_missing)
         else
-          report_template(:fail, ASSOCIATION_FOREIGN_KEY_CONSTRAINT_MISSING)
+          report_template(:fail, error_slug: :association_missing_null_constraint)
         end
       end
 

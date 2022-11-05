@@ -18,6 +18,26 @@ module DatabaseConsistency
         fail: :red
       }.freeze
 
+      SLUG_TO_MESSAGE = {
+        missing_foreign_key: 'should have foreign key in the database',
+        inconsistent_types: "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s", # rubocop:disable Layout/LineLength
+        has_one_missing_unique_index: 'associated model should have proper unique index in the database',
+        association_missing_index: 'associated model should have proper index in the database',
+        length_validator_missing: 'column has limit in the database but do not have length validator',
+        length_validator_greater_limit: 'column has greater limit in the database than in length validator',
+        length_validator_lower_limit: 'column has lower limit in the database than in length validator',
+        null_constraint_association_misses_validator: 'column is required in the database but do not have presence validator for association %<association_name>s', # rubocop:disable Layout/LineLength
+        null_constraint_misses_validator: 'column is required in the database but do not have presence validator',
+        small_primary_key: 'column has int/serial type but recommended to have bigint/bigserial/uuid',
+        redundant_index: 'index is redundant as %<index_name>s covers it',
+        redundant_unique_index: 'index uniqueness is redundant as %<index_name>s covers it',
+        missing_uniqueness_validation: 'index is unique in the database but do not have uniqueness validator',
+        missing_unique_index: 'model should have proper unique index in the database',
+        possible_null: 'column is required but there is possible null value insert',
+        null_constraint_missing: 'column should be required in the database',
+        association_missing_null_constraint: 'association foreign key column should be required in the database'
+      }.freeze
+
       def write
         results.each do |result|
           next unless write?(result.status)
@@ -27,10 +47,14 @@ module DatabaseConsistency
       end
 
       def msg(result)
-        "#{result.checker_name} #{status_text(result)} #{key_text(result)} #{result.message}"
+        "#{result.checker_name} #{status_text(result)} #{key_text(result)} #{message_text(result)}"
       end
 
       private
+
+      def message_text(result)
+        (SLUG_TO_MESSAGE[result.error_slug] || result.error_message || '') % result.attributes
+      end
 
       def key_text(result)
         "#{colorize(result.table_or_model_name, :blue)} #{colorize(result.column_or_attribute_name, :yellow)}"

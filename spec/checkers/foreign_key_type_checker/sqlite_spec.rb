@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './context'
-
 RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
   subject(:checker) { described_class.new(model, association) }
 
@@ -32,13 +30,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'user_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'user_id'
+          )
+        end
       end
     end
 
@@ -48,13 +72,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'mismatch'
+        it 'mismatches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :fail,
+            error_message: nil,
+            error_slug: :inconsistent_types,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'user_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'user_id'
+          )
+        end
       end
     end
   end
@@ -87,13 +137,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'company_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'company_id'
+          )
+        end
       end
     end
 
@@ -103,13 +179,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'mismatch'
+        it 'mismatches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :fail,
+            error_message: nil,
+            error_slug: :inconsistent_types,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'company_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'company_id'
+          )
+        end
       end
     end
   end
@@ -142,13 +244,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'company_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'serial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'company_id'
+          )
+        end
       end
     end
 
@@ -158,13 +286,39 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
       context 'when foreign key type has integer type' do
         let(:foreign_key_type) { :integer }
 
-        include_examples 'mismatch'
+        it 'mismatches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :fail,
+            error_message: nil,
+            error_slug: :inconsistent_types,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'integer',
+            fk_name: 'company_id'
+          )
+        end
       end
 
       context 'when foreign key type has bigint type' do
         let(:foreign_key_type) { :bigint }
 
-        include_examples 'match'
+        it 'matches' do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ForeignKeyTypeChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: association.name.to_s,
+            status: :ok,
+            error_message: nil,
+            error_slug: nil,
+            pk_type: 'bigserial',
+            pk_name: 'id',
+            fk_type: 'bigint',
+            fk_name: 'company_id'
+          )
+        end
       end
     end
   end

@@ -4,9 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks missing uniqueness validator
     class UniqueIndexChecker < IndexChecker
-      # Message templates
-      VALIDATOR_MISSING = 'index is unique in the database but do not have uniqueness validator'
-
       private
 
       # We skip check when:
@@ -25,7 +22,7 @@ module DatabaseConsistency
         if valid?
           report_template(:ok)
         else
-          report_template(:fail, VALIDATOR_MISSING)
+          report_template(:fail, error_slug: :missing_uniqueness_validation)
         end
       end
 
