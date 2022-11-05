@@ -11,10 +11,6 @@ module DatabaseConsistency
         @config = config
       end
 
-      def write?(status)
-        status == :fail || config.debug?
-      end
-
       def self.write(results, config: Configuration.new)
         new(results, config: config).write
       end
