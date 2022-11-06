@@ -1,14 +1,15 @@
 # DatabaseConsistency
 
-[![Gem Version](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
-![Tests](https://github.com/djezzzl/database_consistency/actions/workflows/tests.yml/badge.svg?branch=master)
-![Rubocop](https://github.com/djezzzl/database_consistency/actions/workflows/rubocop.yml/badge.svg?branch=master)
+[![](https://badge.fury.io/rb/database_consistency.svg)](https://badge.fury.io/rb/database_consistency)
+[![](https://github.com/djezzzl/database_consistency/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/djezzzl/database_consistency/actions/workflows/tests.yml?query=event%3Aschedule)
+[![](https://github.com/djezzzl/database_consistency/actions/workflows/rubocop.yml/badge.svg?branch=master)](https://github.com/djezzzl/database_consistency/actions/workflows/rubocop.yml?query=event%3Aschedule)
 [![](https://opencollective.com/database_consistency/tiers/badge.svg)](https://opencollective.com/database_consistency#support)
 
 The main goal of the project is to provide an easy way to check the consistency of the
 database constraints with the application validations.
 
-> [Toptal](https://www.toptal.com#snag-only-shrewd-web-development-experts) is hiring! [Join](https://www.toptal.com#snag-only-shrewd-web-development-experts) as Freelancer or [write me](mailto:lawliet.djez@gmail.com) if you want to join Core team.
+> If the project helps you or your organization, I would be very grateful if you [contribute](https://github.com/djezzzl/database_consistency#contributing) or [donate](https://opencollective.com/database_consistency#support).  
+> Your support is an incredible motivation and the biggest reward for my hard work.
 
 Currently, we can:
 - find missing null constraints ([ColumnPresenceChecker](#columnpresencechecker))
@@ -23,7 +24,10 @@ Currently, we can:
 - find redundant non-unique indexes ([RedundantIndexChecker](#redundantindexchecker))
 - find redundant uniqueness constraint ([RedundantUniqueIndexChecker](#redundantuniqueindexchecker))
 
-We also provide flexible configuration ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations).
+We support autocorrection with `-fix`/`--autofix` options! Currently, only several issues can be auto-corrected.
+
+We provide flexible configuration (even multiple) ([example](rails-example/.database_consistency.yml)) and [integrations](#integrations). 
+The TODO configuration can be generated automatically for you with `-g`, `--generate-todo` options.
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
 We support any framework or pure ruby which uses [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord).

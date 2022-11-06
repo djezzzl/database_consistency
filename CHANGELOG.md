@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.3.0] - 2022/11/06
+
+Improvements:
+- Introduce autofix option for several checkers.
+
 ### [1.2.2] - 2022/09/10
 
 Improvements:
