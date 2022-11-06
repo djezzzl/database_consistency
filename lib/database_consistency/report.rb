@@ -14,7 +14,10 @@ module DatabaseConsistency
     end
 
     def attributes
-      {}
+      {
+        error_slug: error_slug,
+        error_message: error_message
+      }
     end
   end
 end

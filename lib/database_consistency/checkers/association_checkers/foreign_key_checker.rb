@@ -4,7 +4,7 @@ module DatabaseConsistency
   module Checkers
     # This class checks if non polymorphic +belongs_to+ association has foreign key constraint
     class ForeignKeyChecker < AssociationChecker
-      class Report < DatabaseConsistency::Report
+      class Report < DatabaseConsistency::Report # :nodoc:
         attr_reader :primary_table, :primary_key, :foreign_table, :foreign_key
 
         def initialize(primary_table:, foreign_table:, primary_key:, foreign_key:, **args)
@@ -52,7 +52,7 @@ module DatabaseConsistency
       # | ----------- | ------ |
       # | persisted   | ok     |
       # | missing     | fail   |
-      def check
+      def check # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
           report_template(:ok)
         else
@@ -60,9 +60,9 @@ module DatabaseConsistency
             status: :fail,
             error_message: nil,
             error_slug: :missing_foreign_key,
-            primary_table: model.table_name.to_s,
-            primary_key: model.primary_key.to_s,
-            foreign_table: association.table_name.to_s,
+            primary_table: association.table_name.to_s,
+            primary_key: association.association_primary_key.to_s,
+            foreign_table: association.active_record.table_name.to_s,
             foreign_key: association.foreign_key.to_s,
             **report_attributes
           )
