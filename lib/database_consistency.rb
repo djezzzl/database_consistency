@@ -16,6 +16,7 @@ require 'database_consistency/writers/simple_writer'
 require 'database_consistency/writers/todo_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
+require 'database_consistency/writers/autofix/base'
 require 'database_consistency/writers/autofix/missing_foreign_key'
 require 'database_consistency/writers/autofix_writer'
 

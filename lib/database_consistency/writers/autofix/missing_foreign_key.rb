@@ -3,16 +3,10 @@
 module DatabaseConsistency
   module Writers
     module Autofix
-      class MissingForeignKey # :nodoc:
+      class MissingForeignKey < Base # :nodoc:
         include Helpers::Migration
 
         TEMPLATE_PATH = File.join(__dir__, 'templates', 'missing_foreign_key.tt')
-
-        attr_reader :report
-
-        def initialize(report)
-          @report = report
-        end
 
         def fix!
           File.write(migration_path(migration_name), migration)
