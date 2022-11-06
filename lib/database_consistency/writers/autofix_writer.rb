@@ -6,7 +6,8 @@ module DatabaseConsistency
     # The simplest formatter
     class AutofixWriter < BaseWriter
       SLUG_TO_GENERATOR = {
-        missing_foreign_key: Autofix::MissingForeignKey
+        missing_foreign_key: Autofix::MissingForeignKey,
+        null_constraint_missing: Autofix::NullConstraintMissing
       }.freeze
 
       def write

@@ -3,15 +3,15 @@
 module DatabaseConsistency
   module Writers
     module Autofix
-      class MissingForeignKey < MigrationBase # :nodoc:
+      class NullConstraintMissing < MigrationBase # :nodoc:
         private
 
         def migration_name
-          "add_#{report.primary_table}_#{report.foreign_table}_foreign_key"
+          "change_#{report.table_name}_#{report.column_name}_null_constraint"
         end
 
         def template_path
-          File.join(__dir__, 'templates', 'missing_foreign_key.tt')
+          File.join(__dir__, 'templates', 'null_constraint_missing.tt')
         end
       end
     end

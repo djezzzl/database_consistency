@@ -6,6 +6,20 @@ module DatabaseConsistency
     class ColumnPresenceChecker < ValidatorsFractionChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
 
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :table_name, :column_name
+
+        def initialize(table_name:, column_name:, **args)
+          super(**args)
+          @table_name = table_name
+          @column_name = column_name
+        end
+
+        def attributes
+          super.merge(table_name: table_name, column_name: column_name)
+        end
+      end
+
       private
 
       def filter(validator)
@@ -38,7 +52,7 @@ module DatabaseConsistency
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
-      def report_message
+      def report_message # rubocop:disable Metrics/MethodLength
         can_be_null = column.null
         has_weak_option = weak_option?
 
@@ -46,7 +60,14 @@ module DatabaseConsistency
         return report_template(:fail, error_slug: :possible_null) unless can_be_null
 
         if regular_column
-          report_template(:fail, error_slug: :null_constraint_missing)
+          Report.new(
+            status: :fail,
+            error_slug: :null_constraint_missing,
+            error_message: nil,
+            table_name: model.table_name.to_s,
+            column_name: attribute.to_s,
+            **report_attributes
+          )
         else
           report_template(:fail, error_slug: :association_missing_null_constraint)
         end
