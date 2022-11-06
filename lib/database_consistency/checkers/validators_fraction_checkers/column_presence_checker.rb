@@ -69,7 +69,14 @@ module DatabaseConsistency
             **report_attributes
           )
         else
-          report_template(:fail, error_slug: :association_missing_null_constraint)
+          Report.new(
+            status: :fail,
+            error_slug: :association_missing_null_constraint,
+            error_message: nil,
+            table_name: model.table_name.to_s,
+            column_name: association_reflection.foreign_key.to_s,
+            **report_attributes
+          )
         end
       end
 

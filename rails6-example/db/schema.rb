@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2021_12_29_101039) do
     t.string "code", null: false
     t.string "slug", null: false
     t.integer "company_id", limit: 8, null: false
-    t.integer "country_id", null: false
+    t.integer "country_id"
     t.integer "organization_id", null: false
     t.integer "invitable_id", null: false
     t.string "invitable_type", null: false
