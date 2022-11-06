@@ -52,7 +52,7 @@ module DatabaseConsistency
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
-      def report_message # rubocop:disable Metrics/MethodLength
+      def report_message # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         can_be_null = column.null
         has_weak_option = weak_option?
 
@@ -69,7 +69,14 @@ module DatabaseConsistency
             **report_attributes
           )
         else
-          report_template(:fail, error_slug: :association_missing_null_constraint)
+          Report.new(
+            status: :fail,
+            error_slug: :association_missing_null_constraint,
+            error_message: nil,
+            table_name: model.table_name.to_s,
+            column_name: association_reflection.foreign_key.to_s,
+            **report_attributes
+          )
         end
       end
 

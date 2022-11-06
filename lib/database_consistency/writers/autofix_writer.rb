@@ -7,7 +7,8 @@ module DatabaseConsistency
     class AutofixWriter < BaseWriter
       SLUG_TO_GENERATOR = {
         missing_foreign_key: Autofix::MissingForeignKey,
-        null_constraint_missing: Autofix::NullConstraintMissing
+        null_constraint_missing: Autofix::NullConstraintMissing,
+        association_missing_null_constraint: Autofix::NullConstraintMissing
       }.freeze
 
       def write
