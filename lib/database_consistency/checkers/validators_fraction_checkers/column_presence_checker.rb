@@ -52,7 +52,7 @@ module DatabaseConsistency
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
-      def report_message # rubocop:disable Metrics/MethodLength
+      def report_message # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         can_be_null = column.null
         has_weak_option = weak_option?
 
