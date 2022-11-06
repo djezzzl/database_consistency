@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Provide an easy way to check the consistency of the '\
                         'database constraints with the application validations.'
   spec.post_install_message = <<~MSG
+
     Thank you for using the gem!
   
     If the project helps you or your organization, I would be very grateful if you contribute or donate.  
@@ -23,6 +24,7 @@ Gem::Specification.new do |spec|
   
     Thank you for your attention,
     Evgeniy Demin
+
   MSG
   spec.homepage      = 'https://github.com/djezzzl/database_consistency'
   spec.license       = 'MIT'
