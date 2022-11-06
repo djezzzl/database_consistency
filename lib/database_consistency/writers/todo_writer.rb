@@ -15,11 +15,11 @@ module DatabaseConsistency
         File.write(file_name, h.to_yaml)
       end
 
+      private
+
       def write?(status)
         status == :fail
       end
-
-      private
 
       def assign_result(hash, result)
         hash[result.table_or_model_name] ||= {}

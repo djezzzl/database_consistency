@@ -9,9 +9,16 @@ require 'database_consistency/rescue_error'
 require 'database_consistency/errors'
 require 'database_consistency/report'
 
+require 'database_consistency/writers/helpers/pipes'
+
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/simple_writer'
 require 'database_consistency/writers/todo_writer'
+
+require 'database_consistency/writers/autofix/helpers/migration'
+require 'database_consistency/writers/autofix/base'
+require 'database_consistency/writers/autofix/missing_foreign_key'
+require 'database_consistency/writers/autofix_writer'
 
 require 'database_consistency/databases/factory'
 require 'database_consistency/databases/types/base'
@@ -50,11 +57,15 @@ require 'database_consistency/processors/indexes_processor'
 # The root module
 module DatabaseConsistency
   class << self
-    def run(*args, **opts)
+    def run(*args, **opts) # rubocop:disable Metrics/MethodLength
       configuration = Configuration.new(*args)
       reports = Processors.reports(configuration)
 
-      if opts[:todo]
+      if opts[:autofix]
+        Writers::AutofixWriter.write(reports, config: configuration)
+
+        0
+      elsif opts[:todo]
         Writers::TodoWriter.write(reports, config: configuration)
 
         0

@@ -46,11 +46,15 @@ module DatabaseConsistency
         end
       end
 
+      private
+
       def msg(result)
         "#{result.checker_name} #{status_text(result)} #{key_text(result)} #{message_text(result)}"
       end
 
-      private
+      def write?(status)
+        status == :fail || config.debug?
+      end
 
       def message_text(result)
         (SLUG_TO_MESSAGE[result.error_slug] || result.error_message || '') % result.attributes

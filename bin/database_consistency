@@ -35,8 +35,12 @@ opt_parser = OptionParser.new do |opts|
     config << f
   end
 
-  opts.on('-g', '--generate-todo', 'Generate TODO file with every failing check disabled. You can pass existing configurations so the generated file will have only new failures.') do |f|
+  opts.on('-g', '--generate-todo', 'Generate TODO file with every failing check disabled. You can pass existing configurations so the generated file will have only new failures.') do
     options[:todo] = true
+  end
+
+  opts.on('-fix', '--autofix', 'Automatically fixes issues by adjusting the code or generating missing migrations.') do
+    options[:autofix] = true
   end
 
   opts.on('-h', '--help', 'Prints this help.') do
