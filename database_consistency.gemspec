@@ -4,7 +4,7 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'database_consistency/version'
 
-Gem::Specification.new do |spec|
+Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.name          = 'database_consistency'
   spec.version       = DatabaseConsistency::VERSION
   spec.authors       = ['Evgeniy Demin']
@@ -15,13 +15,13 @@ Gem::Specification.new do |spec|
   spec.post_install_message = <<~MSG
 
     Thank you for using the gem!
-  
-    If the project helps you or your organization, I would be very grateful if you contribute or donate.  
+
+    If the project helps you or your organization, I would be very grateful if you contribute or donate.#{'  '}
     Your support is an incredible motivation and the biggest reward for my hard work.
-    
+
     https://github.com/djezzzl/database_consistency#contributing
     https://opencollective.com/database_consistency#support
-  
+
     Thank you for your attention,
     Evgeniy Demin
 
