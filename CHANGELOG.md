@@ -1,5 +1,8 @@
 # Changelog
 
+Fixes:
+- Fixed non-unique name for ForeignKeyChecker autofix. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching the issue!
+
 ### [1.3.0] - 2022/11/06
 
 Improvements:

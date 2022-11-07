@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def migration_name
-          "add_#{report.primary_table}_#{report.foreign_table}_foreign_key"
+          "add_#{report.primary_table}_#{report.primary_key}_#{report.foreign_table}_#{report.foreign_key}_fk"
         end
 
         def template_path
