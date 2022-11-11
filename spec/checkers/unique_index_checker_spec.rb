@@ -9,6 +9,59 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
   let(:checker_name) { described_class.to_s.split('::').last }
   let(:index_name) { 'index_name' }
 
+  context 'when unique index is based on association' do
+    before do
+      define_database_with_entity do |t|
+        t.integer :user_id
+        t.integer :post_id
+
+        t.index %i[post_id user_id], unique: true, name: 'index_name'
+      end
+    end
+
+    context 'when validation is missing' do
+      let(:klass) do
+        define_class do |klass|
+          klass.belongs_to :post
+          klass.belongs_to :user
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: checker_name,
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :fail,
+          error_message: nil,
+          error_slug: :missing_uniqueness_validation
+        )
+      end
+    end
+
+    context 'when validation is present' do
+      let(:klass) do
+        define_class do |klass|
+          klass.belongs_to :post
+          klass.belongs_to :user
+
+          klass.validates :post, uniqueness: { scope: :user }
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: checker_name,
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
+    end
+  end
+
   context 'mono attribute index' do
     before do
       define_database_with_entity do |table|

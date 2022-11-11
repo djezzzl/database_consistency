@@ -78,17 +78,23 @@ module DatabaseConsistency
     end
 
     def uniqueness_validator_columns(attribute, validator, model)
-      ([wrapped_attribute_name(attribute, validator)] + scope_columns(validator, model)).map(&:to_s)
+      ([wrapped_attribute_name(attribute, validator, model)] + scope_columns(validator, model)).map(&:to_s)
     end
 
     def scope_columns(validator, model)
       Array.wrap(validator.options[:scope]).map do |scope_item|
-        model._reflect_on_association(scope_item)&.foreign_key || scope_item
+        foreign_key_or_attribute(model, scope_item)
       end
     end
 
+    def foreign_key_or_attribute(model, attribute)
+      model._reflect_on_association(attribute)&.foreign_key || attribute
+    end
+
     # @return [String]
-    def wrapped_attribute_name(attribute, validator)
+    def wrapped_attribute_name(attribute, validator, model)
+      attribute = foreign_key_or_attribute(model, attribute)
+
       if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive]
         attribute
       else
