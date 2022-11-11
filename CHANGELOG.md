@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.3.2] - 2022/11/11
+
+Fixes:
+- Fix `UniqueIndexChecker` to properly work with associations. Thanks [Christos Zisopoulos](https://github.com/christos) for catching the issue!
+
 ### [1.3.1] - 2022/11/07
 
 Fixes:
