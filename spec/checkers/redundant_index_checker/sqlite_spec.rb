@@ -25,7 +25,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :sqlite do
           status: :fail,
           error_slug: :redundant_index,
           error_message: nil,
-          index_name: 'another_index'
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end

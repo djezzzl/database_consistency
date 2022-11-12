@@ -25,7 +25,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :mysql do
           status: :fail,
           error_message: nil,
           error_slug: :redundant_index,
-          index_name: 'another_index'
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end
