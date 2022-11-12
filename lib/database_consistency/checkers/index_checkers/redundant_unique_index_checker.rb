@@ -12,10 +12,6 @@ module DatabaseConsistency
           @index_name = index_name
           @covered_index_name = covered_index_name
         end
-
-        def attributes
-          super.merge(index_name: index_name, covered_index_name: covered_index_name)
-        end
       end
 
       private

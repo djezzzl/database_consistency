@@ -14,15 +14,6 @@ module DatabaseConsistency
           @pk_name = pk_name
           @pk_type = pk_type
         end
-
-        def attributes
-          super.merge(
-            fk_name: fk_name,
-            fk_type: fk_type,
-            pk_name: pk_name,
-            pk_type: pk_type
-          )
-        end
       end
 
       private

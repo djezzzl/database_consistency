@@ -14,15 +14,6 @@ module DatabaseConsistency
           @foreign_table = foreign_table
           @foreign_key = foreign_key
         end
-
-        def attributes
-          super.merge(
-            primary_table: primary_table,
-            primary_key: primary_key,
-            foreign_table: foreign_table,
-            foreign_key: foreign_key
-          )
-        end
       end
 
       private
