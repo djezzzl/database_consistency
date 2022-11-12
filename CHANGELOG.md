@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.3.3] - 2022/11/12
+
+Improvements:
+- Provide autofix for `RedundantIndexChecker`. 
+
 ### [1.3.2] - 2022/11/11
 
 Fixes:
