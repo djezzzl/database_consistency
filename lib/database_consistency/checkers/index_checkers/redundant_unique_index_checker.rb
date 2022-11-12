@@ -32,7 +32,7 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | redundant  | fail   |
       #
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if covered_by_index
           Report.new(
             status: :fail,

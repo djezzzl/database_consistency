@@ -24,7 +24,9 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           column_or_attribute_name: 'index',
           status: :fail,
           error_slug: :redundant_unique_index,
-          error_message: nil
+          error_message: nil,
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end
@@ -71,7 +73,9 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :post
           column_or_attribute_name: 'index',
           status: :fail,
           error_slug: :redundant_unique_index,
-          error_message: nil
+          error_message: nil,
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end
