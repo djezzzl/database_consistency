@@ -10,10 +10,14 @@ module DatabaseConsistency
           File.write(migration_path(migration_name), migration)
         end
 
+        def attributes
+          {}
+        end
+
         private
 
         def migration
-          File.read(template_path) % report.attributes.merge(migration_configuration(migration_name))
+          File.read(template_path) % attributes.merge(migration_configuration(migration_name))
         end
       end
     end

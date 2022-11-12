@@ -4,6 +4,13 @@ module DatabaseConsistency
   module Writers
     module Autofix
       class NullConstraintMissing < MigrationBase # :nodoc:
+        def attributes
+          {
+            table_name: report.table_name,
+            column_name: report.column_name
+          }
+        end
+
         private
 
         def migration_name
