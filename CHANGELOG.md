@@ -1,9 +1,12 @@
 # Changelog
 
-### To be released
+### [1.3.4] - 2022/11/12
 
 Improvements:
 - Provide autofix for `RedundantUniqueIndexChecker`.
+
+Fixes:
+- Fix unique sorting for autofix.
 
 ### [1.3.3] - 2022/11/12
 
