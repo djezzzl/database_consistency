@@ -1,5 +1,10 @@
 # Changelog
 
+### To be released
+
+Improvements:
+- Provide autofix for `RedundantUniqueIndexChecker`.
+
 ### [1.3.3] - 2022/11/12
 
 Improvements:

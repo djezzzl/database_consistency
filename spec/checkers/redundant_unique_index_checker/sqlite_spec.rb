@@ -25,7 +25,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :sqli
           status: :fail,
           error_slug: :redundant_unique_index,
           error_message: nil,
-          index_name: 'another_index'
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end
@@ -73,7 +74,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :sqli
           status: :fail,
           error_slug: :redundant_unique_index,
           error_message: nil,
-          index_name: 'another_index'
+          index_name: 'index',
+          covered_index_name: 'another_index'
         )
     end
   end
