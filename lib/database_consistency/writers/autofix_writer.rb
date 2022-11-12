@@ -8,7 +8,8 @@ module DatabaseConsistency
       SLUG_TO_GENERATOR = {
         missing_foreign_key: Autofix::MissingForeignKey,
         null_constraint_missing: Autofix::NullConstraintMissing,
-        association_missing_null_constraint: Autofix::NullConstraintMissing
+        association_missing_null_constraint: Autofix::NullConstraintMissing,
+        redundant_index: Autofix::RedundantIndex
       }.freeze
 
       def write

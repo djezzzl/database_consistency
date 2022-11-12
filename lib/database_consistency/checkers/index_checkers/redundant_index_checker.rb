@@ -5,15 +5,16 @@ module DatabaseConsistency
     # This class checks redundant database indexes
     class RedundantIndexChecker < IndexChecker
       class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :index_name
+        attr_reader :covered_index_name, :index_name
 
-        def initialize(index_name:, **args)
+        def initialize(covered_index_name:, index_name:, **args)
           super(**args)
+          @covered_index_name = covered_index_name
           @index_name = index_name
         end
 
         def attributes
-          super.merge(index_name: index_name)
+          super.merge(covered_index_name: covered_index_name, index_name: index_name)
         end
       end
 
@@ -31,13 +32,14 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | redundant  | fail   |
       #
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if covered_by_index
           Report.new(
             status: :fail,
             error_slug: :redundant_index,
             error_message: nil,
-            index_name: covered_by_index.name,
+            covered_index_name: covered_by_index.name,
+            index_name: index.name,
             **report_attributes
           )
         else
