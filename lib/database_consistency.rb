@@ -9,11 +9,16 @@ require 'database_consistency/rescue_error'
 require 'database_consistency/errors'
 require 'database_consistency/report'
 
-require 'database_consistency/writers/helpers/pipes'
-
 require 'database_consistency/writers/base_writer'
-require 'database_consistency/writers/simple_writer'
 require 'database_consistency/writers/todo_writer'
+
+require 'database_consistency/writers/simple/base'
+require 'database_consistency/writers/simple/error_message'
+require 'database_consistency/writers/simple/inconsistent_types'
+require 'database_consistency/writers/simple/null_constraint_association_misses_validator'
+require 'database_consistency/writers/simple/redundant_index'
+require 'database_consistency/writers/simple/redundant_unique_index'
+require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
 require 'database_consistency/writers/autofix/base'

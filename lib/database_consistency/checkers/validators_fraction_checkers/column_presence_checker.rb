@@ -14,10 +14,6 @@ module DatabaseConsistency
           @table_name = table_name
           @column_name = column_name
         end
-
-        def attributes
-          super.merge(table_name: table_name, column_name: column_name)
-        end
       end
 
       private

@@ -14,28 +14,30 @@ module DatabaseConsistency
       }.freeze
 
       def write
-        reports.each do |report|
-          next unless fix?(report)
-
-          fix(report)
-        end
+        unique_generators.each(&:fix!)
       end
 
       private
 
-      def reports
-        results.then(&Helpers::Pipes.method(:unique))
+      def unique_generators
+        results
+          .select(&method(:fix?))
+          .map(&method(:generator))
+          .compact
+          .uniq(&method(:unique_key))
       end
 
       def fix?(report)
         report.status == :fail
       end
 
-      def fix(report)
+      def generator(report)
         klass = SLUG_TO_GENERATOR[report.error_slug]
-        return unless klass
+        klass&.new(report)
+      end
 
-        klass.new(report).fix!
+      def unique_key(report)
+        [report.class, report.attributes]
       end
     end
   end

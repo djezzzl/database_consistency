@@ -4,6 +4,12 @@ module DatabaseConsistency
   module Writers
     module Autofix
       class RedundantIndex < MigrationBase # :nodoc:
+        def attributes
+          {
+            index_name: report.index_name
+          }
+        end
+
         private
 
         def migration_name

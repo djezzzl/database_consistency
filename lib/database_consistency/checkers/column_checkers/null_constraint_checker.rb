@@ -11,10 +11,6 @@ module DatabaseConsistency
           super(**args)
           @association_name = association_name
         end
-
-        def attributes
-          super.merge(association_name: association_name)
-        end
       end
 
       private

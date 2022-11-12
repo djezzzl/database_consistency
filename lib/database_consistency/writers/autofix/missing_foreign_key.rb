@@ -4,6 +4,15 @@ module DatabaseConsistency
   module Writers
     module Autofix
       class MissingForeignKey < MigrationBase # :nodoc:
+        def attributes
+          {
+            foreign_table: report.foreign_table,
+            foreign_key: report.foreign_key,
+            primary_table: report.primary_table,
+            primary_key: report.primary_key
+          }
+        end
+
         private
 
         def migration_name
