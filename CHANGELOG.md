@@ -1,10 +1,11 @@
 # Changelog
 
-### Unreleased
+### [1.3.5] - 2022/11/13
 
 Improvements:
 - Add autofix for `ForeignKeyTypeChecker`.
 - Add autofix for `MissingIndexChecker`.
+- Add autofix for `MissingUniqueIndexChecker`
 
 ### [1.3.4] - 2022/11/12
 
