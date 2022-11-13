@@ -50,19 +50,23 @@ module DatabaseConsistency
         end
       end
 
-      def check_remaining # rubocop:disable Metrics/MethodLength
+      def check_remaining
         if index
           report_template(:ok)
         else
-          Report.new(
-            status: :fail,
-            error_slug: :association_missing_index,
-            error_message: nil,
-            table_name: association.klass.table_name,
-            columns: association_keys,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :association_missing_index)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          table_name: association.klass.table_name,
+          columns: association_keys,
+          **report_attributes
+        )
       end
 
       def unique_has_one_association?
