@@ -4,6 +4,16 @@ module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key has index in the database
     class MissingIndexChecker < AssociationChecker
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :table_name, :columns
+
+        def initialize(table_name:, columns:, **args)
+          super(**args)
+          @table_name = table_name
+          @columns = columns
+        end
+      end
+
       private
 
       # We skip check when:
@@ -46,6 +56,17 @@ module DatabaseConsistency
         else
           report_template(:fail, error_slug: :association_missing_index)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          table_name: association.klass.table_name,
+          columns: association_keys,
+          **report_attributes
+        )
       end
 
       def unique_has_one_association?

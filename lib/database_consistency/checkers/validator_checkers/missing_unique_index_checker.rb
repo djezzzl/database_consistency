@@ -4,6 +4,16 @@ module DatabaseConsistency
   module Checkers
     # This class checks if uniqueness validator has unique index in the database
     class MissingUniqueIndexChecker < ValidatorChecker
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :table_name, :columns
+
+        def initialize(table_name:, columns:, **args)
+          super(**args)
+          @table_name = table_name
+          @columns = columns
+        end
+      end
+
       def column_or_attribute_name
         @column_or_attribute_name ||= Helper.uniqueness_validator_columns(attribute, validator, model).join('+')
       end
@@ -21,11 +31,18 @@ module DatabaseConsistency
       # | ------------ | ------ |
       # | persisted    | ok     |
       # | missing      | fail   |
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if unique_index
           report_template(:ok)
         else
-          report_template(:fail, error_slug: :missing_unique_index)
+          Report.new(
+            status: :fail,
+            error_slug: :missing_unique_index,
+            error_message: nil,
+            table_name: model.table_name,
+            columns: sorted_uniqueness_validator_columns,
+            **report_attributes
+          )
         end
       end
 
