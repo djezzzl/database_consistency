@@ -11,6 +11,7 @@ module DatabaseConsistency
         has_one_missing_unique_index: Autofix::HasOneMissingUniqueIndex,
         inconsistent_types: Autofix::InconsistentTypes,
         missing_foreign_key: Autofix::MissingForeignKey,
+        missing_unique_index: Autofix::HasOneMissingUniqueIndex,
         null_constraint_missing: Autofix::NullConstraintMissing,
         redundant_index: Autofix::RedundantIndex,
         redundant_unique_index: Autofix::RedundantIndex,
