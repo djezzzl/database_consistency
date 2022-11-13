@@ -27,7 +27,7 @@ module DatabaseConsistency
         end
 
         def columns_key
-          report.columns.join('_')
+          report.columns.join('_').gsub('(', '_').gsub(')', '_')
         end
 
         def index_name
