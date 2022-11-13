@@ -4,19 +4,21 @@ module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key type covers associated model's primary key (same or bigger)
     class ForeignKeyTypeChecker < AssociationChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :pk_name, :pk_type, :fk_name, :fk_type, :table_to_change, :type_to_set
+      ALLOWED_TYPES =
 
-        def initialize(fk_name: nil, fk_type: nil, pk_name: nil, pk_type: nil, table_to_change: nil, type_to_set: nil, **args) # rubocop:disable Metrics/ParameterLists, Layout/LineLength
-          super(**args)
-          @table_to_change = table_to_change
-          @type_to_set = type_to_set
-          @fk_name = fk_name
-          @fk_type = fk_type
-          @pk_name = pk_name
-          @pk_type = pk_type
+        class Report < DatabaseConsistency::Report # :nodoc:
+          attr_reader :pk_name, :pk_type, :fk_name, :fk_type, :table_to_change, :type_to_set
+
+          def initialize(fk_name: nil, fk_type: nil, pk_name: nil, pk_type: nil, table_to_change: nil, type_to_set: nil, **args) # rubocop:disable Metrics/ParameterLists, Layout/LineLength
+            super(**args)
+            @table_to_change = table_to_change
+            @type_to_set = type_to_set
+            @fk_name = fk_name
+            @fk_type = fk_type
+            @pk_name = pk_name
+            @pk_type = pk_type
+          end
         end
-      end
 
       private
 
@@ -39,8 +41,10 @@ module DatabaseConsistency
       # | ------------- | ------ |
       # | covers        | ok     |
       # | doesn't cover | fail   |
-      def check # rubocop:disable Metrics/MethodLength
+      def check # rubocop:disable Metrics/MethodLength,  Metrics/AbcSize
         if converted_type(associated_column).cover?(converted_type(primary_column))
+          report_template(:ok)
+        elsif !(converted_type(associated_column).numeric? && converted_type(primary_column).numeric?)
           report_template(:ok)
         else
           report_template(:fail, error_slug: :inconsistent_types)

@@ -7,6 +7,8 @@ module DatabaseConsistency
       class Base
         attr_reader :type
 
+        NUMERIC_TYPES = %w[bigserial serial bigint integer smallint].freeze
+
         COVERED_TYPES = {
           'bigint' => %w[integer bigint],
           'integer' => %w[integer smallint]
@@ -20,6 +22,10 @@ module DatabaseConsistency
         # @return [String]
         def convert
           type
+        end
+
+        def numeric?
+          NUMERIC_TYPES.include?(convert)
         end
 
         # @param [DatabaseConsistency::Databases::Types::Base]

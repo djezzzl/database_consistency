@@ -13,7 +13,8 @@ module DatabaseConsistency
         missing_foreign_key: Autofix::MissingForeignKey,
         null_constraint_missing: Autofix::NullConstraintMissing,
         redundant_index: Autofix::RedundantIndex,
-        redundant_unique_index: Autofix::RedundantIndex
+        redundant_unique_index: Autofix::RedundantIndex,
+        small_primary_key: Autofix::InconsistentTypes
       }.freeze
 
       def write
