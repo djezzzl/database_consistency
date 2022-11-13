@@ -4,6 +4,16 @@ module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key has index in the database
     class MissingIndexChecker < AssociationChecker
+      class Report < DatabaseConsistency::Report # :nodoc:
+        attr_reader :table_name, :columns
+
+        def initialize(table_name:, columns:, **args)
+          super(**args)
+          @table_name = table_name
+          @columns = columns
+        end
+      end
+
       private
 
       # We skip check when:
@@ -40,11 +50,18 @@ module DatabaseConsistency
         end
       end
 
-      def check_remaining
+      def check_remaining # rubocop:disable Metrics/MethodLength
         if index
           report_template(:ok)
         else
-          report_template(:fail, error_slug: :association_missing_index)
+          Report.new(
+            status: :fail,
+            error_slug: :association_missing_index,
+            error_message: nil,
+            table_name: association.klass.table_name,
+            columns: association_keys,
+            **report_attributes
+          )
         end
       end
 

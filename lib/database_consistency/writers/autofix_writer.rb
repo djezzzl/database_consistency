@@ -11,7 +11,8 @@ module DatabaseConsistency
         association_missing_null_constraint: Autofix::NullConstraintMissing,
         redundant_index: Autofix::RedundantIndex,
         redundant_unique_index: Autofix::RedundantIndex,
-        inconsistent_types: Autofix::InconsistentTypes
+        inconsistent_types: Autofix::InconsistentTypes,
+        association_missing_index: Autofix::AssociationMissingIndex
       }.freeze
 
       def write

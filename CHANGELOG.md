@@ -4,6 +4,7 @@
 
 Improvements:
 - Add autofix for `ForeignKeyTypeChecker`.
+- Add autofix for `MissingIndexChecker`.
 
 ### [1.3.4] - 2022/11/12
 
