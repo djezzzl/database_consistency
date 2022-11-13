@@ -31,7 +31,7 @@ module DatabaseConsistency
       # | ------------ | ------ |
       # | persisted    | ok     |
       # | missing      | fail   |
-      def check
+      def check # rubocop:disable Metrics/MethodLength
         if unique_index
           report_template(:ok)
         else
