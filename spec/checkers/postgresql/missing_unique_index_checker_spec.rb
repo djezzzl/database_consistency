@@ -16,6 +16,30 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
   context 'when uniqueness validation has case sensitive option turned off' do
     let(:klass) { define_class { |klass| klass.validates :email, uniqueness: { case_sensitive: false } } }
 
+    context 'when the field has citext type' do
+      before do
+        define_database do
+          enable_extension('citext')
+
+          create_table(:entities, id: false) do |table|
+            table.citext :email
+            table.index :email, unique: true
+          end
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingUniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
+    end
+
     context 'when unique index is provided' do
       before do
         define_database_with_entity do |table|

@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: developer
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database_consistency_test
+    ports:
+      - "5432:5432"

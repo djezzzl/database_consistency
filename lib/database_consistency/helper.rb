@@ -95,11 +95,18 @@ module DatabaseConsistency
     def wrapped_attribute_name(attribute, validator, model)
       attribute = foreign_key_or_attribute(model, attribute)
 
-      if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive]
+      if validator.options[:case_sensitive].nil? || validator.options[:case_sensitive] || citext?(model, attribute)
         attribute
       else
         "lower(#{attribute})"
       end
+    end
+
+    def citext?(model, attribute)
+      field = model.columns.find { |column| column.name == attribute.to_s }
+      return false unless field
+
+      field.type.to_s == 'citext'
     end
   end
 end

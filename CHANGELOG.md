@@ -1,5 +1,10 @@
 # Changelog
 
+### Unreleased
+
+Improvements:
+- Add support of citext types for `MissingUniqueIndexChecker` for PostgreSQL. Thanks [Phil Pirozhkov](https://github.com/pirj) for pointing this out!
+
 ### [1.3.5] - 2022/11/13
 
 Improvements:
