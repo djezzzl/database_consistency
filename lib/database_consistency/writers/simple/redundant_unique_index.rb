@@ -15,6 +15,12 @@ module DatabaseConsistency
             covered_index_name: report.covered_index_name
           }
         end
+
+        def unique_attributes
+          {
+            index_name: report.index_name
+          }
+        end
       end
     end
   end
