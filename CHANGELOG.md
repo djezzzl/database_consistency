@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.3.6] - 2022/11/19
+
+Improvements:
+- Improve Simple::Writer to avoid duplicates. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion!
+
 ### [1.3.5] - 2022/11/13
 
 Improvements:
