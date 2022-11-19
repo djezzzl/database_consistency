@@ -18,6 +18,14 @@ module DatabaseConsistency
             pk_type: report.pk_type
           }
         end
+
+        def unique_attributes
+          {
+            table_to_change: report.table_to_change,
+            type_to_set: report.type_to_set,
+            fk_name: report.fk_name
+          }
+        end
       end
     end
   end

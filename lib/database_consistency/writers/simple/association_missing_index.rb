@@ -3,17 +3,17 @@
 module DatabaseConsistency
   module Writers
     module Simple
-      class ErrorMessage < Base # :nodoc:
+      class AssociationMissingIndex < Base # :nodoc:
         private
 
         def template
-          report.error_message || ''
+          'associated model should have proper index in the database'
         end
 
         def unique_attributes
           {
-            template: template,
-            checker_name: report.checker_name
+            table_name: report.table_name,
+            columns: report.columns
           }
         end
       end

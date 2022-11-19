@@ -3,17 +3,17 @@
 module DatabaseConsistency
   module Writers
     module Simple
-      class ErrorMessage < Base # :nodoc:
+      class NullConstraintMissing < Base # :nodoc:
         private
 
         def template
-          report.error_message || ''
+          'column should be required in the database'
         end
 
         def unique_attributes
           {
-            template: template,
-            checker_name: report.checker_name
+            table_name: report.table_name,
+            column_name: report.column_name
           }
         end
       end

@@ -36,7 +36,15 @@ module DatabaseConsistency
           "#{report.checker_name} #{status_text} #{key_text} #{message_text}"
         end
 
+        def unique_key
+          { class: self.class }.merge(unique_attributes)
+        end
+
         private
+
+        def unique_attributes
+          raise StandardError, 'Missing the implementation'
+        end
 
         def message_text
           template % attributes

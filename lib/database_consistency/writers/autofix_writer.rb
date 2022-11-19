@@ -41,8 +41,8 @@ module DatabaseConsistency
         klass&.new(report)
       end
 
-      def unique_key(report)
-        [report.class, report.attributes]
+      def unique_key(generator)
+        [generator.class, generator.attributes]
       end
     end
   end

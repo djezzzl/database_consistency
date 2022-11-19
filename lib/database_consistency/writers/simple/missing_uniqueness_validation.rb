@@ -3,17 +3,11 @@
 module DatabaseConsistency
   module Writers
     module Simple
-      class NullConstraintAssociationMissesValidator < Base # :nodoc:
+      class MissingUniquenessValidation < Base # :nodoc:
         private
 
         def template
-          'column is required in the database but do not have presence validator for association %<association_name>s'
-        end
-
-        def attributes
-          {
-            association_name: report.association_name
-          }
+          'index is unique in the database but do not have uniqueness validator'
         end
 
         def unique_attributes
