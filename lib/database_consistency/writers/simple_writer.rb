@@ -5,25 +5,7 @@ module DatabaseConsistency
   module Writers
     # The simplest formatter
     class SimpleWriter < BaseWriter
-      SLUG_TO_WRITER = {
-        association_missing_index: Simple::AssociationMissingIndex,
-        association_missing_null_constraint: Simple::AssociationMissingNullConstraint,
-        has_one_missing_unique_index: Simple::HasOneMissingUniqueIndex,
-        inconsistent_types: Simple::InconsistentTypes,
-        length_validator_greater_limit: Simple::LengthValidatorGreaterLimit,
-        length_validator_lower_limit: Simple::LengthValidatorLowerLimit,
-        length_validator_missing: Simple::LengthValidatorMissing,
-        missing_foreign_key: Simple::MissingForeignKey,
-        missing_unique_index: Simple::MissingUniqueIndex,
-        missing_uniqueness_validation: Simple::MissingUniquenessValidation,
-        null_constraint_association_misses_validator: Simple::NullConstraintAssociationMissesValidator,
-        null_constraint_misses_validator: Simple::NullConstraintMissesValidator,
-        null_constraint_missing: Simple::NullConstraintMissing,
-        possible_null: Simple::PossibleNull,
-        redundant_index: Simple::RedundantIndex,
-        redundant_unique_index: Simple::RedundantUniqueIndex,
-        small_primary_key: Simple::SmallPrimaryKey
-      }.freeze
+      SIMPLE_WRITER_NAMESPACE = 'DatabaseConsistency::Writers::Simple'
 
       def write
         results.select(&method(:write?))
@@ -41,8 +23,17 @@ module DatabaseConsistency
       end
 
       def writer(report)
-        klass = SLUG_TO_WRITER[report.error_slug] || Simple::ErrorMessage
+        klass = writer_klass(report)
+
         klass.new(report, config: config)
+      end
+
+      def writer_klass(report)
+        return Simple::ErrorMessage if report.error_slug.nil?
+
+        "#{SIMPLE_WRITER_NAMESPACE}::#{report.error_slug.to_s.camelize}".constantize
+      rescue NameError
+        Simple::ErrorMessage
       end
     end
   end
