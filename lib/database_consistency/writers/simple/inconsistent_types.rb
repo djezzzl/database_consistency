@@ -7,7 +7,8 @@ module DatabaseConsistency
         private
 
         def template
-          "foreign key %<fk_name>s with type %<fk_type>s doesn't cover primary key %<pk_name>s with type %<pk_type>s"
+          "foreign key (%<fk_name>s) with type (%<fk_type>s) doesn't "\
+          'cover primary key (%<pk_name>s) with type (%<pk_type>s)'
         end
 
         def attributes
