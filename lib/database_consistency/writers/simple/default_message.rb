@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Writers
     module Simple
-      class ErrorMessage < Base # :nodoc:
+      class DefaultMessage < Base # :nodoc:
         private
 
         def template
