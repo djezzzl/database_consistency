@@ -44,7 +44,7 @@ module DatabaseConsistency
           report_template(:fail, error_slug: :inconsistent_types)
         end
       rescue Errors::MissingField => e
-        Report.new(
+        DatabaseConsistency::Report.new(
           status: :fail,
           error_slug: nil,
           error_message: e.message,
