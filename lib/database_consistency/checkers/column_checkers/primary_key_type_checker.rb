@@ -32,20 +32,24 @@ module DatabaseConsistency
       # | --------------------- | ------ |
       # | yes                   | ok     |
       # | no                    | fail   |
-      def check # rubocop:disable Metrics/MethodLength
+      def check
         if valid?
           report_template(:ok)
         else
-          Report.new(
-            status: :fail,
-            error_slug: :small_primary_key,
-            error_message: nil,
-            table_to_change: model.table_name,
-            fk_name: column.name,
-            type_to_set: type_to_set,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :small_primary_key)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          table_to_change: model.table_name,
+          fk_name: column.name,
+          type_to_set: type_to_set,
+          **report_attributes
+        )
       end
 
       def type_to_set

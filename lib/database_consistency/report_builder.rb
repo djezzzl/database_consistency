@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   class ReportBuilder # :nodoc:
-    def self.define(klass, *attrs)
+    def self.define(klass, *attrs) # rubocop:disable Metrics/MethodLength
       Class.new(klass) do
         attr_reader(*attrs)
 
@@ -10,6 +10,12 @@ module DatabaseConsistency
           def initialize(#{attrs.map { |attr| "#{attr}:" }.join(', ')}, **opts)
             super(**opts)
             #{attrs.map { |attr| "@#{attr} = #{attr}" }.join("\n")}
+          end
+
+          def to_h
+            h = defined?(super) ? super : {}
+            #{attrs.map { |attr| "h[#{attr}] = #{attr}" }.join("\n")}
+            h
           end
         DEF
       end

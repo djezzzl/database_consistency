@@ -40,6 +40,17 @@ module DatabaseConsistency
         report_template(:fail, error_message: e.message)
       end
 
+      def report_template(status, error_message: nil, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: error_message,
+          table_name: model.table_name.to_s,
+          column_name: attribute.to_s,
+          **report_attributes
+        )
+      end
+
       def weak_option?
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end

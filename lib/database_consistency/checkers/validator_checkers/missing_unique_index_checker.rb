@@ -27,19 +27,23 @@ module DatabaseConsistency
       # | ------------ | ------ |
       # | persisted    | ok     |
       # | missing      | fail   |
-      def check # rubocop:disable Metrics/MethodLength
+      def check
         if unique_index
           report_template(:ok)
         else
-          Report.new(
-            status: :fail,
-            error_slug: :missing_unique_index,
-            error_message: nil,
-            table_name: model.table_name,
-            columns: sorted_uniqueness_validator_columns,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :missing_unique_index)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          table_name: model.table_name,
+          columns: sorted_uniqueness_validator_columns,
+          **report_attributes
+        )
       end
 
       def unique_index

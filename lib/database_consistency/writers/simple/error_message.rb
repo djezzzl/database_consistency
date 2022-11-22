@@ -11,10 +11,7 @@ module DatabaseConsistency
         end
 
         def unique_attributes
-          {
-            template: template,
-            checker_name: report.checker_name
-          }
+          report.to_h
         end
       end
     end

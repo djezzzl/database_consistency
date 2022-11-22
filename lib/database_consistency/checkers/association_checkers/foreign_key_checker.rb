@@ -39,21 +39,25 @@ module DatabaseConsistency
       # | ----------- | ------ |
       # | persisted   | ok     |
       # | missing     | fail   |
-      def check # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      def check
         if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
           report_template(:ok)
         else
-          Report.new(
-            status: :fail,
-            error_message: nil,
-            error_slug: :missing_foreign_key,
-            primary_table: association.table_name.to_s,
-            primary_key: association.association_primary_key.to_s,
-            foreign_table: association.active_record.table_name.to_s,
-            foreign_key: association.foreign_key.to_s,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :missing_foreign_key)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_message: nil,
+          error_slug: error_slug,
+          primary_table: association.table_name.to_s,
+          primary_key: association.association_primary_key.to_s,
+          foreign_table: association.active_record.table_name.to_s,
+          foreign_key: association.foreign_key.to_s,
+          **report_attributes
+        )
       end
     end
   end

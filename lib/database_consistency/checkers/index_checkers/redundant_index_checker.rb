@@ -24,19 +24,23 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | redundant  | fail   |
       #
-      def check # rubocop:disable Metrics/MethodLength
+      def check
         if covered_by_index
-          Report.new(
-            status: :fail,
-            error_slug: :redundant_index,
-            error_message: nil,
-            covered_index_name: covered_by_index.name,
-            index_name: index.name,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :redundant_index)
         else
           report_template(:ok)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          covered_index_name: covered_by_index&.name,
+          index_name: index.name,
+          **report_attributes
+        )
       end
 
       def covered_by_index
