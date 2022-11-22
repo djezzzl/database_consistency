@@ -48,7 +48,7 @@ module DatabaseConsistency
       end
 
       def writer(report)
-        klass = SLUG_TO_WRITER[report.error_slug] || Simple::ErrorMessage
+        klass = SLUG_TO_WRITER[report.error_slug] || Simple::DefaultMessage
         klass.new(report, config: config)
       end
     end

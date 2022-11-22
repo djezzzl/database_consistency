@@ -4,15 +4,11 @@ module DatabaseConsistency
   module Checkers
     # This class checks redundant database indexes
     class RedundantUniqueIndexChecker < IndexChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :index_name, :covered_index_name
-
-        def initialize(covered_index_name:, index_name:, **args)
-          super(**args)
-          @index_name = index_name
-          @covered_index_name = covered_index_name
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :index_name,
+        :covered_index_name
+      )
 
       private
 
@@ -28,19 +24,23 @@ module DatabaseConsistency
       # | provided   | ok     |
       # | redundant  | fail   |
       #
-      def check # rubocop:disable Metrics/MethodLength
+      def check
         if covered_by_index
-          Report.new(
-            status: :fail,
-            error_slug: :redundant_unique_index,
-            error_message: nil,
-            index_name: index.name,
-            covered_index_name: covered_by_index.name,
-            **report_attributes
-          )
+          report_template(:fail, error_slug: :redundant_unique_index)
         else
           report_template(:ok)
         end
+      end
+
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          index_name: index.name,
+          covered_index_name: covered_by_index&.name,
+          **report_attributes
+        )
       end
 
       def covered_by_index

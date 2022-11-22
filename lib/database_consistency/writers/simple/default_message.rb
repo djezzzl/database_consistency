@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Writers
     module Simple
-      class ErrorMessage < Base # :nodoc:
+      class DefaultMessage < Base # :nodoc:
         private
 
         def template
@@ -11,10 +11,7 @@ module DatabaseConsistency
         end
 
         def unique_attributes
-          {
-            template: template,
-            checker_name: report.checker_name
-          }
+          report.to_h
         end
       end
     end

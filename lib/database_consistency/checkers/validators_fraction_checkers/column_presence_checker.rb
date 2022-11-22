@@ -6,15 +6,11 @@ module DatabaseConsistency
     class ColumnPresenceChecker < ValidatorsFractionChecker
       WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
 
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :table_name, :column_name
-
-        def initialize(table_name:, column_name:, **args)
-          super(**args)
-          @table_name = table_name
-          @column_name = column_name
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :table_name,
+        :column_name
+      )
 
       private
 
@@ -42,6 +38,17 @@ module DatabaseConsistency
         report_message
       rescue Errors::MissingField => e
         report_template(:fail, error_message: e.message)
+      end
+
+      def report_template(status, error_message: nil, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: error_message,
+          table_name: model.table_name.to_s,
+          column_name: attribute.to_s,
+          **report_attributes
+        )
       end
 
       def weak_option?
