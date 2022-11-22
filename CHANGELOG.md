@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.3.7] - 2022/11/22
+
+Improvements:
+- Group similar issues on Simple::Writer.
+
 ### [1.3.6] - 2022/11/19
 
 Improvements:
