@@ -8,7 +8,7 @@ module DatabaseConsistency
 
         class_eval(<<~DEF, __FILE__, __LINE__ + 1)
           def initialize(#{attrs.map { |attr| "#{attr}:" }.join(', ')}, **opts)
-            super(**opts)
+            super(**opts) if opts.any?
             #{attrs.map { |attr| "@#{attr} = #{attr}" }.join("\n")}
           end
 
