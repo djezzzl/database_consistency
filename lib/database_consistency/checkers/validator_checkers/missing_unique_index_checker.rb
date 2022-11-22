@@ -4,15 +4,11 @@ module DatabaseConsistency
   module Checkers
     # This class checks if uniqueness validator has unique index in the database
     class MissingUniqueIndexChecker < ValidatorChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :table_name, :columns
-
-        def initialize(table_name:, columns:, **args)
-          super(**args)
-          @table_name = table_name
-          @columns = columns
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :table_name,
+        :columns
+      )
 
       def column_or_attribute_name
         @column_or_attribute_name ||= Helper.uniqueness_validator_columns(attribute, validator, model).join('+')

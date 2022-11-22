@@ -4,14 +4,10 @@ module DatabaseConsistency
   module Checkers
     # This class checks missing presence validator
     class NullConstraintChecker < ColumnChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :association_name
-
-        def initialize(association_name:, **args)
-          super(**args)
-          @association_name = association_name
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :association_name
+      )
 
       private
 

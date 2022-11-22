@@ -4,17 +4,13 @@ module DatabaseConsistency
   module Checkers
     # This class checks if non polymorphic +belongs_to+ association has foreign key constraint
     class ForeignKeyChecker < AssociationChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :primary_table, :primary_key, :foreign_table, :foreign_key
-
-        def initialize(primary_table:, foreign_table:, primary_key:, foreign_key:, **args)
-          super(**args)
-          @primary_table = primary_table
-          @primary_key = primary_key
-          @foreign_table = foreign_table
-          @foreign_key = foreign_key
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :primary_table,
+        :primary_key,
+        :foreign_table,
+        :foreign_key
+      )
 
       private
 

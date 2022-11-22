@@ -7,6 +7,7 @@ require 'database_consistency/helper'
 require 'database_consistency/configuration'
 require 'database_consistency/rescue_error'
 require 'database_consistency/errors'
+require 'database_consistency/report_builder'
 require 'database_consistency/report'
 
 require 'database_consistency/writers/base_writer'

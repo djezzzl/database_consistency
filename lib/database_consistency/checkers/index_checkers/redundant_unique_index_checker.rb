@@ -4,15 +4,11 @@ module DatabaseConsistency
   module Checkers
     # This class checks redundant database indexes
     class RedundantUniqueIndexChecker < IndexChecker
-      class Report < DatabaseConsistency::Report # :nodoc:
-        attr_reader :index_name, :covered_index_name
-
-        def initialize(covered_index_name:, index_name:, **args)
-          super(**args)
-          @index_name = index_name
-          @covered_index_name = covered_index_name
-        end
-      end
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :index_name,
+        :covered_index_name
+      )
 
       private
 
