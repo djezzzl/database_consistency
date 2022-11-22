@@ -28,13 +28,20 @@ module DatabaseConsistency
       def write
         results.select(&method(:write?))
                .map(&method(:writer))
-               .uniq(&:unique_key)
-               .each do |writer|
-          puts writer.msg
+               .group_by(&:unique_key)
+               .each_value do |writers|
+          puts message(writers)
         end
       end
 
       private
+
+      def message(writers)
+        msg = writers.first.msg
+        return msg if writers.size == 1
+
+        "#{msg}. Total grouped offenses: #{writers.size}"
+      end
 
       def write?(report)
         report.status == :fail || config.debug?

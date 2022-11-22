@@ -33,7 +33,7 @@ module DatabaseConsistency
         end
 
         def msg
-          "#{report.checker_name} #{status_text} #{key_text} #{message_text}"
+          "#{report.checker_name} #{status_text} #{key_text} #{message_text}".strip
         end
 
         def unique_key
