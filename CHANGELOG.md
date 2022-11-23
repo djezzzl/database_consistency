@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.3.8] - 2022/11/23
+
+- Add fund metadata
+
 ### [1.3.7] - 2022/11/22
 
 Improvements:
