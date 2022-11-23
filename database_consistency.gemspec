@@ -26,6 +26,9 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
     Evgeniy Demin
 
   MSG
+  spec.metadata = {
+    'funding_uri' => 'https://opencollective.com/database_consistency#support'
+  }
   spec.homepage      = 'https://github.com/djezzzl/database_consistency'
   spec.license       = 'MIT'
 
