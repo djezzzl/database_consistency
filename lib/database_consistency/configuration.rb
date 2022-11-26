@@ -7,17 +7,10 @@ module DatabaseConsistency
   class Configuration
     DEFAULT_PATH = '.database_consistency.yml'
 
-    def initialize(filepaths = DEFAULT_PATH)
-      @configuration = Array(filepaths).each_with_object({}) do |filepath, result|
-        content =
-          if filepath && File.exist?(filepath)
-            data = load_yaml_config_file(filepath)
-            data.is_a?(Hash) ? data : {}
-          else
-            {}
-          end
-
-        combine_configs!(result, content)
+    def initialize(file_paths = DEFAULT_PATH)
+      @configuration = existing_configurations(file_paths).then do |existing_paths|
+        puts "Loaded configurations: #{existing_paths.join(', ')}"
+        extract_configurations(existing_paths)
       end
     end
 
@@ -54,6 +47,21 @@ module DatabaseConsistency
     private
 
     attr_reader :configuration
+
+    def existing_configurations(paths)
+      Array(paths).select do |filepath|
+        filepath && File.exist?(filepath)
+      end
+    end
+
+    def extract_configurations(paths)
+      Array(paths).each_with_object({}) do |filepath, result|
+        data = load_yaml_config_file(filepath)
+        content = data.is_a?(Hash) ? data : {}
+
+        combine_configs!(result, content)
+      end
+    end
 
     def global_enabling
       value = configuration.dig('DatabaseConsistencyCheckers', 'All', 'enabled')
