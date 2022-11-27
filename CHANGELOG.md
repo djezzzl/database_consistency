@@ -1,5 +1,7 @@
 # Changelog
 
+### [1.4.0] - 2022/11/27
+
 - Implement `EnumTypeChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion! 
 
 ### [1.3.9] - 2022/11/26
