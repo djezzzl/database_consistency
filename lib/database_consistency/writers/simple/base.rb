@@ -47,7 +47,9 @@ module DatabaseConsistency
         end
 
         def message_text
-          template % attributes
+          attributes.reduce(template) do |str, (k, v)|
+            str.gsub("%<#{k}>s", v.to_s)
+          end
         end
 
         def attributes

@@ -17,7 +17,9 @@ module DatabaseConsistency
         private
 
         def migration
-          File.read(template_path) % attributes.merge(migration_configuration(migration_name))
+          attributes.merge(migration_configuration(migration_name)).reduce(File.read(template_path)) do |str, (k, v)|
+            str.gsub("%<#{k}>s", v.to_s)
+          end
         end
       end
     end

@@ -4,8 +4,6 @@ module DatabaseConsistency
   module Checkers
     # This class checks enum types consistency
     class EnumTypeChecker < EnumChecker
-      MissingColumn = Class.new(StandardError)
-
       Report = DatabaseConsistency::ReportBuilder.define(
         DatabaseConsistency::Report,
         :column_type,
@@ -15,7 +13,7 @@ module DatabaseConsistency
       private
 
       def preconditions
-        true
+        column.present?
       end
 
       def check
@@ -53,10 +51,11 @@ module DatabaseConsistency
         model.defined_enums[enum].values.map(&:class).uniq
       end
 
-      def column_type
-        column = model.columns.find { |c| c.name.to_s == enum.to_s }
-        raise MissingColumn unless column
+      def column
+        @column ||= model.columns.find { |c| c.name.to_s == enum.to_s }
+      end
 
+      def column_type
         column.type.to_s
       end
 

@@ -20,24 +20,11 @@ module DatabaseConsistency
 
       # We skip the check when there are no presence validators
       def preconditions
-        validators.any? && !association?
+        column && validators.any? && !association?
       end
 
       def association?
         model._reflect_on_association(attribute)&.macro == :has_one
-      end
-
-      # Table of possible statuses
-      # | allow_nil/allow_blank/if/unless | database | status |
-      # | ------------------------------- | -------- | ------ |
-      # | at least one provided           | required | fail   |
-      # | at least one provided           | optional | ok     |
-      # | all missing                     | required | ok     |
-      # | all missing                     | optional | fail   |
-      def check
-        report_message
-      rescue Errors::MissingField => e
-        report_template(:fail, error_message: e.message)
       end
 
       def report_template(status, error_message: nil, error_slug: nil)
@@ -55,7 +42,7 @@ module DatabaseConsistency
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
-      def report_message # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      def check # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         can_be_null = column.null
         has_weak_option = weak_option?
 
@@ -84,9 +71,7 @@ module DatabaseConsistency
       end
 
       def column
-        @column ||= regular_column ||
-                    association_reference_column ||
-                    (raise Errors::MissingField, "column (#{attribute}) is missing in table (#{model.table_name}) but used for presence validation") # rubocop:disable Layout/LineLength
+        @column ||= (regular_column || association_reference_column)
       end
 
       def regular_column
