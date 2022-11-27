@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.4.1] - 2022/11/27
+
+- Reduce warnings when `$VERBOSE=true`. Thanks [John Yeates](https://github.com/unikitty37) for the suggestion!
+- Avoid missing columns errors for `ColumnPresenceChecker` and `EnumTypeChecker`. Thanks [John Yeates](https://github.com/unikitty37) for the suggestion!
+
 ### [1.4.0] - 2022/11/27
 
 - Implement `EnumTypeChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion! 
