@@ -112,6 +112,10 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
 
   if ActiveRecord::VERSION::MAJOR >= 6
     context 'when has validation on has_one association' do
+      before do
+        define_database_with_entity { |table| table.string :email }
+      end
+
       let(:klass) { define_class { |klass| klass.has_one :country, required: true } }
       let(:attribute) { :country }
 
