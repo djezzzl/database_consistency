@@ -24,6 +24,7 @@ Currently, the tool can:
 - find mismatching primary key types with their foreign keys
 - find redundant non-unique indexes
 - find redundant uniqueness constraints
+- find mismatching enum types with their values
 
 Besides that, the tool provides:
 - auto-correction
