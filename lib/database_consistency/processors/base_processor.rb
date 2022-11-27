@@ -9,7 +9,8 @@ module DatabaseConsistency
         ValidatorsProcessor,
         AssociationsProcessor,
         ValidatorsFractionsProcessor,
-        IndexesProcessor
+        IndexesProcessor,
+        EnumsProcessor
       ].flat_map do |processor|
         processor.new(configuration).reports
       end

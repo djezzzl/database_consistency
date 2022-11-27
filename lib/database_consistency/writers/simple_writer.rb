@@ -22,7 +22,8 @@ module DatabaseConsistency
         possible_null: Simple::PossibleNull,
         redundant_index: Simple::RedundantIndex,
         redundant_unique_index: Simple::RedundantUniqueIndex,
-        small_primary_key: Simple::SmallPrimaryKey
+        small_primary_key: Simple::SmallPrimaryKey,
+        inconsistent_enum_type: Simple::InconsistentEnumType
       }.freeze
 
       def write

@@ -32,6 +32,7 @@ require 'database_consistency/writers/simple/null_constraint_misses_validator'
 require 'database_consistency/writers/simple/null_constraint_missing'
 require 'database_consistency/writers/simple/possible_null'
 require 'database_consistency/writers/simple/small_primary_key'
+require 'database_consistency/writers/simple/inconsistent_enum_type'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
@@ -50,6 +51,9 @@ require 'database_consistency/databases/types/base'
 require 'database_consistency/databases/types/sqlite'
 
 require 'database_consistency/checkers/base_checker'
+
+require 'database_consistency/checkers/enum_checkers/enum_checker'
+require 'database_consistency/checkers/enum_checkers/enum_type_checker'
 
 require 'database_consistency/checkers/association_checkers/association_checker'
 require 'database_consistency/checkers/association_checkers/missing_index_checker'
@@ -73,6 +77,7 @@ require 'database_consistency/checkers/index_checkers/redundant_index_checker'
 require 'database_consistency/checkers/index_checkers/redundant_unique_index_checker'
 
 require 'database_consistency/processors/base_processor'
+require 'database_consistency/processors/enums_processor'
 require 'database_consistency/processors/associations_processor'
 require 'database_consistency/processors/validators_processor'
 require 'database_consistency/processors/columns_processor'
