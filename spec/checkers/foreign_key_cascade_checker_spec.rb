@@ -7,6 +7,10 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
   let(:association) { entity_class.reflect_on_all_associations.first }
   let!(:country_class) { define_class('Country', :countries) }
 
+  before do
+    skip('older versions are not supported with sqlite3') if ActiveRecord::VERSION::MAJOR < 5 && adapter == 'sqlite3'
+  end
+
   context 'when there is no cascade' do
     before do
       define_database do
