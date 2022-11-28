@@ -50,7 +50,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
         create_table :entities
 
         create_table :countries do |t|
-          t.integer :entity_id
+          if ActiveRecord::VERSION::MAJOR >= 5 && adapter == 'mysql2'
+            t.bigint :entity_id
+          else
+            t.integer :entity_id
+          end
 
           t.foreign_key :entities, on_delete: :cascade
         end
