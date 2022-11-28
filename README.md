@@ -25,6 +25,7 @@ Currently, the tool can:
 - find redundant non-unique indexes
 - find redundant uniqueness constraints
 - find mismatching enum types with their values
+- find mismatching foreign key cascades
 
 Besides that, the tool provides:
 - auto-correction
