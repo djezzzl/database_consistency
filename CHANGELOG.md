@@ -1,5 +1,7 @@
 # Changelog
 
+### [1.5.0] - 2022/11/28
+
 - Implement `ForeignKeyCascadeChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion!
 
 ### [1.4.1] - 2022/11/27
