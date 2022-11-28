@@ -1,5 +1,7 @@
 # Changelog
 
+- Implement `ForeignKeyCascadeChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion!
+
 ### [1.4.1] - 2022/11/27
 
 - Reduce warnings when `$VERBOSE=true`. Thanks [John Yeates](https://github.com/unikitty37) for the suggestion!
