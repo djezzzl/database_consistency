@@ -37,7 +37,7 @@ module DatabaseConsistency
 
       def column_type_converter(type)
         case type
-        when 'string' then String
+        when 'string', 'enum' then String
         when 'integer' then Integer
         when 'decimal' then BigDecimal
         when 'date' then Date
