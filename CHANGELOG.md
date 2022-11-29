@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.5.1] - 2022/11/29
+
+- Fix `EnumTypeChecker` to consider PostgreSQL enum types. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching the issue!
+
 ### [1.5.0] - 2022/11/28
 
 - Implement `ForeignKeyCascadeChecker`. Thanks [Phil Pirozhkov](https://github.com/pirj) for the suggestion!
