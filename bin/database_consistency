@@ -39,7 +39,7 @@ opt_parser = OptionParser.new do |opts|
     options[:todo] = true
   end
 
-  opts.on('-fix', '--autofix', 'Automatically fixes issues by adjusting the code or generating missing migrations.') do
+  opts.on('-f', '--autofix', 'Automatically fixes issues by adjusting the code or generating missing migrations.') do
     options[:autofix] = true
   end
 
