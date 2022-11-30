@@ -21,7 +21,7 @@ module DatabaseConsistency
           has_one
           has_many
         ].include?(association.macro) && association.through_reflection.nil? && association.klass
-      rescue NameError
+      rescue StandardError
         false
       end
 
