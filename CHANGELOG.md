@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.5.2] - 2022/11/30
+
+- Fix `-help` option to output correct options. Thanks [la-magra](https://github.com/la-magra) for catching the issue!
+
 ### [1.5.1] - 2022/11/29
 
 - Fix `EnumTypeChecker` to consider PostgreSQL enum types. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching the issue!
