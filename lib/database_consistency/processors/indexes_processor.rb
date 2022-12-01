@@ -19,7 +19,7 @@ module DatabaseConsistency
           indexes = model.connection.indexes(model.table_name)
 
           indexes.flat_map do |index|
-            enabled_checkers.map do |checker_class|
+            enabled_checkers.flat_map do |checker_class|
               checker = checker_class.new(model, index)
               checker.report_if_enabled?(configuration)
             end

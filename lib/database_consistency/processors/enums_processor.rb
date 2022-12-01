@@ -15,7 +15,7 @@ module DatabaseConsistency
           next unless configuration.enabled?(model.name.to_s)
 
           model.defined_enums.keys.flat_map do |enum|
-            enabled_checkers.map do |checker_class|
+            enabled_checkers.flat_map do |checker_class|
               checker = checker_class.new(model, enum)
               checker.report_if_enabled?(configuration)
             end

@@ -125,6 +125,29 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
     end
   end
 
+  context 'with polymorphic belongs_to association' do
+    before do
+      define_database_with_entity do |table|
+        table.integer :subject_id, null: false
+        table.string :subject_type
+      end
+    end
+
+    let(:attribute) { :subject }
+    let(:klass) { define_class { |klass| klass.belongs_to :subject, polymorphic: true, **required } }
+
+    specify do
+      expect(checker.report.last).to have_attributes(
+        checker_name: 'ColumnPresenceChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'subject',
+        status: :fail,
+        error_message: nil,
+        error_slug: :association_foreign_type_missing_null_constraint
+      )
+    end
+  end
+
   context 'when null constraint is missing for the association key' do
     before do
       define_database_with_entity { |table| table.string :user_id }
@@ -136,7 +159,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
       let(:klass) { define_class { |klass| klass.belongs_to :user, **required } }
 
       specify do
-        expect(checker.report).to have_attributes(
+        expect(checker.report.first).to have_attributes(
           checker_name: 'ColumnPresenceChecker',
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user',
@@ -167,7 +190,7 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
       let(:klass) { define_class { |klass| klass.belongs_to :user, **required } }
 
       specify do
-        expect(checker.report).to have_attributes(
+        expect(checker.report.first).to have_attributes(
           checker_name: 'ColumnPresenceChecker',
           table_or_model_name: klass.name,
           column_or_attribute_name: 'user',

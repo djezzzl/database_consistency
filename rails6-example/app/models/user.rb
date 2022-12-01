@@ -14,4 +14,5 @@ class User < ApplicationRecord
   belongs_to :country
   belongs_to :invitable, polymorphic: true
   belongs_to :organization
+  belongs_to :subject, polymorphic: true
 end

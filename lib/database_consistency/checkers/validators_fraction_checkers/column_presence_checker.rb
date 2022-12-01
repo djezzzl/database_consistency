@@ -18,22 +18,17 @@ module DatabaseConsistency
         validator.kind == :presence
       end
 
-      # We skip the check when there are no presence validators
       def preconditions
-        column && validators.any? && !association?
+        (regular_column || association) && validators.any?
       end
 
-      def association?
-        model._reflect_on_association(attribute)&.macro == :has_one
-      end
-
-      def report_template(status, error_message: nil, error_slug: nil)
+      def report_template(status, column_name:, error_slug: nil)
         Report.new(
           status: status,
           error_slug: error_slug,
-          error_message: error_message,
+          error_message: nil,
           table_name: model.table_name.to_s,
-          column_name: attribute.to_s,
+          column_name: column_name,
           **report_attributes
         )
       end
@@ -42,56 +37,42 @@ module DatabaseConsistency
         validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
       end
 
-      def check # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-        can_be_null = column.null
-        has_weak_option = weak_option?
+      def check
+        return analyse(attribute.to_s, type: :null_constraint_missing) if regular_column
 
-        return report_template(:ok) if can_be_null == has_weak_option
-        return report_template(:fail, error_slug: :possible_null) unless can_be_null
-
-        if regular_column
-          Report.new(
-            status: :fail,
-            error_slug: :null_constraint_missing,
-            error_message: nil,
-            table_name: model.table_name.to_s,
-            column_name: attribute.to_s,
-            **report_attributes
-          )
-        else
-          Report.new(
-            status: :fail,
-            error_slug: :association_missing_null_constraint,
-            error_message: nil,
-            table_name: model.table_name.to_s,
-            column_name: association_reflection.foreign_key.to_s,
-            **report_attributes
-          )
+        reports = [analyse(association.foreign_key.to_s, type: :association_missing_null_constraint)]
+        if association.polymorphic?
+          reports << analyse(association.foreign_type.to_s, type: :association_foreign_type_missing_null_constraint)
         end
+
+        reports
       end
 
-      def column
-        @column ||= (regular_column || association_reference_column)
+      def analyse(column_name, type:)
+        field = column(column_name)
+
+        can_be_null = field.null
+        has_weak_option = weak_option?
+
+        return report_template(:ok, column_name: column_name) if can_be_null == has_weak_option
+        return report_template(:fail, error_slug: :possible_null, column_name: column_name) unless can_be_null
+
+        report_template(:fail, error_slug: type, column_name: column_name)
       end
 
       def regular_column
-        @regular_column ||= column_for_name(attribute.to_s)
+        @regular_column ||= column(attribute.to_s)
       end
 
-      def column_for_name(name)
-        model.columns.find { |field| field.name == name.to_s }
-      end
-
-      def association_reference_column
-        return unless association_reflection
-
-        column_for_name(association_reflection.foreign_key)
-      end
-
-      def association_reflection
-        model
+      def association
+        @association ||=
+          model
           .reflect_on_all_associations
-          .find { |reflection| reflection.belongs_to? && reflection.name == attribute }
+          .find { |reflection| reflection.belongs_to? && reflection.name.to_s == attribute.to_s }
+      end
+
+      def column(name)
+        model.columns.find { |field| field.name == name.to_s }
       end
     end
   end
