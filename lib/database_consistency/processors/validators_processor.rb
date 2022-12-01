@@ -19,7 +19,7 @@ module DatabaseConsistency
             next unless validator.respond_to?(:attributes)
 
             validator.attributes.flat_map do |attribute|
-              enabled_checkers.map do |checker_class|
+              enabled_checkers.flat_map do |checker_class|
                 checker = checker_class.new(model, attribute, validator)
                 checker.report_if_enabled?(configuration)
               end

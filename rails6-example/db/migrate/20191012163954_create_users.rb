@@ -12,6 +12,8 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.integer :organization_id, null: false
       t.integer :invitable_id, null: false
       t.string :invitable_type, null: false
+      t.integer :subject_id, null: false
+      t.string :subject_type
 
       t.timestamps
 

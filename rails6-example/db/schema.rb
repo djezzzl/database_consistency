@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(version: 2021_12_29_101039) do
     t.integer "organization_id", null: false
     t.integer "invitable_id", null: false
     t.string "invitable_type", null: false
+    t.integer "subject_id", null: false
+    t.string "subject_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "slug"], name: "index_users_on_name_and_slug", unique: true

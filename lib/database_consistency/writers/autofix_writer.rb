@@ -8,6 +8,7 @@ module DatabaseConsistency
       SLUG_TO_GENERATOR = {
         association_missing_index: Autofix::AssociationMissingIndex,
         association_missing_null_constraint: Autofix::NullConstraintMissing,
+        association_foreign_type_missing_null_constraint: Autofix::NullConstraintMissing,
         has_one_missing_unique_index: Autofix::HasOneMissingUniqueIndex,
         inconsistent_types: Autofix::InconsistentTypes,
         missing_foreign_key: Autofix::MissingForeignKey,

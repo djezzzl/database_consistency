@@ -17,7 +17,7 @@ module DatabaseConsistency
           next unless configuration.enabled?(model.name.to_s)
 
           model.columns.flat_map do |column|
-            enabled_checkers.map do |checker_class|
+            enabled_checkers.flat_map do |checker_class|
               checker = checker_class.new(model, column)
               checker.report_if_enabled?(configuration)
             end

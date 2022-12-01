@@ -8,6 +8,7 @@ module DatabaseConsistency
       SLUG_TO_WRITER = {
         association_missing_index: Simple::AssociationMissingIndex,
         association_missing_null_constraint: Simple::AssociationMissingNullConstraint,
+        association_foreign_type_missing_null_constraint: Simple::AssociationForeignTypeMissingNullConstraint,
         has_one_missing_unique_index: Simple::HasOneMissingUniqueIndex,
         inconsistent_types: Simple::InconsistentTypes,
         length_validator_greater_limit: Simple::LengthValidatorGreaterLimit,
