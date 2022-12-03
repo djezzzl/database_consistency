@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.6.0] - 2022/12/03
+
+- Implement `EnumValueChecker` that ensures consistency between PostgreSQL enum type and ActiveRecord's enum and inclusion validation. Thanks [Michal Papis](https://github.com/mpapis) for suggesting this!
+
 ### [1.5.3] - 2022/12/01
 
 - Fix `ColumnPresenceChecker` autofix for polymorphic `belongs_to` associations. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching the issue!
