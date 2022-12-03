@@ -26,6 +26,7 @@ Currently, the tool can:
 - find redundant uniqueness constraints
 - find mismatching enum types with their values
 - find mismatching foreign key cascades
+- find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations
 
 Besides that, the tool provides:
 - auto-correction
