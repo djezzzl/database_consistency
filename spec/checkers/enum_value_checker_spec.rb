@@ -7,6 +7,8 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
   let(:column) { klass.columns.last }
 
   before do
+    skip('older versions are not supported') if ActiveRecord::VERSION::MAJOR < 7
+
     define_database do
       create_enum :status_type, %w[value1 value2]
 
