@@ -25,7 +25,9 @@ module DatabaseConsistency
         redundant_unique_index: Simple::RedundantUniqueIndex,
         small_primary_key: Simple::SmallPrimaryKey,
         inconsistent_enum_type: Simple::InconsistentEnumType,
-        missing_foreign_key_cascade: Simple::MissingForeignKeyCascade
+        missing_foreign_key_cascade: Simple::MissingForeignKeyCascade,
+        enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
+        enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion
       }.freeze
 
       def write
