@@ -37,6 +37,7 @@ require 'database_consistency/writers/simple/small_primary_key'
 require 'database_consistency/writers/simple/inconsistent_enum_type'
 require 'database_consistency/writers/simple/enum_values_inconsistent_with_ar_enum'
 require 'database_consistency/writers/simple/enum_values_inconsistent_with_inclusion'
+require 'database_consistency/writers/simple/redundant_case_insensitive_option'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
@@ -73,6 +74,7 @@ require 'database_consistency/checkers/column_checkers/enum_value_checker'
 
 require 'database_consistency/checkers/validator_checkers/validator_checker'
 require 'database_consistency/checkers/validator_checkers/missing_unique_index_checker'
+require 'database_consistency/checkers/validator_checkers/case_sensitive_unique_validation_checker'
 
 require 'database_consistency/checkers/validators_fraction_checkers/validators_fraction_checker'
 require 'database_consistency/checkers/validators_fraction_checkers/column_presence_checker'

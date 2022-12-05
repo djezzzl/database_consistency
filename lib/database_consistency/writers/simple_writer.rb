@@ -27,7 +27,8 @@ module DatabaseConsistency
         inconsistent_enum_type: Simple::InconsistentEnumType,
         missing_foreign_key_cascade: Simple::MissingForeignKeyCascade,
         enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
-        enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion
+        enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion,
+        redundant_case_insensitive_option: Simple::RedundantCaseInsensitiveOption
       }.freeze
 
       def write

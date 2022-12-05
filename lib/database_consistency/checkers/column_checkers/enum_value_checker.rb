@@ -24,11 +24,7 @@ module DatabaseConsistency
       end
 
       def preconditions
-        postgresql? && column.type == :enum && (enum || inclusion_validator)
-      end
-
-      def postgresql?
-        Helper.adapter == 'postgresql'
+        Helper.postgresql? && column.type == :enum && (enum || inclusion_validator)
       end
 
       def check
