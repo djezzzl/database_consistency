@@ -27,6 +27,7 @@ Currently, the tool can:
 - find mismatching enum types with their values
 - find mismatching foreign key cascades
 - find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations
+- find redundant `case_sensitive: false` option for unique validations for case-insensitive types
 
 Besides that, the tool provides:
 - auto-correction

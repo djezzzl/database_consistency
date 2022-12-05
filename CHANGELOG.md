@@ -1,5 +1,7 @@
 # Changelog
 
+### [1.7.0] - 2022/12/05
+
 Implement `CaseSensitiveUniqueValidationChecker` that ensures case insensitive type doesn't have `case_sensitive: false` option on unique validations.
 
 ### [1.6.0] - 2022/12/03
