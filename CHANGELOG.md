@@ -1,5 +1,7 @@
 # Changelog
 
+Implement `CaseSensitiveUniqueValidationChecker` that ensures case insensitive type doesn't have `case_sensitive: false` option on unique validations.
+
 ### [1.6.0] - 2022/12/03
 
 - Implement `EnumValueChecker` that ensures consistency between PostgreSQL enum type and ActiveRecord's enum and inclusion validation. Thanks [Michal Papis](https://github.com/mpapis) for suggesting this!
