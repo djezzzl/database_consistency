@@ -13,26 +13,26 @@ The main goal of the project is to help you avoid various issues due to inconsis
 For detailed information, please read the [wiki](https://github.com/djezzzl/database_consistency/wiki).
 
 Currently, the tool can:
-- find missing null constraints
-- find missing length validations
-- find missing presence validations
-- find missing uniqueness validations
-- find missing foreign keys for `BelongsTo` associations
-- find missing unique indexes for uniqueness validation
-- find missing indexes for `HasOne` and `HasMany` associations
-- find primary keys with integer/serial type
-- find mismatching primary key types with their foreign keys
-- find redundant non-unique indexes
-- find redundant uniqueness constraints
-- find mismatching enum types with their values
-- find mismatching foreign key cascades
-- find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations
-- find redundant `case_sensitive: false` option for unique validations for case-insensitive types
+- [find missing null constraints](https://github.com/djezzzl/database_consistency/wiki/columnpresencechecker)
+- [find missing length validations](https://github.com/djezzzl/database_consistency/wiki/lengthconstraintchecker)
+- [find missing presence validations](https://github.com/djezzzl/database_consistency/wiki/nullconstraintchecker)
+- [find missing uniqueness validations](https://github.com/djezzzl/database_consistency/wiki/uniqueindexchecker)
+- [find missing foreign keys for `BelongsTo` associations](https://github.com/djezzzl/database_consistency/wiki/foreignkeychecker)
+- [find missing unique indexes for uniqueness validation](https://github.com/djezzzl/database_consistency/wiki/missinguniqueindexchecker)
+- [find missing indexes for `HasOne` and `HasMany` associations](https://github.com/djezzzl/database_consistency/wiki/missingindexchecker)
+- [find primary keys with integer/serial type](https://github.com/djezzzl/database_consistency/wiki/primarykeytypechecker)
+- [find mismatching primary key types with their foreign keys](https://github.com/djezzzl/database_consistency/wiki/foreignkeytypechecker)
+- [find redundant non-unique indexes](https://github.com/djezzzl/database_consistency/wiki/redundantindexchecker)
+- [find redundant uniqueness constraints](https://github.com/djezzzl/database_consistency/wiki/redundantuniqueindexchecker)
+- [find mismatching enum types with their values](https://github.com/djezzzl/database_consistency/wiki/enumtypechecker)
+- [find mismatching foreign key cascades](https://github.com/djezzzl/database_consistency/wiki/foreignkeycascadechecker)
+- [find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations](https://github.com/djezzzl/database_consistency/wiki/enumvaluechecker)
+- [find redundant `case_sensitive: false` option for unique validations for case-insensitive types](https://github.com/djezzzl/database_consistency/wiki/casesensitiveuniquevalidationchecker)
 
 Besides that, the tool provides:
-- auto-correction
-- flexible configuration
-- slow start with TODO files
+- [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
+- [flexible configuration](https://github.com/djezzzl/database_consistency/wiki/configuration)
+- [slow start with TODO files](https://github.com/djezzzl/database_consistency/wiki/generate-todo)
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.  
 We support [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) only at the moment.
