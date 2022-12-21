@@ -24,7 +24,7 @@ module DatabaseConsistency
       end
 
       def preconditions
-        Helper.postgresql? && column.type == :enum && (enum || inclusion_validator)
+        Helper.postgresql? && ActiveRecord::VERSION::MAJOR >= 7 && column.type == :enum && (enum || inclusion_validator)
       end
 
       def check
