@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.1] - 2022/12/21
+
+- Fix `EnumValueChecker` as `enums` are supported by Ruby on Rails 7+. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching and fixing the issue!
+
 ### [1.7.0] - 2022/12/05
 
 Implement `CaseSensitiveUniqueValidationChecker` that ensures case insensitive type doesn't have `case_sensitive: false` option on unique validations.
