@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.2] - 2023/01/02
+
+- Avoid unnecessary deprecations warnings.
+
 ### [1.7.1] - 2022/12/21
 
 - Fix `EnumValueChecker` as `enums` are supported by Ruby on Rails 7+. Thanks [Sergey Toy](https://github.com/toydestroyer) for catching and fixing the issue!
