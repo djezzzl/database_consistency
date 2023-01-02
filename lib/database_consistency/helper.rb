@@ -6,10 +6,10 @@ module DatabaseConsistency
     module_function
 
     def adapter
-      if ActiveRecord::Base.respond_to?(:connection_config)
-        ActiveRecord::Base.connection_config[:adapter]
-      else
+      if ActiveRecord::Base.respond_to?(:connection_db_config)
         ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
+      else
+        ActiveRecord::Base.connection_config[:adapter]
       end
     end
 
@@ -18,10 +18,10 @@ module DatabaseConsistency
     end
 
     def connection_config(klass)
-      if klass.respond_to?(:connection_config)
-        klass.connection_config
-      else
+      if klass.respond_to?(:connection_db_config)
         klass.connection_db_config.configuration_hash
+      else
+        klass.connection_config
       end
     end
 
