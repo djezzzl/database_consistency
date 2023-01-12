@@ -15,6 +15,10 @@ module DatabaseConsistency
             "db/migrate/#{version}_#{name.underscore}.rb"
           end
 
+          def migration_path_pattern(name)
+            "db/migrate/*_#{name.underscore}.rb"
+          end
+
           def migration_configuration(name)
             {
               migration_name: name.camelcase,
