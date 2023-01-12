@@ -7,7 +7,13 @@ module DatabaseConsistency
         include Helpers::Migration
 
         def fix!
-          File.write(migration_path(migration_name), migration)
+          file_path = migration_path(migration_name)
+
+          if Dir[migration_path_pattern(migration_name)].any?
+            p "Skipping migration #{migration_name} because it already exists"
+          else
+            File.write(file_path, migration)
+          end
         end
 
         def attributes
