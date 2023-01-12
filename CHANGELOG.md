@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.7.3] - 2023/01/12
+
+- Improve messaging for `NullConstraintChecker`. Thanks [hanzongyu](https://github.com/hanzongyu) for spotting the issue!
+- Avoid populating duplicated migrations. Thanks [zapxcero](https://github.com/zapxcero) for catching the issue!
+
 ### [1.7.2] - 2023/01/02
 
 - Avoid unnecessary deprecations warnings.
