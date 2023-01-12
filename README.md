@@ -56,7 +56,7 @@ $ bundle install
 
 ```bash
 $ bundle exec database_consistency
-NullConstraintChecker fail User code column is required in the database but do not have presence validator
+NullConstraintChecker fail User code column is required in the database but does not have a validator disallowing nil values
 NullConstraintChecker fail User company_id column is required in the database but do not have presence validator for association (company)
 LengthConstraintChecker fail Company note column has limit in the database but do not have length validator
 MissingUniqueIndexChecker fail User name+email model should have proper unique index in the database
