@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column is required in the database but do not have presence validator'
+          'column is required in the database but does not have a validator disallowing nil values'
         end
 
         def unique_attributes
