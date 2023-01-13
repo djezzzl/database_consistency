@@ -38,6 +38,12 @@ We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.
 We support [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) only at the moment.
 Please upvote the request for other frameworks if you're interested.
 
+Follow me and stay tuned for the updates:
+- [LinkedIn](https://www.linkedin.com/in/evgeniydemin/)
+- [Medium](https://evgeniydemin.medium.com/)
+- [Twitter](https://twitter.com/EvgeniyDemin/)
+- [GitHub](https://github.com/djezzzl)
+
 ## Usage
 
 Add this line to your application's Gemfile:
