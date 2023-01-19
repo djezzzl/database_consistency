@@ -7,7 +7,7 @@ default_config = DatabaseConsistency::Configuration::DEFAULT_PATH
 if ARGV.include?('install')
   require 'pathname'
 
-  file_exists = File.exists?(default_config)
+  file_exists = File.exist?(default_config)
   rules = Pathname.new(__FILE__).dirname.join('..', 'lib', 'database_consistency', 'templates', 'rails_defaults.yml').read
   if file_exists && File.foreach(default_config).grep(Regexp.new(rules.lines.first.chomp)).any?
     puts "#{default_config} is already present"
