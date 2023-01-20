@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.4] - 2023/01/20
+
+- Fix removed `File.exists?`. Thanks [Dennis Paagman](https://github.com/djfpaagman) for fixing the issue!
+
 ### [1.7.3] - 2023/01/12
 
 - Improve messaging for `NullConstraintChecker`. Thanks [hanzongyu](https://github.com/hanzongyu) for spotting the issue!
