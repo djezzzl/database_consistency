@@ -16,7 +16,7 @@ module DatabaseConsistency
     end
 
     def initialize
-      puts 'Hey, some of checks fail with an error, please open an issue on github at https://github.com/djezzzl/database_consistency.'
+      puts 'Hey, some checks fail with an error, please open an issue on github at https://github.com/djezzzl/database_consistency.'
       puts "Attach the created file: #{filename}"
       puts 'Thank you, for your contribution!'
       puts '(c) Evgeniy Demin <lawliet.djez@gmail.com>'
