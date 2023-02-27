@@ -4,15 +4,15 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
   describe '#first_level_associations' do
     subject { described_class.first_level_associations(child) }
 
-    let(:parent) { Class.new(ActiveRecord::Base) { |klass| klass.has_one :user } }
+    let(:parent) { define_class('Dummy') { |klass| klass.has_one :user } }
 
     context 'when only parent defines association' do
-      let(:child) { Class.new(parent) }
+      let(:child) { stub_const('SubDummy', Class.new(parent)) }
       it { is_expected.to eq([]) }
     end
 
     context 'when child redefines association' do
-      let(:child) { Class.new(parent) { |klass| klass.has_one :user } }
+      let(:child) { stub_const('SubDummy', Class.new(parent) { |klass| klass.has_one :user }) }
       it { expect(subject.size).to eq(1) }
     end
   end
