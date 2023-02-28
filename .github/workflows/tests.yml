@@ -66,6 +66,8 @@ jobs:
           - ruby-version: 'head'
             gemfile: 'gemfiles/ar_5_2.gemfile'
 
+    continue-on-error: ${{ contains(matrix.ruby-version, 'head') || contains(matrix.gemfile, 'ar_main') }}
+
     steps:
       - uses: actions/checkout@v3
 
