@@ -28,6 +28,10 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       define_class('Entities', :entities)
       define_class('Scoped::Entities', :entities)
       stub_const('SubEntities', Class.new(Entities))
+
+      allow(ActiveRecord::Base)
+        .to receive(:descendants)
+        .and_return([Entities, Scoped::Entities, SubEntities])
     end
 
     it 'includes top-level classes only' do
