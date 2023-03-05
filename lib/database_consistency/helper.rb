@@ -36,8 +36,8 @@ module DatabaseConsistency
 
     # Return list of not inherited models
     def parent_models
-      models.group_by(&:table_name).each_value.map do |models|
-        models.min_by { |model| models.include?(model.superclass) ? 1 : 0 }
+      models.group_by(&:table_name).each_value.flat_map do |models|
+        models.reject { |model| models.include?(model.superclass) }
       end
     end
 

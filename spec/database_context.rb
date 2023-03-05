@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'openssl'
+
 RSpec.shared_context 'database context' do |configuration|
   before do
     ActiveRecord::Base.establish_connection(configuration)
