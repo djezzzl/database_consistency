@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.5] - 2023/03/05
+
+- Support multiple root-level models for the same table. Thanks [Bartek Bułat ](https://github.com/barthez) for improving this!
+
 ### [1.7.4] - 2023/01/20
 
 - Fix removed `File.exists?`. Thanks [Dennis Paagman](https://github.com/djfpaagman) for fixing the issue!
