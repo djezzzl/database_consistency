@@ -45,11 +45,13 @@ module DatabaseConsistency
           reports << analyse(association.foreign_type.to_s, type: :association_foreign_type_missing_null_constraint)
         end
 
-        reports
+        reports.compact!
+        reports.any? ? reports : nil
       end
 
       def analyse(column_name, type:)
         field = column(column_name)
+        return if field.nil?
 
         can_be_null = field.null
         has_weak_option = weak_option?

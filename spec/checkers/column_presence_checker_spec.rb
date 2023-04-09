@@ -209,4 +209,20 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
       end
     end
   end
+
+  context 'when the column for the `belongs_to` foreign key is missing' do
+    let(:attribute) { :user }
+    let(:klass) { define_class { |klass| klass.belongs_to :user, foreign_key: 'user_id', **required } }
+
+    before do
+      define_database do
+        create_table :entities
+      end
+    end
+
+
+    specify do
+      expect(checker.report(catch_errors: false)).to be_nil
+    end
+  end
 end
