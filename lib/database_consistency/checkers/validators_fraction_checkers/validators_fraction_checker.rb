@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # The base class for validator checker
+    # The base class for validator fraction checkers
     class ValidatorsFractionChecker < BaseChecker
       attr_reader :model, :attribute, :validators
 

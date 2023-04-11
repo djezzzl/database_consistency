@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # The base class for table checkers
+    # The base class for column checkers
     class ColumnChecker < BaseChecker
       attr_reader :model, :column
 
