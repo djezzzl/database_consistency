@@ -71,6 +71,7 @@ require 'database_consistency/checkers/column_checkers/null_constraint_checker'
 require 'database_consistency/checkers/column_checkers/length_constraint_checker'
 require 'database_consistency/checkers/column_checkers/primary_key_type_checker'
 require 'database_consistency/checkers/column_checkers/enum_value_checker'
+require 'database_consistency/checkers/column_checkers/three_state_boolean_checker'
 
 require 'database_consistency/checkers/validator_checkers/validator_checker'
 require 'database_consistency/checkers/validator_checkers/missing_unique_index_checker'
