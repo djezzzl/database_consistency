@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks if uniqueness validator has unique index in the database
+    # This class checks redundant case_sensitive option for uniqueness validation
     class CaseSensitiveUniqueValidationChecker < ValidatorChecker
       private
 

@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks missing presence validator
+    # This class checks that primary key is bigserial, bigint, or uuid
     class PrimaryKeyTypeChecker < ColumnChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,

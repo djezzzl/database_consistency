@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks redundant database indexes
+    # This class checks redundant database unique indexes
     class RedundantUniqueIndexChecker < IndexChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,

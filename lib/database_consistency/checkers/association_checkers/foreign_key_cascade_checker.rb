@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks if non polymorphic +belongs_to+ association has foreign key constraint
+    # This class checks that foreign key has a cascade option matching dependent option
     class ForeignKeyCascadeChecker < AssociationChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,

@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks missing presence validator
+    # This class checks the database enum values and ActiveRecord's enum values/inclusion validations are aligned
     class EnumValueChecker < ColumnChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,

@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # The base class for table checkers
+    # The base class for index checkers
     class IndexChecker < BaseChecker
       attr_reader :model, :index
 

@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks missing presence validator
+    # This checker checks that column has a length constraint if there is a length validation
     class LengthConstraintChecker < ColumnChecker
       VALIDATOR_CLASS =
         if defined?(ActiveRecord::Validations::LengthValidator)
