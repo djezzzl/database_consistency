@@ -14,11 +14,11 @@ module DatabaseConsistency
       )
 
       OPTION_TO_CASCADE = {
-        delete: :cascade,
-        delete_all: :cascade,
-        nullify: :nullify,
-        restrict_with_exception: :restrict,
-        restrict_with_error: :restrict
+        delete: [:cascade],
+        delete_all: [:cascade],
+        nullify: [:nullify],
+        restrict_with_exception: [nil, :restrict],
+        restrict_with_error: [nil, :restrict]
       }.freeze
 
       DEPENDENT_OPTIONS = OPTION_TO_CASCADE.keys.freeze
@@ -52,7 +52,7 @@ module DatabaseConsistency
       end
 
       def correlated_cascade_constraint?
-        required_foreign_key_cascade == foreign_key_on_delete_option
+        required_foreign_key_cascade.include?(foreign_key_on_delete_option)
       end
 
       def dependent_option

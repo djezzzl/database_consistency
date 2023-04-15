@@ -41,30 +41,19 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version:
-          - '2.6'
-          - '2.7'
-          - '3.0'
-          - 'head'
-        gemfile:
-          - 'gemfiles/ar_4_2.gemfile'
-          - 'gemfiles/ar_5_2.gemfile'
-          - 'gemfiles/ar_6_0.gemfile'
-          - 'gemfiles/ar_6_1.gemfile'
-          - 'gemfiles/ar_main.gemfile'
-        exclude:
+        include:
           - ruby-version: '2.6'
-            gemfile: 'gemfiles/ar_main.gemfile'
+            gemfile: 'gemfiles/ar_4_2.gemfile'
           - ruby-version: '2.7'
-            gemfile: 'gemfiles/ar_4_2.gemfile'
-          - ruby-version: '3.0'
-            gemfile: 'gemfiles/ar_4_2.gemfile'
-          - ruby-version: '3.0'
             gemfile: 'gemfiles/ar_5_2.gemfile'
+          - ruby-version: '3.0'
+            gemfile: 'gemfiles/ar_6_0.gemfile'
+          - ruby-version: '3.1'
+            gemfile: 'gemfiles/ar_6_1.gemfile'
+          - ruby-version: '3.2'
+            gemfile: 'gemfiles/ar_7_0.gemfile'
           - ruby-version: 'head'
-            gemfile: 'gemfiles/ar_4_2.gemfile'
-          - ruby-version: 'head'
-            gemfile: 'gemfiles/ar_5_2.gemfile'
+            gemfile: 'gemfiles/ar_main.gemfile'
 
     continue-on-error: ${{ contains(matrix.ruby-version, 'head') || contains(matrix.gemfile, 'ar_main') }}
 

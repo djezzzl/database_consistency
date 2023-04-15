@@ -15,6 +15,7 @@
 
 # Ruby Version
 .ruby-version
+.ruby-gemset
 
 # Rails Example
 /rails-example/db/*.sqlite3

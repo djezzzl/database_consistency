@@ -28,7 +28,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
       end
     end
 
-    context 'when dependent option is missing' do
+    context 'when dependent option mismatches' do
       let!(:entity_class) do
         define_class('Entity', :entities) do |klass|
           klass.has_many :countries, dependent: :delete_all
@@ -43,6 +43,25 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
           status: :fail,
           error_message: nil,
           error_slug: :missing_foreign_key_cascade
+        )
+      end
+    end
+
+    context 'when dependent option is missing' do
+      let!(:entity_class) do
+        define_class('Entity', :entities) do |klass|
+          klass.has_many :countries, dependent: :restrict_with_exception
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'ForeignKeyCascadeChecker',
+          table_or_model_name: entity_class.name,
+          column_or_attribute_name: 'countries',
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
         )
       end
     end
