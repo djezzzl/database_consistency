@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks missing NOT NULL constraint and default value for boolean columns
+    # This class checks missing NOT NULL constraint for boolean columns
     class ThreeStateBooleanChecker < ColumnChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,
