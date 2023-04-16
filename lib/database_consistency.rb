@@ -38,6 +38,7 @@ require 'database_consistency/writers/simple/inconsistent_enum_type'
 require 'database_consistency/writers/simple/enum_values_inconsistent_with_ar_enum'
 require 'database_consistency/writers/simple/enum_values_inconsistent_with_inclusion'
 require 'database_consistency/writers/simple/redundant_case_insensitive_option'
+require 'database_consistency/writers/simple/three_state_boolean'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
