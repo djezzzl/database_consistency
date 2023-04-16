@@ -8,7 +8,8 @@ module DatabaseConsistency
         Checkers::NullConstraintChecker,
         Checkers::LengthConstraintChecker,
         Checkers::PrimaryKeyTypeChecker,
-        Checkers::EnumValueChecker
+        Checkers::EnumValueChecker,
+        Checkers::ThreeStateBooleanChecker
       ].freeze
 
       private
