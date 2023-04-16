@@ -28,6 +28,7 @@ Currently, the tool can:
 - [find mismatching foreign key cascades](https://github.com/djezzzl/database_consistency/wiki/foreignkeycascadechecker)
 - [find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations](https://github.com/djezzzl/database_consistency/wiki/enumvaluechecker)
 - [find redundant `case_sensitive: false` option for unique validations for case-insensitive types](https://github.com/djezzzl/database_consistency/wiki/casesensitiveuniquevalidationchecker)
+- [find missing null constraints on boolean fields](https://github.com/djezzzl/database_consistency/wiki/threestatebooleanchecker)
 
 Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
@@ -78,6 +79,7 @@ RedundantUniqueIndexChecker fail User index_users_on_name_and_slug index uniquen
 RedundantIndexChecker fail User index_users_on_phone index is redundant as (index_users_on_phone_and_slug) covers it
 ColumnPresenceChecker fail User tmp column (tmp) is missing in table (users) but used for presence validation
 ForeignKeyTypeChecker fail User something association (something) of class (User) relies on field (something_id) of table (users) but it is missing
+ThreeStateBooleanChecker fail Company active boolean column should have NOT NULL constraint
 ```
 
 ## Funding

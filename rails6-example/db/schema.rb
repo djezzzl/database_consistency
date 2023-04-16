@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 2021_12_29_101039) do
 
   create_table "companies", force: :cascade do |t|
     t.boolean "available", default: false, null: false
+    t.boolean "active"
     t.string "note", limit: 256
     t.string "type"
     t.datetime "created_at", precision: 6, null: false

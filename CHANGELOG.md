@@ -1,8 +1,13 @@
 # Changelog
 
+### [1.7.6] - 2023/04/16
+
+- Fix `ForeignKeyCascadeChecker` by treating `nil` as `restrict`. Thanks [Arkadiy Zabazhanov](https://github.com/pyromaniac) for fixing this!
+- Add `ThreeStateBooleanChecker`. Thanks [Sergey Toy](https://github.com/toydestroyer) for implementing this!
+
 ### [1.7.5] - 2023/03/05
 
-- Support multiple root-level models for the same table. Thanks [Bartek Bułat ](https://github.com/barthez) for improving this!
+- Support multiple root-level models for the same table. Thanks [Bartek Bułat](https://github.com/barthez) for improving this!
 
 ### [1.7.4] - 2023/01/20
 
