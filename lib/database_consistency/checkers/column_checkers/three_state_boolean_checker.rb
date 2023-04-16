@@ -37,7 +37,7 @@ module DatabaseConsistency
 
       # @return [Boolean]
       def valid?
-        !column.null && !column.default.nil?
+        !column.null
       end
     end
   end

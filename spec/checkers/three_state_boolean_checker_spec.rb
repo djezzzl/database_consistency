@@ -40,9 +40,9 @@ RSpec.describe DatabaseConsistency::Checkers::ThreeStateBooleanChecker, :sqlite,
         checker_name: 'ThreeStateBooleanChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'active',
-        status: :fail,
+        status: :ok,
         error_message: nil,
-        error_slug: :three_state_boolean,
+        error_slug: nil,
         table_name: klass.table_name,
         column_name: 'active'
       )
