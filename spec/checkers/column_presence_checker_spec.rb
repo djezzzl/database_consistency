@@ -220,7 +220,6 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
       end
     end
 
-
     specify do
       expect(checker.report(catch_errors: false)).to be_nil
     end
