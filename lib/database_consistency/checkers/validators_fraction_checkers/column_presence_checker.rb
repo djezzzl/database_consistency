@@ -50,7 +50,7 @@ module DatabaseConsistency
         if association.polymorphic?
           reports << analyse(association.foreign_type.to_s, type: :association_foreign_type_missing_null_constraint)
         end
-        reports.compact!.presence
+        reports.compact.presence
       end
 
       def analyse(column_name, type:)
