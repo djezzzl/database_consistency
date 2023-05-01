@@ -12,10 +12,19 @@ module DatabaseConsistency
           assign_result(hash, result)
         end
 
-        File.write(file_name, h.to_yaml)
+        sorted_hash = sort(h)
+
+        File.write(file_name, sorted_hash.to_yaml)
       end
 
       private
+
+      def sort(obj)
+        return obj unless obj.is_a?(Hash)
+
+        obj.sort_by { |(k, _)| k }
+           .to_h { |k, v| [k, sort(v)] }
+      end
 
       def write?(status)
         status == :fail
