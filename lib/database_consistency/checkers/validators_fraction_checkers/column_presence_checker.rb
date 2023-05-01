@@ -38,18 +38,25 @@ module DatabaseConsistency
       end
 
       def check
-        return analyse(attribute.to_s, type: :null_constraint_missing) if regular_column
+        if regular_column
+          analyse(attribute.to_s, type: :null_constraint_missing)
+        else
+          analyse_association
+        end
+      end
 
+      def analyse_association
         reports = [analyse(association.foreign_key.to_s, type: :association_missing_null_constraint)]
         if association.polymorphic?
           reports << analyse(association.foreign_type.to_s, type: :association_foreign_type_missing_null_constraint)
         end
-
-        reports
+        reports.compact.presence
       end
 
       def analyse(column_name, type:)
         field = column(column_name)
+        # If the column is missing there is nothing we can do.
+        return if field.nil?
 
         can_be_null = field.null
         has_weak_option = weak_option?
