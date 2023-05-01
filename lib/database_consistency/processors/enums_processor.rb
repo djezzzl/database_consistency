@@ -5,7 +5,8 @@ module DatabaseConsistency
     # The class to process enums
     class EnumsProcessor < BaseProcessor
       CHECKERS = [
-        Checkers::EnumTypeChecker
+        Checkers::EnumTypeChecker,
+        Checkers::EnumColumnChecker
       ].freeze
 
       private
