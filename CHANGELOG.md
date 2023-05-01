@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.8] - 2023/05/01
+
+- Add stable order when generate TODO file. Thanks [Olly Chadwick](https://github.com/greytape) for reporting this!
+
 ### [1.7.7] - 2023/05/01
 
 - Improved specs. Thanks [Sergey Toy](https://github.com/toydestroyer) for taking care of this!
