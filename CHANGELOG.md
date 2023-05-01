@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.7.7] - 2023/05/01
+
+- Improved specs. Thanks [Sergey Toy](https://github.com/toydestroyer) for taking care of this!
+- Fix undefined method error in ColumnPresenceChecker. Thanks [Alan Savage](https://github.com/asavageiv) for the contribution!
+
 ### [1.7.6] - 2023/04/16
 
 - Fix `ForeignKeyCascadeChecker` by treating `nil` as `restrict`. Thanks [Arkadiy Zabazhanov](https://github.com/pyromaniac) for fixing this!
