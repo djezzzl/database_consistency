@@ -4,9 +4,7 @@ RSpec.describe DatabaseConsistency::Checkers::EnumTypeChecker, :postgresql do
   subject(:checker) { described_class.new(model, enum) }
 
   before do
-    unless ActiveRecord::VERSION::MAJOR >= 7 && adapter == 'postgresql'
-      skip('older versions are not supported with sqlite3')
-    end
+    skip('older versions are not supported') if ActiveRecord::VERSION::MAJOR < 7
   end
 
   let(:model) { entity_class }
