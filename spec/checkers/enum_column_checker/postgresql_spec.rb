@@ -3,6 +3,10 @@
 RSpec.describe DatabaseConsistency::Checkers::EnumColumnChecker, :postgresql do
   subject(:checker) { described_class.new(model, enum) }
 
+  before do
+    skip('older versions are not supported') if ActiveRecord::VERSION::MAJOR < 7
+  end
+
   let(:model) { entity_class }
   let(:enum) { entity_class.defined_enums.keys.first }
 
@@ -86,52 +90,6 @@ RSpec.describe DatabaseConsistency::Checkers::EnumColumnChecker, :postgresql do
         error_message: nil,
         error_slug: :enum_column_type_mismatch
       )
-    end
-  end
-
-  context 'when ActiveRecord below 7' do
-    before do
-      stub_const('ActiveRecord::VERSION::MAJOR', 6)
-    end
-
-    context 'with integer column' do
-      let(:entity_class) do
-        define_class do |klass|
-          klass.enum field: %i[value1 value2]
-        end
-      end
-
-      before do
-        define_database do
-          create_table :entities do |t|
-            t.integer :field
-          end
-        end
-      end
-
-      specify do
-        expect(checker.report).to be_nil
-      end
-    end
-
-    context 'with string column' do
-      let(:entity_class) do
-        define_class do |klass|
-          klass.enum field: { value1: 'value1', value2: 'value2' }
-        end
-      end
-
-      before do
-        define_database do
-          create_table :entities do |t|
-            t.string :field
-          end
-        end
-      end
-
-      specify do
-        expect(checker.report).to be_nil
-      end
     end
   end
 end
