@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.9] - 2023/06/22
+
+- Stops modifying `ActiveRecord::Base.descendants`. Thanks [Thierry Deo](https://github.com/tdeo) for fixing the bug!
+
 ### [1.7.8] - 2023/05/01
 
 - Add stable order when generate TODO file. Thanks [Olly Chadwick](https://github.com/greytape) for reporting this!
