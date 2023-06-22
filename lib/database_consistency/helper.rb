@@ -27,8 +27,9 @@ module DatabaseConsistency
 
     # Returns list of models to check
     def models
-      ActiveRecord::Base.descendants.delete_if(&:abstract_class?).select do |klass|
-        klass.connection.table_exists?(klass.table_name) &&
+      ActiveRecord::Base.descendants.select do |klass|
+        !klass.abstract_class? &&
+          klass.connection.table_exists?(klass.table_name) &&
           !klass.name.include?('HABTM_') &&
           project_klass?(klass)
       end
