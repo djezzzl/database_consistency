@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.10] - 2023/06/24
+
+- Fixes `MissingIndexChecker` to consider compound indexes. Thanks [Ivan Atanasov](https://github.com/iatanas0v) for reporting the issue!
+
 ### [1.7.9] - 2023/06/22
 
 - Stops modifying `ActiveRecord::Base.descendants`. Thanks [Thierry Deo](https://github.com/tdeo) for fixing the bug!
