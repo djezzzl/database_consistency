@@ -86,9 +86,7 @@ module DatabaseConsistency
       end
 
       def index_keys(index, limit: nil)
-        return unless index.columns.is_a?(Array)
-
-        columns = index.columns
+        columns = Helper.extract_index_columns(index.columns)
 
         if limit
           columns.first(limit).sort

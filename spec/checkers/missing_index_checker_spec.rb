@@ -229,6 +229,34 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
         end
       end
 
+      if ActiveRecord::VERSION::MAJOR >= 5
+        context 'when index is compound', mysql: false do
+          before do
+            define_database do
+              create_table :users do |t|
+                t.integer :company_id
+                t.string :name
+
+                t.index 'company_id, lower(name)'
+              end
+
+              create_table :companies
+            end
+          end
+
+          specify do
+            expect(checker.report).to have_attributes(
+              checker_name: 'MissingIndexChecker',
+              table_or_model_name: company_class.name,
+              column_or_attribute_name: 'users',
+              status: :ok,
+              error_slug: nil,
+              error_message: nil
+            )
+          end
+        end
+      end
+
       context 'when index is provided' do
         before do
           define_database do
