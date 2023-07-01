@@ -33,7 +33,7 @@ module DatabaseConsistency
       value = global_enabling
 
       path.each do |key|
-        current = current[key.to_s]
+        current = find(key.to_s, current)
         return value unless current.is_a?(Hash)
 
         next if current['enabled'].nil?
@@ -47,6 +47,16 @@ module DatabaseConsistency
     private
 
     attr_reader :configuration
+
+    def find(key, configuration)
+      return configuration[key] if configuration.key?(key)
+
+      configuration.find { |(k, _)| k.include?('*') && key.match?(generate_regexp(k)) }&.last
+    end
+
+    def generate_regexp(str)
+      /\A#{str.gsub('*', '.*')}\z/
+    end
 
     def existing_configurations(paths)
       Array(paths).select do |filepath|

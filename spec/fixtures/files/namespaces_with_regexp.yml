@@ -1,0 +1,14 @@
+Prefix*:
+  enabled: false
+
+"*Suffix":
+  enabled: false
+
+# Order is important, first defined has bigger priority.
+Prefix*Suffix:
+  enabled: true
+
+# Precise value has top priority.
+# We first check for precise, then for first matched.
+PrefixPreciseSuffix:
+  enabled: true

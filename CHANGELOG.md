@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.11] - 2023/07/01
+
+- Add support of regexp for configuration. Thanks [Tyler Constantin](https://github.com/tconst) for suggesting the feature!
+
 ### [1.7.10] - 2023/06/24
 
 - Fixes `MissingIndexChecker` to consider compound indexes. Thanks [Ivan Atanasov](https://github.com/iatanas0v) for reporting the issue!
