@@ -2,7 +2,7 @@
 
 ### [1.7.11] - 2023/07/01
 
-- Add support of regexp for configuration. Thanks [Tyler Constantin](https://github.com/tconst) for suggesting the feature!
+- Add support of regexp for configuration. Thanks [Klaus Weidinger](https://github.com/mak-dunkelziffer) for suggesting the feature!
 
 ### [1.7.10] - 2023/06/24
 
