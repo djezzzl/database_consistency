@@ -121,6 +121,17 @@ RSpec.describe DatabaseConsistency::Configuration, :sqlite, :mysql, :postgresql 
     include_examples 'checker', true
   end
 
+  context 'with namespaced regexp' do
+    let(:file_path) { 'namespaces_with_regexp.yml' }
+
+    specify do
+      expect(configuration.enabled?('PrefixSome')).to eq(false)
+      expect(configuration.enabled?('SomeSuffix')).to eq(false)
+      expect(configuration.enabled?('PrefixSuffix')).to eq(false)
+      expect(configuration.enabled?('PrefixPreciseSuffix')).to eq(true)
+    end
+  end
+
   context 'when multiple files are given' do
     subject(:configuration) do
       described_class.new([
