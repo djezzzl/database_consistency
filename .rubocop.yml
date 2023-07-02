@@ -4,8 +4,7 @@ Layout:
 
 AllCops:
   Exclude:
-    - 'rails-example/**/*'
-    - 'rails6-example/**/*'
+    - 'rails*-example/**/*'
     - 'bin/**/*'
     - 'vendor/bundle/**/*'
   TargetRubyVersion: 2.5
