@@ -9,7 +9,11 @@ module DatabaseConsistency
 
     def initialize(file_paths = DEFAULT_PATH)
       @configuration = existing_configurations(file_paths).then do |existing_paths|
-        puts "Loaded configurations: #{existing_paths.join(', ')}"
+        if existing_paths.any?
+          puts "Loaded configurations: #{existing_paths.join(', ')}"
+        else
+          puts 'No configurations were provided'
+        end
         extract_configurations(existing_paths)
       end
     end
