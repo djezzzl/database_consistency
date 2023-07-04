@@ -29,7 +29,8 @@ module DatabaseConsistency
         enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
         enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion,
         redundant_case_insensitive_option: Simple::RedundantCaseInsensitiveOption,
-        three_state_boolean: Simple::ThreeStateBoolean
+        three_state_boolean: Simple::ThreeStateBoolean,
+        enum_column_type_mismatch: Simple::EnumColumn
       }.freeze
 
       def write
