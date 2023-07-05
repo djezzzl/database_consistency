@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.12] - 2023/07/05
+
+- Add support of disabling checks per database connection. Thanks [epidevops](https://github.com/epidevops) for suggesting the feature!
+
 ### [1.7.11] - 2023/07/01
 
 - Add support of regexp for configuration. Thanks [Klaus Weidinger](https://github.com/mak-dunkelziffer) for suggesting the feature!
