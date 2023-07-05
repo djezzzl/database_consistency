@@ -13,6 +13,10 @@ module DatabaseConsistency
       end
     end
 
+    def database_name(model)
+      model.connection_db_config.name.to_s if model.respond_to?(:connection_db_config)
+    end
+
     def postgresql?
       adapter == 'postgresql'
     end
