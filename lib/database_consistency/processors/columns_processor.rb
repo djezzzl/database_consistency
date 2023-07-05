@@ -14,9 +14,10 @@ module DatabaseConsistency
 
       private
 
-      def check
+      def check # rubocop:disable Metrics/AbcSize
         Helper.parent_models.flat_map do |model|
-          next unless configuration.enabled?(model.name.to_s)
+          next unless configuration.enabled?('DatabaseConsistencyDatabases', Helper.database_name(model)) &&
+                      configuration.enabled?(model.name.to_s)
 
           model.columns.flat_map do |column|
             enabled_checkers.flat_map do |checker_class|

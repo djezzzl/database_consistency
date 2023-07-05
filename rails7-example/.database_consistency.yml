@@ -2,6 +2,12 @@ DatabaseConsistencySettings:
   color: true
   log_level: DEBUG
 
+# Configures database connections.
+DatabaseConsistencyDatabases:
+  # Database connection name listed in database.yml.
+  secondary:
+    enabled: false # disables any check for +secondary+ database.
+
 # Everything is enabled by default.
 DatabaseConsistencyCheckers:
   All:
