@@ -22,6 +22,8 @@ module DatabaseConsistency
         supported? &&
           association.belongs_to? && !association.polymorphic? &&
           same_database?
+      rescue NameError
+        false
       end
 
       def same_database?
