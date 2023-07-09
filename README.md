@@ -29,6 +29,7 @@ Currently, the tool can:
 - [find inconsistent values between enums in the database and ActiveRecord's enums/inclusion validations](https://github.com/djezzzl/database_consistency/wiki/enumvaluechecker)
 - [find redundant `case_sensitive: false` option for unique validations for case-insensitive types](https://github.com/djezzzl/database_consistency/wiki/casesensitiveuniquevalidationchecker)
 - [find missing null constraints on boolean fields](https://github.com/djezzzl/database_consistency/wiki/threestatebooleanchecker)
+- [find broken associations that refer undefined models](https://github.com/djezzzl/database_consistency/wiki/missingassociationclasschecker)
 
 Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)

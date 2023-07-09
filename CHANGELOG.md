@@ -1,5 +1,10 @@
 # Changelog
 
+### [1.7.13] - 2023/07/09
+
+- Add a new checker `MissingAssociationClassChecker` which finds associations that point to undefined models. Thanks [Manuel L.](https://github.com/PuntoDiGoccia) for suggesting the feature!
+- Fix `ForeignKeyTypeChecker` according to `MissingAssociationClassChecker`. 
+
 ### [1.7.12] - 2023/07/05
 
 - Add support of disabling checks per database connection. Thanks [epidevops](https://github.com/epidevops) for suggesting the feature!
