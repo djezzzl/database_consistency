@@ -80,6 +80,7 @@ RedundantIndexChecker fail User index_users_on_phone index is redundant as (inde
 ColumnPresenceChecker fail User tmp column (tmp) is missing in table (users) but used for presence validation
 ForeignKeyTypeChecker fail User something association (something) of class (User) relies on field (something_id) of table (users) but it is missing
 ThreeStateBooleanChecker fail Company active boolean column should have NOT NULL constraint
+MissingAssociationClassChecker fail Company anything refers to undefined model "Anything"
 ```
 
 ## Funding

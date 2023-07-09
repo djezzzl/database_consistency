@@ -8,7 +8,8 @@ module DatabaseConsistency
         Checkers::MissingIndexChecker,
         Checkers::ForeignKeyChecker,
         Checkers::ForeignKeyTypeChecker,
-        Checkers::ForeignKeyCascadeChecker
+        Checkers::ForeignKeyCascadeChecker,
+        Checkers::MissingAssociationClassChecker
       ].freeze
 
       private

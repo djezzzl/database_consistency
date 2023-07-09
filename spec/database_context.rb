@@ -4,6 +4,9 @@ require 'openssl'
 
 RSpec.shared_context 'database context' do |configuration|
   before do
+    if ActiveSupport::Dependencies.respond_to?(:remove_unloadable_constants!)
+      ActiveSupport::Dependencies.remove_unloadable_constants!
+    end
     ActiveRecord::Base.establish_connection(configuration)
     clear_database!
     ActiveRecord::Schema.verbose = false

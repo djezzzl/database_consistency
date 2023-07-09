@@ -6,29 +6,30 @@ module DatabaseConsistency
     # The simplest formatter
     class SimpleWriter < BaseWriter
       SLUG_TO_WRITER = {
+        association_foreign_type_missing_null_constraint: Simple::AssociationForeignTypeMissingNullConstraint,
         association_missing_index: Simple::AssociationMissingIndex,
         association_missing_null_constraint: Simple::AssociationMissingNullConstraint,
-        association_foreign_type_missing_null_constraint: Simple::AssociationForeignTypeMissingNullConstraint,
+        enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
+        enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion,
         has_one_missing_unique_index: Simple::HasOneMissingUniqueIndex,
+        inconsistent_enum_type: Simple::InconsistentEnumType,
         inconsistent_types: Simple::InconsistentTypes,
         length_validator_greater_limit: Simple::LengthValidatorGreaterLimit,
         length_validator_lower_limit: Simple::LengthValidatorLowerLimit,
         length_validator_missing: Simple::LengthValidatorMissing,
+        missing_association_class: Simple::MissingAssociationClass,
         missing_foreign_key: Simple::MissingForeignKey,
+        missing_foreign_key_cascade: Simple::MissingForeignKeyCascade,
         missing_unique_index: Simple::MissingUniqueIndex,
         missing_uniqueness_validation: Simple::MissingUniquenessValidation,
         null_constraint_association_misses_validator: Simple::NullConstraintAssociationMissesValidator,
         null_constraint_misses_validator: Simple::NullConstraintMissesValidator,
         null_constraint_missing: Simple::NullConstraintMissing,
         possible_null: Simple::PossibleNull,
+        redundant_case_insensitive_option: Simple::RedundantCaseInsensitiveOption,
         redundant_index: Simple::RedundantIndex,
         redundant_unique_index: Simple::RedundantUniqueIndex,
         small_primary_key: Simple::SmallPrimaryKey,
-        inconsistent_enum_type: Simple::InconsistentEnumType,
-        missing_foreign_key_cascade: Simple::MissingForeignKeyCascade,
-        enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
-        enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion,
-        redundant_case_insensitive_option: Simple::RedundantCaseInsensitiveOption,
         three_state_boolean: Simple::ThreeStateBoolean
       }.freeze
 
