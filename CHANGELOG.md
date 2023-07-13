@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.14] - 2023/07/13
+
+- Fix `ForeignKeyTypeChecker` when associated class has no table. Thanks [Andrius Chamentauskas](https://github.com/andriusch) for fixing the bug!
+
 ### [1.7.13] - 2023/07/09
 
 - Add a new checker `MissingAssociationClassChecker` which finds associations that point to undefined models. Thanks [Manuel L.](https://github.com/PuntoDiGoccia) for suggesting the feature!
