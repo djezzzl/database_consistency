@@ -29,13 +29,18 @@ module DatabaseConsistency
       end
     end
 
+    def project_models
+      ActiveRecord::Base.descendants.select do |klass|
+        project_klass?(klass)
+      end
+    end
+
     # Returns list of models to check
     def models
-      ActiveRecord::Base.descendants.select do |klass|
+      project_models.select do |klass|
         !klass.abstract_class? &&
           klass.connection.table_exists?(klass.table_name) &&
-          !klass.name.include?('HABTM_') &&
-          project_klass?(klass)
+          !klass.name.include?('HABTM_')
       end
     end
 
