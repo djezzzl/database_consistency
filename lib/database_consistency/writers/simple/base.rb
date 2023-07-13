@@ -33,7 +33,7 @@ module DatabaseConsistency
         end
 
         def msg
-          "#{report.checker_name} #{status_text} #{key_text} #{message_text}".strip
+          [report.checker_name, status_text, key_text, message_text].compact.join(' ').strip
         end
 
         def unique_key
@@ -57,11 +57,14 @@ module DatabaseConsistency
         end
 
         def key_text
-          "#{colorize(report.table_or_model_name, :blue)} #{colorize(report.column_or_attribute_name, :yellow)}"
+          [
+            colorize(report.table_or_model_name, :blue),
+            colorize(report.column_or_attribute_name, :yellow)
+          ].compact.join(' ')
         end
 
         def colorize(text, color)
-          return text unless config.colored? && color
+          return text unless text && config.colored? && color
 
           "#{COLORS[color]}#{text}\e[0m"
         end

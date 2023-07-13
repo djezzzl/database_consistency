@@ -1,0 +1,2 @@
+class LegacyModel < ApplicationRecord
+end

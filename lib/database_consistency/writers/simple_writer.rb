@@ -20,6 +20,7 @@ module DatabaseConsistency
         missing_association_class: Simple::MissingAssociationClass,
         missing_foreign_key: Simple::MissingForeignKey,
         missing_foreign_key_cascade: Simple::MissingForeignKeyCascade,
+        missing_table: Simple::MissingTable,
         missing_unique_index: Simple::MissingUniqueIndex,
         missing_uniqueness_validation: Simple::MissingUniquenessValidation,
         null_constraint_association_misses_validator: Simple::NullConstraintAssociationMissesValidator,

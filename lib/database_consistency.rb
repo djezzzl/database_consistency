@@ -40,6 +40,7 @@ require 'database_consistency/writers/simple/enum_values_inconsistent_with_inclu
 require 'database_consistency/writers/simple/redundant_case_insensitive_option'
 require 'database_consistency/writers/simple/three_state_boolean'
 require 'database_consistency/writers/simple/missing_association_class'
+require 'database_consistency/writers/simple/missing_table'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
@@ -61,6 +62,9 @@ require 'database_consistency/checkers/base_checker'
 
 require 'database_consistency/checkers/enum_checkers/enum_checker'
 require 'database_consistency/checkers/enum_checkers/enum_type_checker'
+
+require 'database_consistency/checkers/model_checkers/model_checker'
+require 'database_consistency/checkers/model_checkers/missing_table_checker'
 
 require 'database_consistency/checkers/association_checkers/association_checker'
 require 'database_consistency/checkers/association_checkers/missing_index_checker'
@@ -95,6 +99,7 @@ require 'database_consistency/processors/validators_processor'
 require 'database_consistency/processors/columns_processor'
 require 'database_consistency/processors/validators_fractions_processor'
 require 'database_consistency/processors/indexes_processor'
+require 'database_consistency/processors/models_processor'
 
 # The root module
 module DatabaseConsistency
