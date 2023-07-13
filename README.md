@@ -30,6 +30,7 @@ Currently, the tool can:
 - [find redundant `case_sensitive: false` option for unique validations for case-insensitive types](https://github.com/djezzzl/database_consistency/wiki/casesensitiveuniquevalidationchecker)
 - [find missing null constraints on boolean fields](https://github.com/djezzzl/database_consistency/wiki/threestatebooleanchecker)
 - [find broken associations that refer undefined models](https://github.com/djezzzl/database_consistency/wiki/missingassociationclasschecker)
+- [find models that have missing tables](https://github.com/djezzzl/database_consistency/wiki/missingtablechecker)
 
 Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
@@ -82,6 +83,7 @@ ColumnPresenceChecker fail User tmp column (tmp) is missing in table (users) but
 ForeignKeyTypeChecker fail User something association (something) of class (User) relies on field (something_id) of table (users) but it is missing
 ThreeStateBooleanChecker fail Company active boolean column should have NOT NULL constraint
 MissingAssociationClassChecker fail Company anything refers to undefined model "Anything"
+MissingTableChecker fail LegacyModel should have a table in the database
 ```
 
 ## Funding
@@ -161,6 +163,10 @@ You're an organization that wants to support the project with a monthly donation
 [Bug reports](https://github.com/djezzzl/database_consistency/issues) and [pull requests](https://github.com/djezzzl/database_consistency/pulls) are welcome on GitHub.
 This project is intended to be a safe, welcoming space for collaboration, and contributors are expected
 to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+### Contributors
+
+<img src="https://opencollective.com/database_consistency/contributors.svg?width=890&button=false" />
 
 ## Code of Conduct
 

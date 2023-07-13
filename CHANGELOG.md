@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.15] - 2023/07/13
+
+- Implement `MissingTableChecker` when find a model that is missing its table so it can be either removed completely or fixed.
+
 ### [1.7.14] - 2023/07/13
 
 - Fix `ForeignKeyTypeChecker` when associated class has no table. Thanks [Andrius Chamentauskas](https://github.com/andriusch) for fixing the bug!
