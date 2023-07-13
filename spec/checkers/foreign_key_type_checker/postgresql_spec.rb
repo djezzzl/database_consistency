@@ -131,6 +131,20 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :postgresql
     end
   end
 
+  context 'when associated klass does not have table' do
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user } }
+
+    before do
+      define_database do
+        create_table :companies
+      end
+    end
+
+    it 'outputs nothing' do
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'with has_one association' do
     let!(:company_class) do
       define_class('Company', :companies) do |klass|

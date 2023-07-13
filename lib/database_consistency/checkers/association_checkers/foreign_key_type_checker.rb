@@ -25,7 +25,8 @@ module DatabaseConsistency
         !association.polymorphic? &&
           association.through_reflection.nil? &&
           association.klass.present? &&
-          association.macro != :has_and_belongs_to_many
+          association.macro != :has_and_belongs_to_many &&
+          association.klass.table_exists?
       rescue NameError
         false
       end
