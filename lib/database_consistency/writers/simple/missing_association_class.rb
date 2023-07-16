@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'refers to undefined model "%<class_name>s"'
+          'refers to undefined model %<class_name>s'
         end
 
         def unique_attributes

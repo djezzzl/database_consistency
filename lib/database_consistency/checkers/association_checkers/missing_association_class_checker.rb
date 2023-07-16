@@ -27,9 +27,15 @@ module DatabaseConsistency
           status: status,
           error_message: nil,
           error_slug: error_slug,
-          class_name: association.class_name,
+          class_name: class_name,
           **report_attributes
         )
+      end
+
+      def class_name
+        association.class_name
+      rescue NoMethodError
+        nil
       end
     end
   end
