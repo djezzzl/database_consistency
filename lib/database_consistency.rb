@@ -9,6 +9,7 @@ require 'database_consistency/rescue_error'
 require 'database_consistency/errors'
 require 'database_consistency/report_builder'
 require 'database_consistency/report'
+require 'database_consistency/debug_context'
 
 require 'database_consistency/writers/base_writer'
 require 'database_consistency/writers/todo_writer'

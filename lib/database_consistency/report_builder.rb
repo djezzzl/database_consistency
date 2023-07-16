@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   class ReportBuilder # :nodoc:
-    def self.define(klass, *attrs) # rubocop:disable Metrics/MethodLength
+    def self.define(klass, *attrs)
       Class.new(klass) do
         attr_reader(*attrs)
 
