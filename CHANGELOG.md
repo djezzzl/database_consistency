@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.16] - 2023/07/16
+
+- Output debugging context for found issues.
+
 ### [1.7.15] - 2023/07/13
 
 - Implement `MissingTableChecker` when find a model that is missing its table so it can be either removed completely or fixed.
