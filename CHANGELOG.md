@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.17] - 2023/07/16
+
+- Improve `MissingAssociationClassChecker` to work with invalid `through` associations.
+
 ### [1.7.16] - 2023/07/16
 
 - Output debugging context for found issues.
