@@ -25,6 +25,9 @@ module DatabaseConsistency
     def call(error)
       File.open(filename, 'a') do |file|
         file.puts('<===begin===>')
+        file.puts('Metadata:')
+        DebugContext.output(file)
+        file.puts('Stack trace:')
         file.puts(error.full_message)
         file.puts('<===end===>')
       end
