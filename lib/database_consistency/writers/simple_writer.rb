@@ -12,6 +12,7 @@ module DatabaseConsistency
         enum_values_inconsistent_with_ar_enum: Simple::EnumValuesInconsistentWithArEnum,
         enum_values_inconsistent_with_inclusion: Simple::EnumValuesInconsistentWithInclusion,
         has_one_missing_unique_index: Simple::HasOneMissingUniqueIndex,
+        implicit_order_column_missing: Simple::ImplicitOrderColumnMissing,
         inconsistent_enum_type: Simple::InconsistentEnumType,
         inconsistent_types: Simple::InconsistentTypes,
         length_validator_greater_limit: Simple::LengthValidatorGreaterLimit,

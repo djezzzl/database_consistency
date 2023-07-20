@@ -9,7 +9,8 @@ module DatabaseConsistency
         Checkers::LengthConstraintChecker,
         Checkers::PrimaryKeyTypeChecker,
         Checkers::EnumValueChecker,
-        Checkers::ThreeStateBooleanChecker
+        Checkers::ThreeStateBooleanChecker,
+        Checkers::ImplicitOrderingChecker
       ].freeze
 
       private
