@@ -7,6 +7,10 @@ RSpec.describe DatabaseConsistency::Checkers::ImplicitOrderingChecker, :postgres
   let(:model) { klass }
   let(:column) { klass.columns.first }
 
+  before do
+    skip if ActiveRecord::VERSION::MAJOR < 6
+  end
+
   context 'when primary key type is uuid and model defines self.implicit_order_column' do
     before do
       define_database do

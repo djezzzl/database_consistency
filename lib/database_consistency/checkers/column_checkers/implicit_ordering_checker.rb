@@ -15,7 +15,10 @@ module DatabaseConsistency
       # - column is not a primary key
       # - column type is not "uuid"
       def preconditions
-        Helper.postgresql? && primary_field? && column.sql_type.to_s.match(TARGET_COLUMN_TYPE)
+        ActiveRecord::VERSION::MAJOR >= 6 &&
+          Helper.postgresql? &&
+          primary_field? &&
+          column.sql_type.to_s.match(TARGET_COLUMN_TYPE)
       end
 
       # Table of possible statuses
