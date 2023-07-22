@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.18] - 2023/07/22
+
+- Implement `ImplicitOrderingChecker`. Thanks [Nhan Nim](https://github.com/developie0610) for the contribution!
+
 ### [1.7.17] - 2023/07/16
 
 - Improve `MissingAssociationClassChecker` to work with invalid `through` associations.

@@ -31,6 +31,7 @@ Currently, the tool can:
 - [find missing null constraints on boolean fields](https://github.com/djezzzl/database_consistency/wiki/threestatebooleanchecker)
 - [find broken associations that refer undefined models](https://github.com/djezzzl/database_consistency/wiki/missingassociationclasschecker)
 - [find models that have missing tables](https://github.com/djezzzl/database_consistency/wiki/missingtablechecker)
+- [find models with UUID primary keys without specified ordering column](https://github.com/djezzzl/database_consistency/wiki/implicitorderingchecker)
 
 Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
