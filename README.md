@@ -84,6 +84,7 @@ ForeignKeyTypeChecker fail User something association (something) of class (User
 ThreeStateBooleanChecker fail Company active boolean column should have NOT NULL constraint
 MissingAssociationClassChecker fail Company anything refers to undefined model "Anything"
 MissingTableChecker fail LegacyModel should have a table in the database
+ImplicitOrderingChecker fail Secondary::User id implicit_order_column is recommended when using uuid column type for primary key
 ```
 
 ## Funding
