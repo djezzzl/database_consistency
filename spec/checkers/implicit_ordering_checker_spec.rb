@@ -38,7 +38,7 @@ RSpec.describe DatabaseConsistency::Checkers::ImplicitOrderingChecker, :postgres
     end
 
     specify do
-      expect(checker.report).to eq(
+      expect(checker.report).to have_attributes(
         checker_name: 'ImplicitOrderingChecker',
         table_or_model_name: klass.name,
         column_or_attribute_name: 'id',
