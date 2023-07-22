@@ -2,13 +2,9 @@
 
 module DatabaseConsistency
   module Checkers
-    # This class checks that primary column type is "uuid" and the model class defines `self.implicit_order_column` method
+    # This class checks that primary column type is "uuid" and the model class defines `self.implicit_order_column`
     class ImplicitOrderingChecker < ColumnChecker
-      Report = ReportBuilder.define(
-        DatabaseConsistency::Report,
-        :model_name,
-        :primary_fk_name
-      )
+      Report = ReportBuilder.define(DatabaseConsistency::Report)
 
       private
 
@@ -35,17 +31,6 @@ module DatabaseConsistency
         end
       end
 
-      def report_template(status, error_slug: nil)
-        Report.new(
-          status: status,
-          error_slug: error_slug,
-          error_message: nil,
-          model_name: model.name,
-          primary_fk_name: column.name,
-          **report_attributes
-        )
-      end
-    
       # @return [Boolean]
       def primary_field?
         column.name.to_s == model.primary_key.to_s

@@ -7,7 +7,7 @@ module DatabaseConsistency
         attr_reader(*attrs)
 
         class_eval(<<~DEF, __FILE__, __LINE__ + 1)
-          def initialize(#{attrs.map { |attr| "#{attr}:" }.join(', ')}, **opts)
+          def initialize(#{attrs.map { |attr| "#{attr}:" }.join(', ')}#{"," if attrs.any?} **opts)
             super(**opts) if opts.any?
             #{attrs.map { |attr| "@#{attr} = #{attr}" }.join("\n")}
           end

@@ -21,8 +21,8 @@ RSpec.describe DatabaseConsistency::Checkers::ImplicitOrderingChecker, :postgres
     specify do
       expect(checker.report).to have_attributes(
         checker_name: 'ImplicitOrderingChecker',
-        model_name: klass.name,
-        primary_fk_name: 'id',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'id',
         status: :ok,
         error_slug: nil,
         error_message: nil
@@ -38,10 +38,10 @@ RSpec.describe DatabaseConsistency::Checkers::ImplicitOrderingChecker, :postgres
     end
 
     specify do
-      expect(checker.report).to have_attributes(
+      expect(checker.report).to eq(
         checker_name: 'ImplicitOrderingChecker',
-        model_name: klass.name,
-        primary_fk_name: 'id',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'id',
         status: :fail,
         error_slug: :implicit_order_column_missing,
         error_message: nil
