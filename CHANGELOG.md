@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.19] - 2023/08/17
+
+- Ignore disconnected models.
+
 ### [1.7.18] - 2023/07/22
 
 - Implement `ImplicitOrderingChecker`. Thanks [Nhan Nim](https://github.com/developie0610) for the contribution!
