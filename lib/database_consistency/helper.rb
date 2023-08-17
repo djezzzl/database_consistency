@@ -31,17 +31,22 @@ module DatabaseConsistency
 
     def project_models
       ActiveRecord::Base.descendants.select do |klass|
-        project_klass?(klass)
+        project_klass?(klass) && connected?(klass)
       end
     end
 
     # Returns list of models to check
     def models
       project_models.select do |klass|
-        !klass.abstract_class? &&
-          klass.connection.table_exists?(klass.table_name) &&
-          !klass.name.include?('HABTM_')
+        !klass.abstract_class? && !klass.name.include?('HABTM_')
       end
+    end
+
+    def connected?(klass)
+      klass.connection
+    rescue ActiveRecord::ConnectionNotEstablished
+      puts "#{klass} doesn't have active connection: ignoring"
+      false
     end
 
     # Return list of not inherited models
