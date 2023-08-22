@@ -38,7 +38,9 @@ module DatabaseConsistency
     # Returns list of models to check
     def models
       project_models.select do |klass|
-        !klass.abstract_class? && !klass.name.include?('HABTM_')
+        !klass.abstract_class? &&
+          klass.connection.table_exists?(klass.table_name) &&
+          !klass.name.include?('HABTM_')
       end
     end
 
