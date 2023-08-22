@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.20] - 2023/08/22
+
+- Ignore models without connected tables. Thanks [Francesco](https://github.com/frodsan) for the contribution!
+
 ### [1.7.19] - 2023/08/17
 
 - Ignore disconnected models.
