@@ -51,7 +51,7 @@ jobs:
           - ruby-version: '3.1'
             gemfile: 'gemfiles/ar_6_1.gemfile'
           - ruby-version: '3.2'
-            gemfile: 'gemfiles/ar_7_0.gemfile'
+            gemfile: ['gemfiles/ar_7_0.gemfile', 'gemfiles/ar_7_1.gemfile']
           - ruby-version: 'head'
             gemfile: 'gemfiles/ar_main.gemfile'
 

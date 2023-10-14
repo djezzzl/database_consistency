@@ -34,7 +34,23 @@ module DatabaseConsistency
       end
 
       def weak_option?
-        validators.all? { |validator| validator.options.slice(*WEAK_OPTIONS).any? }
+        validators.all? do |validator|
+          result = validator.options.slice(*WEAK_OPTIONS).any?
+
+          result = false if required_with_if?(validator)
+
+          result
+        end
+      end
+
+      def belongs_to_required_validates_foreign_key_disabled?
+        ActiveRecord.version >= Gem::Version.new('7.1.0') &&
+          !ActiveRecord.belongs_to_required_validates_foreign_key
+      end
+
+      def required_with_if?(validator)
+        belongs_to_required_validates_foreign_key_disabled? &&
+          validator.options[:message] == :required && validator.options[:if].present?
       end
 
       def check
