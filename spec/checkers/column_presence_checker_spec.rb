@@ -158,6 +158,26 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
     context 'when `belongs_to` is required' do
       let(:klass) { define_class { |klass| klass.belongs_to :user, **required } }
 
+      if ActiveRecord.version >= Gem::Version.new('7.1.0')
+        context 'when belongs_to_required_validates_foreign_key is set to false' do
+          specify do
+            old = ActiveRecord.belongs_to_required_validates_foreign_key
+            ActiveRecord.belongs_to_required_validates_foreign_key = false
+
+            expect(checker.report.first).to have_attributes(
+              checker_name: 'ColumnPresenceChecker',
+              table_or_model_name: klass.name,
+              column_or_attribute_name: 'user',
+              status: :fail,
+              error_message: nil,
+              error_slug: :association_missing_null_constraint
+            )
+
+            ActiveRecord.belongs_to_required_validates_foreign_key = old
+          end
+        end
+      end
+
       specify do
         expect(checker.report.first).to have_attributes(
           checker_name: 'ColumnPresenceChecker',
@@ -199,10 +219,43 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
           error_slug: nil
         )
       end
+
+      if ActiveRecord.version >= Gem::Version.new('7.1.0')
+        context 'when belongs_to_required_validates_foreign_key is set to true' do
+          specify do
+            old = ActiveRecord.belongs_to_required_validates_foreign_key
+            ActiveRecord.belongs_to_required_validates_foreign_key = true
+
+            expect(checker.report.first).to have_attributes(
+              checker_name: 'ColumnPresenceChecker',
+              table_or_model_name: klass.name,
+              column_or_attribute_name: 'user',
+              status: :ok,
+              error_message: nil,
+              error_slug: nil
+            )
+
+            ActiveRecord.belongs_to_required_validates_foreign_key = old
+          end
+        end
+      end
     end
 
     context 'when `belongs_to` is optional' do
       let(:klass) { define_class { |klass| klass.belongs_to :user, **optional } }
+
+      if ActiveRecord.version >= Gem::Version.new('7.1.0')
+        context 'when belongs_to_required_validates_foreign_key is set to false' do
+          specify do
+            old = ActiveRecord.belongs_to_required_validates_foreign_key
+            ActiveRecord.belongs_to_required_validates_foreign_key = false
+
+            expect(checker.report).to be_nil
+
+            ActiveRecord.belongs_to_required_validates_foreign_key = old
+          end
+        end
+      end
 
       specify do
         expect(checker.report).to be_nil
