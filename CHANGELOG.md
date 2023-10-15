@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.21] - 2023/10/15
+
+- Adjust `ColumnPresenceChecker` to work with ActiveRecord 7.1. Thanks [Alex Robbin](https://github.com/agrobbin) to create an issue and [Chedli Bourguiba](https://github.com/chaadow) for fixing it.
+
 ### [1.7.20] - 2023/08/22
 
 - Ignore models without connected tables. Thanks [Francesco](https://github.com/frodsan) for the contribution!
