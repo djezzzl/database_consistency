@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.22] - 2023/11/08
+
+- Adjust error file. Thanks [Andy Allan](https://github.com/gravitystorm) for reporting this!
+
 ### [1.7.21] - 2023/10/15
 
 - Adjust `ColumnPresenceChecker` to work with ActiveRecord 7.1. Thanks [Alex Robbin](https://github.com/agrobbin) to create an issue and [Chedli Bourguiba](https://github.com/chaadow) for fixing it.
