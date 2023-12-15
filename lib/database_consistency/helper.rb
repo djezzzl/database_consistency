@@ -63,6 +63,7 @@ module DatabaseConsistency
     # @return [Boolean]
     def project_klass?(klass)
       return true unless Module.respond_to?(:const_source_location) && defined?(Bundler)
+      return false if klass.name.nil?
 
       !Module.const_source_location(klass.to_s).first.to_s.include?(Bundler.bundle_path.to_s)
     end

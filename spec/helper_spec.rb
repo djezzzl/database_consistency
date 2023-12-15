@@ -39,4 +39,23 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       expect(subject).not_to include(SubEntities)
     end
   end
+
+  describe '#project_klass' do
+    subject(:project_klass) { described_class.project_klass?(klass) }
+
+    context 'when the class is anonymous' do
+      let(:klass) { Class.new }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when the class is part of the project' do
+      let(:klass) { define_class }
+
+      before do
+        allow(Module).to receive(:const_source_location).with(klass.name).and_return([__FILE__, 1])
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
 end
