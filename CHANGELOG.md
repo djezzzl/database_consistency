@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.23] - 2023/12/18
+
+- EnumValueChecker: Check enums in any order. Thanks [Sergey Toy](https://github.com/toydestroyer) for noticing and improving this!
+
 ### [1.7.22] - 2023/11/08
 
 - Adjust error file. Thanks [Andy Allan](https://github.com/gravitystorm) for reporting this!
