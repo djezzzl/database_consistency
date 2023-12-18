@@ -44,7 +44,7 @@ module DatabaseConsistency
       def verify_enum
         values = enum.values.uniq
 
-        if enum_column_values == values
+        if enum_column_values.sort == values.sort
           report_template(:ok, values)
         else
           report_template(:fail, values, error_slug: :enum_values_inconsistent_with_ar_enum)
@@ -54,7 +54,7 @@ module DatabaseConsistency
       def verify_inclusion_validator
         values = validator_values(inclusion_validator).uniq
 
-        if enum_column_values == values
+        if enum_column_values.sort == values.sort
           report_template(:ok, values)
         else
           report_template(:fail, values, error_slug: :enum_values_inconsistent_with_inclusion)

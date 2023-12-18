@@ -76,7 +76,24 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
     end
   end
 
-  context 'when validation values are inconsistent' do
+  context 'when validation values are out of order' do
+    let(:klass) { define_class { |klass| klass.validates :status, inclusion: { in: %w[value2 value1] } } }
+
+    specify do
+      expect(checker.report.first).to have_attributes(
+        checker_name: 'EnumValueChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'status',
+        status: :ok,
+        error_slug: nil,
+        enum_values: %w[value1 value2],
+        declared_values: %w[value2 value1],
+        error_message: nil
+      )
+    end
+  end
+
+  context 'when enum values are inconsistent' do
     let(:klass) { define_class { |klass| klass.enum :status, { value1: 'value1', something: 'something' } } }
 
     specify do
@@ -88,6 +105,23 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
         error_slug: :enum_values_inconsistent_with_ar_enum,
         enum_values: %w[value1 value2],
         declared_values: %w[value1 something],
+        error_message: nil
+      )
+    end
+  end
+
+  context 'when enum values are out of order' do
+    let(:klass) { define_class { |klass| klass.enum :status, { value2: 'value2', value1: 'value1' } } }
+
+    specify do
+      expect(checker.report.first).to have_attributes(
+        checker_name: 'EnumValueChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'status',
+        status: :ok,
+        error_slug: nil,
+        enum_values: %w[value1 value2],
+        declared_values: %w[value2 value1],
         error_message: nil
       )
     end
