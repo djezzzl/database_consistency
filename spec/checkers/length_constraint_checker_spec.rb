@@ -10,8 +10,27 @@ RSpec.describe DatabaseConsistency::Checkers::LengthConstraintChecker, :sqlite, 
     define_database_with_entity { |table| table.string :email, limit: 256 }
   end
 
-  context 'when validation is missing' do
+  context 'when validation is present' do
     let(:klass) { define_class { |klass| klass.validates :email, length: { maximum: 256 } } }
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'LengthConstraintChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'email',
+        status: :ok,
+        error_slug: nil,
+        error_message: nil
+      )
+    end
+  end
+
+  context 'when validation is proc' do
+    before do
+      skip('AR 4 doesnt support Proc') if ActiveRecord::VERSION::MAJOR < 5
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :email, length: { maximum: proc { |_| 256 } } } }
 
     specify do
       expect(checker.report).to have_attributes(
