@@ -23,7 +23,13 @@ module DatabaseConsistency
         end
 
         def columns
-          "%w[#{report.columns.join(' ')}]"
+          if report.columns.size > 1
+            "%w[#{report.columns.join(' ')}]"
+          elsif report.columns.first =~ /[()]/
+            "'#{report.columns.first}'"
+          else
+            ":#{report.columns.first}"
+          end
         end
 
         def columns_key
