@@ -12,11 +12,10 @@ module DatabaseConsistency
       private
 
       # @return [Array<Hash>]
-      def check # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def check # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         Helper.parent_models.flat_map do |model|
           DebugContext.with(model: model.name) do
-            next unless configuration.enabled?('DatabaseConsistencyDatabases', Helper.database_name(model)) &&
-                        configuration.enabled?(model.name.to_s)
+            next unless model_enabled?(model)
 
             model.validators.flat_map do |validator|
               next unless validator.respond_to?(:attributes)
