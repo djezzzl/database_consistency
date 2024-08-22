@@ -45,8 +45,14 @@ module DatabaseConsistency
       end
 
       def valid?(sign)
-        %i[maximum is].each do |option|
-          return validator.options[option].public_send(sign, column.limit) if validator.options[option]
+        %i[maximum is].each do |key|
+          option = validator.options[key]
+          next unless option
+
+          # skipping runtime-calculated limits
+          return true if option.is_a?(Proc) || option.is_a?(Symbol)
+
+          return option.public_send(sign, column.limit)
         end
 
         false
