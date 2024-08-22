@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.7.24] - 2024/08/22
+
+- Fix DatabaseConsistencyCheckers/All setting
+- Make LengthConstraintChecker ignore Proc/Symbol settings
+- Handle lower() index in autofix migration writer
+
+Thanks [Alexander Sviridov](https://github.com/ql) for fixing all of this!
+
 ### [1.7.23] - 2023/12/18
 
 - EnumValueChecker: Check enums in any order. Thanks [Sergey Toy](https://github.com/toydestroyer) for noticing and improving this!
