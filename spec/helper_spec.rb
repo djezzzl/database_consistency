@@ -39,4 +39,24 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       expect(subject).not_to include(SubEntities)
     end
   end
+
+  describe '#project_klass', focus: true do
+    subject(:project_klass) { described_class.project_klass?(klass) }
+
+    # `Module.const_source_location` was added in Ruby-2.7, so on previous Ruby versions we always
+    #   return `true` instead of `false` expected for this testcases
+    context 'when the class is anonymous' do
+      let(:klass) { define_class.tap { |k| k.singleton_class.remove_method(:name) } }
+
+      context 'without a name' do
+        it { is_expected.to be(RUBY_VERSION < '2.7') }
+      end
+
+      context 'with bogus name' do
+        before { klass.define_singleton_method(:name) { 'Some invalid !@#' } }
+
+        it { is_expected.to be(RUBY_VERSION < '2.7') }
+      end
+    end
+  end
 end
