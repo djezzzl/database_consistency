@@ -39,7 +39,7 @@ module DatabaseConsistency
     def models
       project_models.select do |klass|
         !klass.abstract_class? &&
-          klass.connection.table_exists?(klass.table_name) &&
+          klass.table_exists? &&
           !klass.name.include?('HABTM_')
       end
     end

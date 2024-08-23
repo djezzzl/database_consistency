@@ -59,4 +59,38 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
     end
   end
+
+  describe '#models' do
+    subject(:models) { described_class.models }
+
+    before do
+      allow(described_class).to receive(:project_klass?).and_return(true)
+
+      define_database_with_entity { |table| table.string :email }
+
+      define_class('Entities', :entities)
+      define_class('Scoped::Entities', :entities)
+      stub_const('SubEntities', Class.new(Entities))
+
+      dummy_cache = Object.new
+      dummy_cache.define_singleton_method(:data_source_exists?) { |_table_name| false }
+      dummy_cache.define_singleton_method(:table_exists?) { |_table_name| false }
+
+      dummy_connection = ActiveRecord::ConnectionAdapters::AbstractAdapter.new(nil)
+      dummy_connection.define_singleton_method(:schema_cache) { dummy_cache }
+
+      define_class('AbstractEntity') do |klass|
+        klass.table_name = 'bogus'
+        klass.define_singleton_method(:connection) { dummy_connection }
+      end
+
+      allow(ActiveRecord::Base)
+        .to receive(:descendants)
+        .and_return([Entities, Scoped::Entities, SubEntities, AbstractEntity])
+    end
+
+    specify do
+      expect(models).to contain_exactly(Entities, Scoped::Entities, SubEntities)
+    end
+  end
 end
