@@ -65,6 +65,8 @@ module DatabaseConsistency
       return true unless Module.respond_to?(:const_source_location) && defined?(Bundler)
 
       !Module.const_source_location(klass.to_s).first.to_s.include?(Bundler.bundle_path.to_s)
+    rescue NameError
+      false
     end
 
     # @return [Boolean]
