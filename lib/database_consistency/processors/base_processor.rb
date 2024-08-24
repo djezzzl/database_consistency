@@ -43,11 +43,6 @@ module DatabaseConsistency
 
       private
 
-      def model_enabled?(model)
-        configuration.database_enabled?(Helper.database_name(model)) &&
-          configuration.enabled?(model.name.to_s)
-      end
-
       def check
         raise NotImplementedError
       end
