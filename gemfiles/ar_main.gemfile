@@ -3,5 +3,8 @@
 source 'https://rubygems.org'
 
 gem 'activerecord', git: 'https://github.com/rails/rails', branch: 'main'
+gem 'mysql2', '~> 0.5'
+gem 'pg', '>= 0.2'
+gem 'sqlite3', '>= 2.0'
 
 gemspec path: '../'
