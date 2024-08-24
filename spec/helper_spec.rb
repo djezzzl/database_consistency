@@ -18,7 +18,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
   end
 
   describe '#parent_models' do
-    subject(:parent_models) { described_class.parent_models }
+    subject(:parent_models) { described_class.parent_models(DatabaseConsistency::Configuration.new) }
 
     before do
       allow(described_class).to receive(:project_klass?).and_return(true)
@@ -29,7 +29,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       define_class('Scoped::Entities', :entities)
       stub_const('SubEntities', Class.new(Entities))
 
-      allow(ActiveRecord::Base)
+      expect(ActiveRecord::Base)
         .to receive(:descendants)
         .and_return([Entities, Scoped::Entities, SubEntities])
     end

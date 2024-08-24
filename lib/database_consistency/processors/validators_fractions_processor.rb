@@ -12,10 +12,8 @@ module DatabaseConsistency
 
       # @return [Array<Hash>]
       def check # rubocop:disable Metrics/MethodLength
-        Helper.parent_models.flat_map do |model|
+        Helper.parent_models(configuration).flat_map do |model|
           DebugContext.with(model: model.name) do
-            next unless model_enabled?(model)
-
             model._validators.flat_map do |attribute, validators|
               DebugContext.with(attribute: attribute) do
                 next unless attribute
