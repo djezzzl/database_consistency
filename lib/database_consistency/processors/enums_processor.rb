@@ -11,10 +11,8 @@ module DatabaseConsistency
       private
 
       def check # rubocop:disable Metrics/MethodLength
-        Helper.models.flat_map do |model|
+        Helper.models(configuration).flat_map do |model|
           DebugContext.with(model: model.name) do
-            next unless model_enabled?(model)
-
             model.defined_enums.keys.flat_map do |enum|
               DebugContext.with(enum: enum) do
                 enabled_checkers.flat_map do |checker_class|
