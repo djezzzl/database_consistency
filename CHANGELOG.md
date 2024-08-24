@@ -1,5 +1,11 @@
 # Changelog
 
+### [1.7.25] - 2024/08/24
+
+- Fix compatibility w/ active_type gem and handling anonymous classes. Thanks [ojab](https://github.com/ojab) for fixing this!
+- Improving CI. Thanks [ojab](https://github.com/ojab) for doing this!
+- Make all models methods ignore database disabled models. Thanks [Chedli Bourguiba](https://github.com/chaadow) for fixing it!
+
 ### [1.7.24] - 2024/08/22
 
 - Fix DatabaseConsistencyCheckers/All setting
