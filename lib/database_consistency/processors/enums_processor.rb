@@ -4,10 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process enums
     class EnumsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::EnumTypeChecker
-      ].freeze
-
       private
 
       def check # rubocop:disable Metrics/MethodLength

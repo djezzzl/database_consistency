@@ -4,12 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process indexes
     class IndexesProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::UniqueIndexChecker,
-        Checkers::RedundantIndexChecker,
-        Checkers::RedundantUniqueIndexChecker
-      ].freeze
-
       private
 
       def check # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

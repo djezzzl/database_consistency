@@ -4,14 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process associations
     class AssociationsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::MissingIndexChecker,
-        Checkers::ForeignKeyChecker,
-        Checkers::ForeignKeyTypeChecker,
-        Checkers::ForeignKeyCascadeChecker,
-        Checkers::MissingAssociationClassChecker
-      ].freeze
-
       private
 
       def check # rubocop:disable Metrics/MethodLength

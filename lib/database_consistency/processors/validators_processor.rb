@@ -4,11 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process validators
     class ValidatorsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::MissingUniqueIndexChecker,
-        Checkers::CaseSensitiveUniqueValidationChecker
-      ].freeze
-
       private
 
       # @return [Array<Hash>]
