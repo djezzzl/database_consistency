@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.26] - 2024/10/09
+
+- Improve generating migrations by using migration pool from connection. Thanks [Stephen Ierodiaconou](https://github.com/stevegeek) for noticing and fixing this!
+
 ### [1.7.25] - 2024/08/24
 
 - Fix compatibility w/ active_type gem and handling anonymous classes. Thanks [ojab](https://github.com/ojab) for fixing this!
