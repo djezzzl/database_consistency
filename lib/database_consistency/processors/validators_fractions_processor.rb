@@ -4,10 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process validators
     class ValidatorsFractionsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::ColumnPresenceChecker
-      ].freeze
-
       private
 
       # @return [Array<Hash>]

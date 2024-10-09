@@ -11,9 +11,19 @@ module DatabaseConsistency
         configuration.enabled?('DatabaseConsistencyCheckers', checker_name)
       end
 
+      def self.inherited(subclass)
+        super
+
+        return if subclass.superclass.name == 'DatabaseConsistency::Checkers::BaseChecker'
+
+        processor_prefix = subclass.superclass.name.demodulize.delete_suffix('Checker').pluralize
+        processor = "DatabaseConsistency::Processors::#{processor_prefix}Processor".constantize
+        processor.checkers << subclass
+      end
+
       # @return [String]
       def self.checker_name
-        @checker_name ||= name.split('::').last
+        @checker_name ||= name.demodulize
       end
 
       # @param [Boolean] catch_errors

@@ -4,10 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process models
     class ModelsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::MissingTableChecker
-      ].freeze
-
       private
 
       def check

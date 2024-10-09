@@ -6,7 +6,7 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite, :mysq
   let(:model) { klass }
   let(:index) { ActiveRecord::Base.connection.indexes(klass.table_name).first }
 
-  let(:checker_name) { described_class.to_s.split('::').last }
+  let(:checker_name) { described_class.name.demodulize }
   let(:index_name) { 'index_name' }
 
   context 'when unique index is based on association' do

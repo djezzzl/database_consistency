@@ -4,21 +4,17 @@ module DatabaseConsistency
   # The module for processors
   module Processors
     def self.reports(configuration)
-      [
-        ColumnsProcessor,
-        ValidatorsProcessor,
-        AssociationsProcessor,
-        ValidatorsFractionsProcessor,
-        IndexesProcessor,
-        EnumsProcessor,
-        ModelsProcessor
-      ].flat_map do |processor|
+      BaseProcessor.descendants.flat_map do |processor|
         processor.new(configuration).reports
       end
     end
 
     # The base class for processors
     class BaseProcessor
+      def self.checkers
+        @checkers ||= Set.new
+      end
+
       attr_reader :configuration
 
       # @param [DatabaseConsistency::Configuration] configuration
@@ -38,7 +34,7 @@ module DatabaseConsistency
 
       # @return [Array<Class>]
       def enabled_checkers
-        self.class::CHECKERS.select { |checker| checker.enabled?(configuration) }
+        self.class.checkers.select { |checker| checker.enabled?(configuration) }
       end
 
       private
