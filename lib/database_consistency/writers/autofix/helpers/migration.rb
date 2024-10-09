@@ -6,7 +6,7 @@ module DatabaseConsistency
       module Helpers
         module Migration # :nodoc:
           def migration_path(name)
-            migration_context = ActiveRecord::Tasks::DatabaseTasks.migration_connection_pool.migration_context
+            migration_context = ActiveRecord::Base.connection.migration_context
 
             last = migration_context.migrations.last
             version = ActiveRecord::Migration.next_migration_number(last&.version.to_i + 1)
