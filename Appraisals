@@ -17,7 +17,7 @@ appraise 'ar_4_2' do
   gem 'sqlite3', '~> 1.3.9'
 end
 
-%w[5.2 6.0 6.1 7.0 7.1].each do |version|
+%w[5.2 6.0 6.1 7.0 7.1 7.2].each do |version|
   appraise "ar_#{version.gsub('.', '_')}" do
     remove_gem 'appraisal'
     gem 'activerecord', "~> #{version}.0"
