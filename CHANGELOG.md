@@ -1,5 +1,9 @@
 # Changelog
 
+### [1.7.27] - 2024/12/24
+
+- Fix generating migrations for newer versions of Rails. Thanks [André Arko](https://github.com/indirect) for reporting the issue. 
+
 ### [1.7.26] - 2024/10/09
 
 - Improve generating migrations by using migration pool from connection. Thanks [Stephen Ierodiaconou](https://github.com/stevegeek) for noticing and fixing this!
