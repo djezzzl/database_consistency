@@ -7,7 +7,11 @@ RSpec.describe DatabaseConsistency::Checkers::EnumTypeChecker, :sqlite, :mysql, 
   let(:enum) { entity_class.defined_enums.keys.first }
   let!(:entity_class) do
     define_class do |klass|
-      klass.enum field: %i[value1 value2]
+      if ActiveRecord::VERSION::MAJOR >= 8
+        klass.enum :field, %i[value1 value2]
+      else
+        klass.enum field: %i[value1 value2]
+      end
     end
   end
 

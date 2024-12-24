@@ -11,7 +11,11 @@ RSpec.describe DatabaseConsistency::Checkers::EnumTypeChecker, :postgresql do
   let(:enum) { entity_class.defined_enums.keys.first }
   let!(:entity_class) do
     define_class do |klass|
-      klass.enum field: { value1: 'value1', value2: 'value2' }
+      if ActiveRecord::VERSION::MAJOR >= 8
+        klass.enum :field, { value1: 'value1', value2: 'value2' }
+      else
+        klass.enum field: { value1: 'value1', value2: 'value2' }
+      end
     end
   end
 
