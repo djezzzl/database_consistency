@@ -29,7 +29,12 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
   context 'when values are consistent' do
     let(:klass) do
       define_class do |klass|
-        klass.enum :status, { value1: 'value1', value2: 'value2' }
+        if ActiveRecord::VERSION::MAJOR >= 8
+          klass.enum :status, { value1: 'value1', value2: 'value2' }
+        else
+          klass.enum status: { value1: 'value1', value2: 'value2' }
+        end
+
         klass.validates :status, inclusion: { in: %w[value1 value2] }
       end
     end
@@ -94,7 +99,15 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
   end
 
   context 'when enum values are inconsistent' do
-    let(:klass) { define_class { |klass| klass.enum :status, { value1: 'value1', something: 'something' } } }
+    let(:klass) do
+      define_class do |klass|
+        if ActiveRecord::VERSION::MAJOR >= 8
+          klass.enum :status, { value1: 'value1', something: 'something' }
+        else
+          klass.enum status: { value1: 'value1', something: 'something' }
+        end
+      end
+    end
 
     specify do
       expect(checker.report.first).to have_attributes(
@@ -111,7 +124,15 @@ RSpec.describe DatabaseConsistency::Checkers::EnumValueChecker, :postgresql do
   end
 
   context 'when enum values are out of order' do
-    let(:klass) { define_class { |klass| klass.enum :status, { value2: 'value2', value1: 'value1' } } }
+    let(:klass) do
+      define_class do |klass|
+        if ActiveRecord::VERSION::MAJOR >= 8
+          klass.enum :status, { value2: 'value2', value1: 'value1' }
+        else
+          klass.enum status: { value2: 'value2', value1: 'value1' }
+        end
+      end
+    end
 
     specify do
       expect(checker.report.first).to have_attributes(
