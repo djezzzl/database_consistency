@@ -25,6 +25,14 @@ end
   end
 end
 
+%w[8.0].each do |version|
+  appraise "ar_#{version.gsub('.', '_')}" do
+    remove_gem 'appraisal'
+    gem 'activerecord', "~> #{version}.0"
+    gem 'sqlite3', '>= 2.0'
+  end
+end
+
 appraise 'ar_main' do
   remove_gem 'appraisal'
   gem 'activerecord', git: 'https://github.com/rails/rails', branch: 'main'
