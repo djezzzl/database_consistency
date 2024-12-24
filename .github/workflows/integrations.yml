@@ -1,0 +1,47 @@
+name: Integration tests
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - ruby-version: '2.7'
+            rails-version: 'rails-example'
+          - ruby-version: '3.0'
+            rails-version: 'rails6-example'
+          - ruby-version: '3.2'
+            rails-version: 'rails7-example'
+          - ruby-version: '3.3'
+            rails-version: 'rails8-example'
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.rails-version }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Setup database
+        run: bundle exec rails db:setup
+
+      - name: Run auto-fix generations
+        run: bundle exec database_consistency -f
+
+      - name: Run to-do generations
+        run: bundle exec database_consistency -g

@@ -11,9 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2021_12_29_101039) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "companies", force: :cascade do |t|
     t.boolean "available", default: false, null: false
     t.boolean "active"
@@ -29,10 +26,8 @@ ActiveRecord::Schema[7.0].define(version: 2021_12_29_101039) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "organizations", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "organizations" because of following StandardError
+#   Unknown type 'bigserial' for column 'id'
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
@@ -41,7 +36,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_12_29_101039) do
     t.string "address"
     t.string "code", null: false
     t.string "slug", null: false
-    t.bigint "company_id", null: false
+    t.integer "company_id", limit: 8, null: false
     t.integer "country_id"
     t.integer "organization_id", null: false
     t.integer "invitable_id", null: false
