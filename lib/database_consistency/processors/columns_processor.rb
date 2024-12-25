@@ -4,15 +4,6 @@ module DatabaseConsistency
   module Processors
     # The class to process columns
     class ColumnsProcessor < BaseProcessor
-      CHECKERS = [
-        Checkers::NullConstraintChecker,
-        Checkers::LengthConstraintChecker,
-        Checkers::PrimaryKeyTypeChecker,
-        Checkers::EnumValueChecker,
-        Checkers::ThreeStateBooleanChecker,
-        Checkers::ImplicitOrderingChecker
-      ].freeze
-
       private
 
       def check # rubocop:disable Metrics/MethodLength

@@ -16,6 +16,8 @@ module DatabaseConsistency
         end
         extract_configurations(existing_paths)
       end
+
+      load_custom_checkers
     end
 
     def debug?
@@ -122,6 +124,14 @@ module DatabaseConsistency
         else
           settings && settings['log_level']
         end
+    end
+
+    def load_custom_checkers
+      return unless configuration.key?('require') && configuration['require'].is_a?(Array)
+
+      configuration['require'].each do |path|
+        require path
+      end
     end
   end
 end

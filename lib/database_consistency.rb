@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require 'active_record'
+require 'active_support/inflector'
+
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.irregular 'index', 'indexes'
+end
 
 require 'database_consistency/version'
 require 'database_consistency/helper'
@@ -60,6 +65,15 @@ require 'database_consistency/databases/factory'
 require 'database_consistency/databases/types/base'
 require 'database_consistency/databases/types/sqlite'
 
+require 'database_consistency/processors/base_processor'
+require 'database_consistency/processors/enums_processor'
+require 'database_consistency/processors/associations_processor'
+require 'database_consistency/processors/validators_processor'
+require 'database_consistency/processors/columns_processor'
+require 'database_consistency/processors/validators_fractions_processor'
+require 'database_consistency/processors/indexes_processor'
+require 'database_consistency/processors/models_processor'
+
 require 'database_consistency/checkers/base_checker'
 
 require 'database_consistency/checkers/enum_checkers/enum_checker'
@@ -94,15 +108,6 @@ require 'database_consistency/checkers/index_checkers/index_checker'
 require 'database_consistency/checkers/index_checkers/unique_index_checker'
 require 'database_consistency/checkers/index_checkers/redundant_index_checker'
 require 'database_consistency/checkers/index_checkers/redundant_unique_index_checker'
-
-require 'database_consistency/processors/base_processor'
-require 'database_consistency/processors/enums_processor'
-require 'database_consistency/processors/associations_processor'
-require 'database_consistency/processors/validators_processor'
-require 'database_consistency/processors/columns_processor'
-require 'database_consistency/processors/validators_fractions_processor'
-require 'database_consistency/processors/indexes_processor'
-require 'database_consistency/processors/models_processor'
 
 # The root module
 module DatabaseConsistency
