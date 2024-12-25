@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module DatabaseConsistency
-  VERSION = '1.7.27'
+  VERSION = '2.0.0'
 end
