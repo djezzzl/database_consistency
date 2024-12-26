@@ -9,6 +9,8 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
   let(:validators) { klass._validators[attribute] }
 
   context 'when table is a view' do
+    before { skip("This is not supported") if ActiveRecord::VERSION::MAJOR < 5 }
+
     let(:view_klass) do
       define_class('EntityView', :entity_views) do |klass|
         klass.validates :email, presence: true

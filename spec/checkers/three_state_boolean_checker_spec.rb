@@ -8,6 +8,8 @@ RSpec.describe DatabaseConsistency::Checkers::ThreeStateBooleanChecker, :sqlite,
   let(:column) { klass.columns.first }
 
   context 'when table is a view' do
+    before { skip("This is not supported") if ActiveRecord::VERSION::MAJOR < 5 }
+
     let(:view_klass) { define_class('EntityView', :entity_views) }
     let(:model) { view_klass }
     let(:column) { view_klass.columns.first }
