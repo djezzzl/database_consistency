@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.1] - 2024/12/26
+
+- Fix `ThreeStateBooleanChecker`, `ColumnPresenceChecker` and `ForeignKeyChecker` by ignoring views. Thanks [Wenley Tong](https://github.com/wenley) for reporting this!
+
 ### [2.0.0] - 2024/12/25
 
 - Add support of custom checker classes. Thanks [Sergey Toy](https://github.com/toydestroyer) for the suggestion and implementation!
