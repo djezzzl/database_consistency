@@ -6,7 +6,8 @@ module DatabaseConsistency
       class RedundantIndex < MigrationBase # :nodoc:
         def attributes
           {
-            index_name: report.index_name
+            index_name: report.index_name,
+            table_name: report.table_name
           }
         end
 
