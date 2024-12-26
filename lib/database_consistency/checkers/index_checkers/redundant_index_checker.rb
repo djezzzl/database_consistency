@@ -7,6 +7,7 @@ module DatabaseConsistency
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,
         :covered_index_name,
+        :table_name,
         :index_name
       )
 
@@ -39,6 +40,7 @@ module DatabaseConsistency
           error_message: nil,
           covered_index_name: covered_by_index&.name,
           index_name: index.name,
+          table_name: model.table_name,
           **report_attributes
         )
       end
