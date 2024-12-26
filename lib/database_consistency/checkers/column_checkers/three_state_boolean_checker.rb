@@ -12,8 +12,9 @@ module DatabaseConsistency
 
       private
 
+      # column should be a boolean and table shouldn't be a view
       def preconditions
-        column.type == :boolean
+        column.type == :boolean && model.connection.table_exists?(model.table_name)
       end
 
       def check

@@ -7,6 +7,26 @@ RSpec.describe DatabaseConsistency::Checkers::ThreeStateBooleanChecker, :sqlite,
   let(:model) { klass }
   let(:column) { klass.columns.first }
 
+  context 'when table is a view' do
+    let(:view_klass) { define_class('EntityView', :entity_views) }
+    let(:model) { view_klass }
+    let(:column) { view_klass.columns.first }
+
+    before do
+      define_database_with_entity do |table|
+        table.boolean :active
+      end
+
+      model.connection.execute(<<~SQL)
+        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name}
+      SQL
+    end
+
+    it "doesn't check views" do
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'when column is nullable and without default' do
     before do
       define_database_with_entity do |table|

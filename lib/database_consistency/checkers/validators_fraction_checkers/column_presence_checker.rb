@@ -19,7 +19,7 @@ module DatabaseConsistency
       end
 
       def preconditions
-        (regular_column || association) && validators.any?
+        (regular_column || association) && model.connection.table_exists?(model.table_name) && validators.any?
       end
 
       def report_template(status, column_name:, error_slug: nil)
