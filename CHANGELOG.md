@@ -1,5 +1,11 @@
 # Changelog
 
+### [2.0.2] - 2024/12/26
+
+- Fix `RedundantIndexChecker` and `RedundantUniqueIndexChecker` automatically generated migrations. Thanks [Manh Truong](https://github.com/ducmanh2111) for reporting this!
+- Fix output generation for successful checkers.
+- Fix `MissingTableChecker`. Thanks [Paul Mackay](https://github.com/pmackay) for reporting the issue!
+
 ### [2.0.1] - 2024/12/26
 
 - Fix `ThreeStateBooleanChecker`, `ColumnPresenceChecker` and `ForeignKeyChecker` by ignoring views. Thanks [Wenley Tong](https://github.com/wenley) for reporting this!
