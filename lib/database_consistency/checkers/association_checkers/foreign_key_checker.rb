@@ -21,7 +21,8 @@ module DatabaseConsistency
       def preconditions
         supported? &&
           association.belongs_to? && !association.polymorphic? &&
-          same_database?
+          same_database? &&
+          model.connection.table_exists?(model.table_name)
       rescue NameError
         false
       end

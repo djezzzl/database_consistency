@@ -3,9 +3,39 @@
 RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :mysql, :postgresql do
   subject(:checker) { described_class.new(model, attribute, validators) }
 
+  let(:klass) { define_class }
   let(:model) { klass }
   let(:attribute) { :email }
   let(:validators) { klass._validators[attribute] }
+
+  context 'when table is a view' do
+    before { skip('This is not supported') if ActiveRecord::VERSION::MAJOR < 5 }
+
+    let(:view_klass) do
+      define_class('EntityView', :entity_views) do |klass|
+        klass.validates :email, presence: true
+      end
+    end
+    let(:model) { view_klass }
+    let(:validators) { view_klass._validators[attribute] }
+
+    before do
+      define_database_with_entity do |table|
+        table.string :email
+      end
+
+      model.connection.execute(<<~SQL)
+        DROP VIEW IF EXISTS #{view_klass.table_name};
+      SQL
+      model.connection.execute(<<~SQL)
+        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name};
+      SQL
+    end
+
+    it "doesn't check views" do
+      expect(checker.report).to be_nil
+    end
+  end
 
   context 'when null constraint is provided' do
     before do
