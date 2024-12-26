@@ -28,11 +28,16 @@ module DatabaseConsistency
       end
 
       def writer(report)
-        klass = begin
-                  "DatabaseConsistency::Writers::Simple::#{report.error_slug.to_s.classify}".constantize
-                rescue NameError
-                  Simple::DefaultMessage
-                end
+        klass =
+          if report.error_slug
+            begin
+              "DatabaseConsistency::Writers::Simple::#{report.error_slug.to_s.classify}".constantize
+            rescue NameError
+              Simple::DefaultMessage
+            end
+          else
+            Simple::DefaultMessage
+          end
 
         klass.new(report, config: config)
       end
