@@ -25,7 +25,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingTableChecker, :sqlite, :mys
       expect(checker.report).to have_attributes(
         checker_name: 'MissingTableChecker',
         table_or_model_name: klass.name,
-        column_or_attribute_name: nil,
+        column_or_attribute_name: 'self',
         status: :ok,
         error_slug: nil,
         error_message: nil
@@ -40,7 +40,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingTableChecker, :sqlite, :mys
       expect(checker.report).to have_attributes(
         checker_name: 'MissingTableChecker',
         table_or_model_name: klass.name,
-        column_or_attribute_name: nil,
+        column_or_attribute_name: 'self',
         status: :fail,
         error_slug: :missing_table,
         error_message: nil

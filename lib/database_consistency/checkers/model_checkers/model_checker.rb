@@ -12,7 +12,7 @@ module DatabaseConsistency
       end
 
       def column_or_attribute_name
-        nil
+        'self'
       end
 
       def table_or_model_name
