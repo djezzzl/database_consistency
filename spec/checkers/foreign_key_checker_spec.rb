@@ -40,7 +40,10 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       end
 
       model.connection.execute(<<~SQL)
-        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name}
+        DROP VIEW IF EXISTS #{view_klass.table_name};
+      SQL
+      model.connection.execute(<<~SQL)
+        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name};
       SQL
     end
 

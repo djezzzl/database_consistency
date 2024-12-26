@@ -23,7 +23,10 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
       end
 
       model.connection.execute(<<~SQL)
-        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name}
+        DROP VIEW IF EXISTS #{view_klass.table_name};
+      SQL
+      model.connection.execute(<<~SQL)
+        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name};
       SQL
     end
 
