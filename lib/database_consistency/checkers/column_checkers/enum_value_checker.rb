@@ -36,8 +36,13 @@ module DatabaseConsistency
 
       def enum_column_values
         @enum_column_values ||= begin
-          _, values = model.connection.enum_types.find { |(enum, _)| enum == column.sql_type }
-          values.split(',').map(&:strip)
+          if model.connection.enum_types.is_a?(Array)
+            _, values = model.connection.enum_types.find { |(enum, _)| enum == column.sql_type }
+            values.split(',').map(&:strip)
+          else
+            # active_record-postgres_enum gem
+            model.connection.enum_types[column.sql_type.to_sym]
+          end
         end
       end
 
