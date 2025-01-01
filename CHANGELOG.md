@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.3] - 2025/01/01
+
+- Fix `EnumValueChecker` with integration of `active-record-pg_enum` gem. Thanks [Brandon Zylstra](https://github.com/brandondrew) for reporting the issue!
+
 ### [2.0.2] - 2024/12/26
 
 - Fix `RedundantIndexChecker` and `RedundantUniqueIndexChecker` automatically generated migrations. Thanks [Manh Truong](https://github.com/ducmanh2111) for reporting this!
