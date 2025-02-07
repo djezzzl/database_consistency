@@ -20,6 +20,7 @@ end
 %w[5.2 6.0 6.1 7.0 7.1].each do |version|
   appraise "ar_#{version.gsub('.', '_')}" do
     remove_gem 'appraisal'
+    gem 'concurrent-ruby', '1.3.4'
     gem 'activerecord', "~> #{version}.0"
     gem 'sqlite3', '~> 1.3'
   end
