@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
+require 'logger'
 require 'database_consistency'
 require 'database_context'
 
