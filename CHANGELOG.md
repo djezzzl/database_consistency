@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.4] - 2025/02/07
+
+- Fix `EnumValueChecker` according to the Rails breaking changes. Thanks [Chedli Bourguiba](https://github.com/chaadow) for fixing the issue!
+
 ### [2.0.3] - 2025/01/01
 
 - Fix `EnumValueChecker` with integration of `active-record-pg_enum` gem. Thanks [Brandon Zylstra](https://github.com/brandondrew) for reporting the issue!
