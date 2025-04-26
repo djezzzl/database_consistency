@@ -37,7 +37,7 @@ Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
 - [flexible configuration](https://github.com/djezzzl/database_consistency/wiki/configuration)
 - [slow start with TODO files](https://github.com/djezzzl/database_consistency/wiki/generate-todo)
-- [support of customer checker](https://github.com/djezzzl/database_consistency/wiki/custom-checker)
+- [support of custom checker](https://github.com/djezzzl/database_consistency/wiki/custom-checker)
 
 We support the following databases: `SQLite3`, `PostgreSQL` and `MySQL`.  
 We support [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord) only at the moment.
