@@ -10,6 +10,12 @@ The main goal of the project is to help you avoid various issues due to inconsis
 > If the project helps you or your organization, I would be very grateful if you [contribute](https://github.com/djezzzl/database_consistency#contributing) or [donate](https://opencollective.com/database_consistency#support).  
 > Your support is an incredible motivation and the biggest reward for my hard work.
 
+_The project is greatly supported by [Pennylane](https://www.pennylane.com)! Huge appreciation to the organization, and please join them if you find the gem valuable for you!_ 
+
+<div style="text-align: center">
+    <img src="logos/pennylane.png" width="200px"/>
+</div>
+
 For detailed information, please read the [wiki](https://github.com/djezzzl/database_consistency/wiki).
 
 Currently, the tool can:
