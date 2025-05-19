@@ -8,14 +8,15 @@ module DatabaseConsistency
     DEFAULT_PATH = '.database_consistency.yml'
 
     def initialize(file_paths = DEFAULT_PATH)
-      @configuration = existing_configurations(file_paths).then do |existing_paths|
-        if existing_paths.any?
-          puts "Loaded configurations: #{existing_paths.join(', ')}"
-        else
-          puts 'No configurations were provided'
-        end
-        extract_configurations(existing_paths)
+      existing_paths = existing_configurations(file_paths)
+
+      if existing_paths.any?
+        puts "Loaded configurations: #{existing_paths.join(', ')}"
+      else
+        puts 'No configurations were provided'
       end
+
+      @configuration = extract_configurations(existing_paths)
 
       load_custom_checkers
     end
