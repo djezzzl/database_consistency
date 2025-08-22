@@ -6,6 +6,10 @@ module DatabaseConsistency
     class IndexChecker < BaseChecker
       attr_reader :model, :index
 
+      def self.processor
+        Processors::IndexesProcessor
+      end
+
       def initialize(model, index)
         super()
         @model = model

@@ -30,7 +30,6 @@ module DatabaseConsistency
       store.each do |key, value|
         destination.puts("#{key}: #{value}")
       end
-      clear!
     end
 
     private

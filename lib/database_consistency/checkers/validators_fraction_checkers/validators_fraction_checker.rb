@@ -6,6 +6,10 @@ module DatabaseConsistency
     class ValidatorsFractionChecker < BaseChecker
       attr_reader :model, :attribute, :validators
 
+      def self.processor
+        Processors::ValidatorsFractionsProcessor
+      end
+
       def initialize(model, attribute, validators)
         super()
         @model = model

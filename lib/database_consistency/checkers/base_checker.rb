@@ -16,8 +16,7 @@ module DatabaseConsistency
 
         return if subclass.superclass.name == 'DatabaseConsistency::Checkers::BaseChecker'
 
-        processor_prefix = subclass.superclass.name.demodulize.delete_suffix('Checker').pluralize
-        processor = "DatabaseConsistency::Processors::#{processor_prefix}Processor".constantize
+        processor = subclass.processor
         processor.checkers << subclass
       end
 
