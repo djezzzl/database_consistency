@@ -1,5 +1,10 @@
 # Changelog
 
+### [2.0.5] - 2025/08/22
+
+- Remove custom inflection. Thanks [Hugo Pochart](https://github.com/hugopochart) for reporting the issue!
+- Bring back support of Ruby 2.6. Thanks [Satyakam Pandya](https://github.com/satyakampandya) for reporting and fixing the issue!
+
 ### [2.0.4] - 2025/02/07
 
 - Fix `EnumValueChecker` according to the Rails breaking changes. Thanks [Chedli Bourguiba](https://github.com/chaadow) for fixing the issue!
