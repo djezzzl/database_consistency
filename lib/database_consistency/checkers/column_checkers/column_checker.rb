@@ -6,6 +6,10 @@ module DatabaseConsistency
     class ColumnChecker < BaseChecker
       attr_reader :model, :column
 
+      def self.processor
+        Processors::ColumnsProcessor
+      end
+
       def initialize(model, column)
         super()
         @model = model

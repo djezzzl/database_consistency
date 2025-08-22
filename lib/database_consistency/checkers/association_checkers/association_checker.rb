@@ -6,6 +6,10 @@ module DatabaseConsistency
     class AssociationChecker < BaseChecker
       attr_reader :model, :association
 
+      def self.processor
+        Processors::AssociationsProcessor
+      end
+
       def initialize(model, association)
         super()
         @model = model

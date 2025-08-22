@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_record'
-require 'active_support/inflector'
-
-ActiveSupport::Inflector.inflections do |inflect|
-  inflect.irregular 'index', 'indexes'
-end
 
 require 'database_consistency/version'
 require 'database_consistency/helper'

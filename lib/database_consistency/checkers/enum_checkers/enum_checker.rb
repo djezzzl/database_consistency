@@ -6,6 +6,10 @@ module DatabaseConsistency
     class EnumChecker < BaseChecker
       attr_reader :model, :enum
 
+      def self.processor
+        Processors::EnumsProcessor
+      end
+
       def initialize(model, enum)
         super()
         @model = model
