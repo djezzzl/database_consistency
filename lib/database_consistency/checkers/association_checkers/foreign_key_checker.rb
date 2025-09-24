@@ -43,7 +43,14 @@ module DatabaseConsistency
       # | persisted   | ok     |
       # | missing     | fail   |
       def check
-        if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
+        fk = model.connection.foreign_keys(model.table_name).find do |fk|
+          next false unless fk.column.include?(association.foreign_key.to_s)
+          next false unless fk.to_table == association.klass.table_name
+
+          true
+        end
+
+        if fk
           report_template(:ok)
         else
           report_template(:fail, error_slug: :missing_foreign_key)

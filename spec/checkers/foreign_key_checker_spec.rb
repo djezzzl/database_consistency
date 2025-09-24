@@ -83,6 +83,41 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
     end
   end
 
+  context 'when a foreign key on the column maps to a different table' do
+    before do
+      define_database do
+        create_table :countries
+        create_table :cities
+        create_table :entities do |t|
+          if ActiveRecord::VERSION::MAJOR >= 5 && adapter == 'mysql2'
+            t.bigint :parent_id
+          else
+            t.integer :parent_id
+          end
+
+          t.foreign_key :cities, column: :parent_id
+        end
+      end
+    end
+
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country, foreign_key: :parent_id
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyChecker',
+        table_or_model_name: entity_class.name,
+        column_or_attribute_name: 'country',
+        status: :fail,
+        error_slug: :missing_foreign_key,
+        error_message: nil
+      )
+    end
+  end
+
   context 'when foreign key is missing' do
     before do
       define_database do
@@ -102,6 +137,38 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         status: :fail,
         error_slug: :missing_foreign_key,
         error_message: nil
+      )
+    end
+  end
+
+  context 'when the association is covered by a composite foreign key' do
+    before do
+      define_database do
+        create_table :countries do |t|
+          t.string :code
+        end
+
+        create_table :entities do |t|
+          if ActiveRecord::VERSION::MAJOR >= 5 && adapter == 'mysql2'
+            t.bigint :country_id
+          else
+            t.integer :country_id
+          end
+          t.string :country_code
+
+          t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
+        end
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyChecker',
+        table_or_model_name: entity_class.name,
+        column_or_attribute_name: 'country',
+        status: :ok,
+        error_message: nil,
+        error_slug: nil
       )
     end
   end
