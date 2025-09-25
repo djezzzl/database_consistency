@@ -149,6 +149,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       define_database do
         create_table :countries do |t|
           t.string :code
+
+          t.index %i[id code], unique: true
         end
 
         create_table :entities do |t|
@@ -251,6 +253,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       define_database do
         create_table :countries do |t|
           t.string :code
+
+          t.index %i[id code], unique: true
         end
 
         create_table :entities do |t|
