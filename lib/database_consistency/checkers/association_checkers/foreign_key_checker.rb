@@ -43,11 +43,9 @@ module DatabaseConsistency
       # | persisted   | ok     |
       # | missing     | fail   |
       def check # rubocop:disable Metrics/AbcSize
-        fk_exist = model.connection.foreign_keys(model.table_name).find do |fk|
-          next false unless (Helper.extract_columns(association.foreign_key.to_s) - Array.wrap(fk.column)).empty?
-          next false unless fk.to_table == association.klass.table_name
-
-          true
+        fk_exist = model.connection.foreign_keys(model.table_name).any? do |fk|
+          (Helper.extract_columns(association.foreign_key.to_s) - Array.wrap(fk.column)).empty? &&
+            fk.to_table == association.klass.table_name
         end
 
         if fk_exist
