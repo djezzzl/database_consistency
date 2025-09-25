@@ -42,8 +42,13 @@ module DatabaseConsistency
       # | ----------- | ------ |
       # | persisted   | ok     |
       # | missing     | fail   |
-      def check
-        if model.connection.foreign_keys(model.table_name).find { |fk| fk.column == association.foreign_key.to_s }
+      def check # rubocop:disable Metrics/AbcSize
+        fk_exist = model.connection.foreign_keys(model.table_name).any? do |fk|
+          (Helper.extract_columns(association.foreign_key.to_s) - Array.wrap(fk.column)).empty? &&
+            fk.to_table == association.klass.table_name
+        end
+
+        if fk_exist
           report_template(:ok)
         else
           report_template(:fail, error_slug: :missing_foreign_key)
