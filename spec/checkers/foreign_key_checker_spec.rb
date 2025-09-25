@@ -194,7 +194,9 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when the association is covered by a composite foreign key in wrong order' do
     before do
-      if adapter == 'mysql2' || ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+      if adapter == 'mysql2' ||
+         ActiveRecord::VERSION::MAJOR < 7 ||
+         (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
 
