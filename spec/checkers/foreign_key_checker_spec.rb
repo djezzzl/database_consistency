@@ -171,7 +171,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         end
 
         create_table :entities do |t|
-          t.integer :country_id
+          if adapter == 'mysql2'
+            t.bigint :country_id
+          else
+            t.integer :country_id
+          end
           t.string :country_code
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
@@ -193,7 +197,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when the association is covered by a composite foreign key in wrong order' do
     before do
-      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+      if adapter == 'mysql2' || ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
     end
@@ -267,7 +271,11 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         end
 
         create_table :entities do |t|
-          t.bigint :country_id
+          if adapter == 'mysql2'
+            t.bigint :country_id
+          else
+            t.integer :country_id
+          end
           t.string :country_code
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
