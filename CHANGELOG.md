@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.6] - 2025/09/25
+
+- Fix `ForeignKeyChecker` to ensure correct `to_table`.
+- Improve `ForeignKeyChecker` to handle composite keys.
+
+Thanks [Thierry](https://github.com/tdeo) from our sponsor for finding and fixing the issue!
+
 ### [2.0.5] - 2025/08/22
 
 - Remove custom inflection. Thanks [Hugo Pochart](https://github.com/hugopochart) for reporting the issue!
