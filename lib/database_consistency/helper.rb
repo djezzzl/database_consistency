@@ -112,6 +112,10 @@ module DatabaseConsistency
       end
     end
 
+    def extract_columns(str)
+      str.scan(/(\w+)/).flatten
+    end
+
     def foreign_key_or_attribute(model, attribute)
       model._reflect_on_association(attribute)&.foreign_key || attribute
     end

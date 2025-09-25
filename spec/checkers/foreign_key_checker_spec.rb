@@ -143,17 +143,31 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when the association is covered by a composite foreign key' do
     before do
+      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+        skip('Composite primary keys are supported only in Rails 7.1+')
+      end
+    end
+
+    let!(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country, foreign_key: %i[country_code country_id]
+      end
+    end
+
+    before do
       define_database do
         create_table :countries do |t|
           t.string :code
         end
 
         create_table :entities do |t|
-          if ActiveRecord::VERSION::MAJOR >= 5 && adapter == 'mysql2'
-            t.bigint :country_id
-          else
-            t.integer :country_id
-          end
+          t.integer :country_id
           t.string :country_code
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
@@ -169,6 +183,144 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         status: :ok,
         error_message: nil,
         error_slug: nil
+      )
+    end
+  end
+
+  context 'when the association is covered by a composite foreign key in wrong order' do
+    before do
+      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+        skip('Composite primary keys are supported only in Rails 7.1+')
+      end
+    end
+
+    let!(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country, foreign_key: %i[country_id country_code]
+      end
+    end
+
+    before do
+      define_database do
+        create_table :countries do |t|
+          t.string :code
+        end
+
+        create_table :entities do |t|
+          t.integer :country_id
+          t.string :country_code
+
+          t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
+        end
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyChecker',
+        table_or_model_name: entity_class.name,
+        column_or_attribute_name: 'country',
+        status: :fail,
+        error_message: nil,
+        error_slug: :missing_foreign_key
+      )
+    end
+  end
+
+  context 'when foreign key is composite but association is not' do
+    before do
+      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+        skip('Composite primary keys are supported only in Rails 7.1+')
+      end
+    end
+
+    let!(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country
+      end
+    end
+
+    before do
+      define_database do
+        create_table :countries do |t|
+          t.string :code
+        end
+
+        create_table :entities do |t|
+          t.bigint :country_id
+          t.string :country_code
+
+          t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
+        end
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyChecker',
+        table_or_model_name: entity_class.name,
+        column_or_attribute_name: 'country',
+        status: :fail,
+        error_message: nil,
+        error_slug: :missing_foreign_key
+      )
+    end
+  end
+
+  context 'when foreign key is single but association is composite' do
+    before do
+      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
+        skip('Composite primary keys are supported only in Rails 7.1+')
+      end
+    end
+
+    let!(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country, foreign_key: %i[country_code country_id]
+      end
+    end
+
+    before do
+      define_database do
+        create_table :countries do |t|
+          t.string :code
+        end
+
+        create_table :entities do |t|
+          t.bigint :country_id
+          t.string :country_code
+
+          t.foreign_key :countries
+        end
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'ForeignKeyChecker',
+        table_or_model_name: entity_class.name,
+        column_or_attribute_name: 'country',
+        status: :fail,
+        error_message: nil,
+        error_slug: :missing_foreign_key
       )
     end
   end
