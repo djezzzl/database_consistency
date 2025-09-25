@@ -3,11 +3,10 @@
 RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql, :postgresql do
   subject(:checker) { described_class.new(model, association) }
 
-  let(:klass) { define_class }
-  let(:model) { klass }
+  let(:model) { entity_class }
   let(:association) { entity_class.reflect_on_all_associations.first }
   let!(:country_class) { define_class('Country', :countries) }
-  let!(:entity_class) do
+  let(:entity_class) do
     define_class do |klass|
       klass.belongs_to :country
     end
@@ -45,7 +44,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         DROP VIEW IF EXISTS #{view_klass.table_name};
       SQL
       model.connection.execute(<<~SQL)
-        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{klass.table_name};
+        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{entity_class.table_name};
       SQL
     end
 
@@ -146,25 +145,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
-    end
 
-    let!(:country_class) do
-      define_class('Country', :countries) do |klass|
-        klass.primary_key = %i[code id]
-      end
-    end
-
-    let!(:entity_class) do
-      define_class do |klass|
-        if ActiveRecord::VERSION::MAJOR == 7
-          klass.belongs_to :country, query_constraints: %i[country_code country_id]
-        else
-          klass.belongs_to :country, foreign_key: %i[country_code country_id]
-        end
-      end
-    end
-
-    before do
       define_database do
         create_table :countries do |t|
           t.string :code
@@ -179,6 +160,22 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
           t.string :country_code
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
+        end
+      end
+    end
+
+    let(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let(:entity_class) do
+      define_class do |klass|
+        if ActiveRecord::VERSION::MAJOR == 7
+          klass.belongs_to :country, query_constraints: %i[country_code country_id]
+        else
+          klass.belongs_to :country, foreign_key: %i[country_code country_id]
         end
       end
     end
@@ -200,25 +197,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       if adapter == 'mysql2' || ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
-    end
 
-    let!(:country_class) do
-      define_class('Country', :countries) do |klass|
-        klass.primary_key = %i[code id]
-      end
-    end
-
-    let!(:entity_class) do
-      define_class do |klass|
-        if ActiveRecord::VERSION::MAJOR == 7
-          klass.belongs_to :country, query_constraints: %i[country_id country_code]
-        else
-          klass.belongs_to :country, foreign_key: %i[country_id country_code]
-        end
-      end
-    end
-
-    before do
       define_database do
         create_table :countries do |t|
           t.string :code
@@ -229,6 +208,22 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
           t.string :country_code
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
+        end
+      end
+    end
+
+    let(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let(:entity_class) do
+      define_class do |klass|
+        if ActiveRecord::VERSION::MAJOR == 7
+          klass.belongs_to :country, query_constraints: %i[country_id country_code]
+        else
+          klass.belongs_to :country, foreign_key: %i[country_id country_code]
         end
       end
     end
@@ -250,21 +245,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
-    end
 
-    let!(:country_class) do
-      define_class('Country', :countries) do |klass|
-        klass.primary_key = %i[code id]
-      end
-    end
-
-    let!(:entity_class) do
-      define_class do |klass|
-        klass.belongs_to :country
-      end
-    end
-
-    before do
       define_database do
         create_table :countries do |t|
           t.string :code
@@ -280,6 +261,18 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
           t.foreign_key :countries, column: %i[country_code country_id], primary_key: %i[code id]
         end
+      end
+    end
+
+    let(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :country
       end
     end
 
@@ -300,25 +293,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
       if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
         skip('Composite primary keys are supported only in Rails 7.1+')
       end
-    end
 
-    let!(:country_class) do
-      define_class('Country', :countries) do |klass|
-        klass.primary_key = %i[code id]
-      end
-    end
-
-    let!(:entity_class) do
-      define_class do |klass|
-        if ActiveRecord::VERSION::MAJOR == 7
-          klass.belongs_to :country, query_constraints: %i[country_code country_id]
-        else
-          klass.belongs_to :country, foreign_key: %i[country_code country_id]
-        end
-      end
-    end
-
-    before do
       define_database do
         create_table :countries do |t|
           t.string :code
@@ -329,6 +304,22 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
           t.string :country_code
 
           t.foreign_key :countries
+        end
+      end
+    end
+
+    let(:country_class) do
+      define_class('Country', :countries) do |klass|
+        klass.primary_key = %i[code id]
+      end
+    end
+
+    let(:entity_class) do
+      define_class do |klass|
+        if ActiveRecord::VERSION::MAJOR == 7
+          klass.belongs_to :country, query_constraints: %i[country_code country_id]
+        else
+          klass.belongs_to :country, foreign_key: %i[country_code country_id]
         end
       end
     end
