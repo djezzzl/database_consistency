@@ -27,7 +27,7 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql
         table.string :first_name
         table.string :second_name
         table.index %i[first_name], name: 'index', using: :btree
-        table.index %i[first_name second_name], name: 'another_index', using: :hash
+        table.index %i[first_name second_name], name: 'another_index', using: :gin
       end
     end
 
