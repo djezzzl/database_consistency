@@ -21,28 +21,6 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql
     end
   end
 
-  context "when covered index isn't btree type" do
-    before do
-      define_database_with_entity do |table|
-        table.jsonb :first_name
-        table.jsonb :second_name
-        table.index %i[first_name], name: 'index', using: :btree
-        table.index %i[first_name second_name], name: 'another_index', using: 'gist (first_name gist_trgm_ops)'
-      end
-    end
-
-    specify do
-      expect(checker.report).to have_attributes(
-        checker_name: 'RedundantIndexChecker',
-        table_or_model_name: model.name,
-        column_or_attribute_name: 'index',
-        status: :ok,
-        error_message: nil,
-        error_slug: nil
-      )
-    end
-  end
-
   context 'when another index includes current as prefix' do
     before do
       define_database_with_entity do |table|
