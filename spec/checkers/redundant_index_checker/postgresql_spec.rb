@@ -24,8 +24,8 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql
   context "when covered index isn't btree type" do
     before do
       define_database_with_entity do |table|
-        table.integer :first_name
-        table.integer :second_name
+        table.jsonb :first_name
+        table.jsonb :second_name
         table.index %i[first_name], name: 'index', using: :btree
         table.index %i[first_name second_name], name: 'another_index', using: :gin
       end
