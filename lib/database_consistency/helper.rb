@@ -112,6 +112,11 @@ module DatabaseConsistency
       end
     end
 
+    def btree_index?(index)
+      (index.type.nil? || index.type.to_s == 'btree') &&
+        (index.using.nil? || index.using.to_s == 'btree')
+    end
+
     def extract_columns(str)
       str.scan(/(\w+)/).flatten
     end
