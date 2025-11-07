@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.7] - 2025/11/07
+
+- Improve `RedundantIndexChecker` to ensure both indexes are B-Tree. Thanks [Rodrigo Rosenfeld Rosas](https://github.com/rosenfeld-careacademy) for reporting the issue!
+
 ### [2.0.6] - 2025/09/25
 
 - Fix `ForeignKeyChecker` to ensure correct `to_table`.
