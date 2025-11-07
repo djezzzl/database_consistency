@@ -27,7 +27,7 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantIndexChecker, :postgresql
         table.jsonb :first_name
         table.jsonb :second_name
         table.index %i[first_name], name: 'index', using: :btree
-        table.index %i[first_name second_name], name: 'another_index', using: :gin
+        table.index %i[first_name second_name], name: 'another_index', using: 'gist (first_name gist_trgm_ops)'
       end
     end
 
