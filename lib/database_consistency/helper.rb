@@ -112,6 +112,16 @@ module DatabaseConsistency
       end
     end
 
+    def inclusion_validator_values(validator)
+      value = validator.options[:in]
+
+      if value.is_a?(Proc) && value.arity.zero?
+        value.call
+      else
+        Array.wrap(value)
+      end
+    end
+
     def btree_index?(index)
       (index.type.nil? || index.type.to_s == 'btree') &&
         (index.using.nil? || index.using.to_s == 'btree')
