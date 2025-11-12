@@ -69,7 +69,7 @@ module DatabaseConsistency
         model.validators.any? do |validator|
           validator.kind == :exclusion &&
             Helper.check_inclusion?(validator.attributes, column.name) &&
-            validator.options[:in].include?(nil)
+            Helper.inclusion_validator_values(validator).include?(nil)
         end
       end
 

@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   # The module contains helper methods
-  module Helper
+  module Helper # rubocop:disable Metrics/ModuleLength
     module_function
 
     def adapter
@@ -109,6 +109,16 @@ module DatabaseConsistency
     def scope_columns(validator, model)
       Array.wrap(validator.options[:scope]).map do |scope_item|
         foreign_key_or_attribute(model, scope_item)
+      end
+    end
+
+    def inclusion_validator_values(validator)
+      value = validator.options[:in]
+
+      if value.is_a?(Proc) && value.arity.zero?
+        value.call
+      else
+        Array.wrap(value)
       end
     end
 
