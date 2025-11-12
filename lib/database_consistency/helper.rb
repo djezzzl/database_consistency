@@ -2,7 +2,7 @@
 
 module DatabaseConsistency
   # The module contains helper methods
-  module Helper
+  module Helper # rubocop:disable Metrics/ModuleLength
     module_function
 
     def adapter

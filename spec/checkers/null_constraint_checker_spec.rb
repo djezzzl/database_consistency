@@ -140,7 +140,7 @@ RSpec.describe DatabaseConsistency::Checkers::NullConstraintChecker, :sqlite, :m
   end
 
   context 'when has exclusion validation with Proc { ["something"] }' do
-    let(:klass) { define_class { |klass| klass.validates_exclusion_of :email, in: -> { ["something"] } } }
+    let(:klass) { define_class { |klass| klass.validates_exclusion_of :email, in: -> { ['something'] } } }
 
     specify do
       expect(checker.report).to have_attributes(
