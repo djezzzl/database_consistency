@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.0.9] - 2025/11/25
+
+- Improve `MissingUniqueIndexChecker` to recognize compound primary keys as providing uniqueness constraint. Thanks [Rodrigo Rosenfeld Rosas](https://github.com/rosenfeld-careacademy) for reporting the issue!
+
 ### [2.0.8] - 2025/11/12
 
 - Improve `NullConstraintChecker` to support Proc as option for exclusion validator. Thanks [Michał Krzysteczko](https://github.com/Xeross99) for reporting this issue!
