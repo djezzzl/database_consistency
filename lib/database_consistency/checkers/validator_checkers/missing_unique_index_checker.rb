@@ -28,7 +28,7 @@ module DatabaseConsistency
       # | persisted    | ok     |
       # | missing      | fail   |
       def check
-        if unique_index
+        if unique_index || primary_key_covers_validation?
           report_template(:ok)
         else
           report_template(:fail, error_slug: :missing_unique_index)
@@ -50,6 +50,14 @@ module DatabaseConsistency
         @unique_index ||= model.connection.indexes(model.table_name).find do |index|
           index.unique && Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns
         end
+      end
+
+      def primary_key_covers_validation?
+        primary_key = model.connection.primary_key(model.table_name)
+
+        return false if primary_key.blank?
+
+        sorted_uniqueness_validator_columns == Helper.extract_columns(primary_key).sort
       end
 
       def sorted_uniqueness_validator_columns
