@@ -124,6 +124,34 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
     end
   end
 
+  context 'when single column primary key matches uniqueness validation' do
+    let(:attribute) { :id }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :id, uniqueness: true
+      end
+    end
+    let(:validator) { klass.validators.first }
+
+    before do
+      # Create table with standard id primary key
+      define_database do
+        create_table :entities
+      end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'MissingUniqueIndexChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'id',
+        status: :ok,
+        error_message: nil,
+        error_slug: nil
+      )
+    end
+  end
+
   context 'when model has primary_key set but database does not' do
     let(:klass) do
       define_class do |klass|
@@ -138,10 +166,13 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
         table.string :name
       end
 
+      # Only set primary key at model level, not in database
       klass.primary_key = :email
     end
 
     specify do
+      # Should fail because database doesn't have email as primary key
+      # even though model.primary_key is set
       expect(checker.report).to have_attributes(
         checker_name: 'MissingUniqueIndexChecker',
         table_or_model_name: klass.name,
