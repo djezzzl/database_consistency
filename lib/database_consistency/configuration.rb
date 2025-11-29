@@ -58,7 +58,7 @@ module DatabaseConsistency
     def database_enabled?(name)
       value = configuration.dig('DatabaseConsistencyDatabases', name, 'enabled')
 
-      value.nil? ? true : value
+      value.nil? || value
     end
 
     private
@@ -93,7 +93,7 @@ module DatabaseConsistency
     def global_enabling
       value = configuration.dig('DatabaseConsistencyCheckers', 'All', 'enabled')
 
-      value.nil? ? true : value
+      value.nil? || value
     end
 
     def load_yaml_config_file(filepath)
