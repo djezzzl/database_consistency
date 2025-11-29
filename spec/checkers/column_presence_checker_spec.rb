@@ -63,17 +63,24 @@ RSpec.describe DatabaseConsistency::Checkers::ColumnPresenceChecker, :sqlite, :m
     end
 
     context 'when null insert is possible' do
-      let(:klass) { define_class { |klass| klass.validates :email, presence: true, if: -> { false } } }
+      [
+        { allow_nil: true },
+        { if: -> { false } },
+        { unless: -> { false } },
+        { on: :some_context }
+      ].each do |weak_option|
+        let(:klass) { define_class { |klass| klass.validates :email, presence: true, **weak_option } }
 
-      specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'ColumnPresenceChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_message: nil,
-          error_slug: :possible_null
-        )
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'ColumnPresenceChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_message: nil,
+            error_slug: :possible_null
+          )
+        end
       end
     end
 

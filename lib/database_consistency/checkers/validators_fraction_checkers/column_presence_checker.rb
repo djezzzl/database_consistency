@@ -4,7 +4,7 @@ module DatabaseConsistency
   module Checkers
     # This class checks if presence validator has non-null constraint in the database
     class ColumnPresenceChecker < ValidatorsFractionChecker
-      WEAK_OPTIONS = %i[allow_nil allow_blank if unless on].freeze
+      WEAK_OPTIONS = %i[allow_nil if unless on].freeze
 
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,
