@@ -15,7 +15,7 @@ module DatabaseConsistency
       private
 
       def preconditions
-        (association.belongs_to? && foreign_key_exists?) || false
+        association.belongs_to? && foreign_key_exists?
       end
 
       def check

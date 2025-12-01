@@ -22,9 +22,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingDependentDestroyChecker, :s
 
         create_table :entities do |t|
           t.integer :thing_id
-        end
 
-        add_foreign_key :entities, :things
+          t.foreign_key :things
+        end
       end
     end
 
@@ -74,9 +74,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingDependentDestroyChecker, :s
 
         create_table :entities do |t|
           t.integer :thing_id
-        end
 
-        add_foreign_key :entities, :things, on_delete: :cascade
+          t.foreign_key :things, on_delete: :cascade
+        end
       end
     end
 
