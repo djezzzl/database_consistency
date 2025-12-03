@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.1.0] - 2025/12/02
+
+- Implement `MissingDependentDestroyChecker` to find `belongs_to` associations with foreign keys missing appropriate `dependent/on_delete` options. Thanks [Patrick McSweeny](https://github.com/PatrickMcSweeny) for implementing this!
+
 ### [2.0.9] - 2025/11/25
 
 - Improve `MissingUniqueIndexChecker` to recognize compound primary keys as providing uniqueness constraint. Thanks [Rodrigo Rosenfeld Rosas](https://github.com/rosenfeld-careacademy) for reporting the issue!
