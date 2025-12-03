@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'needs an association with dependent destroy or delete'
+          'should have a corresponding has_one/has_many association with dependent option (destroy, delete, delete_all, nullify) or a foreign key with on_delete (cascade, nullify)' # rubocop:disable Layout/LineLength
         end
 
         def unique_attributes
