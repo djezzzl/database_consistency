@@ -51,5 +51,6 @@ ActiveRecord::Schema[7.0].define(version: 2021_12_29_101039) do
     t.index ["slug"], name: "index_users_on_slug", unique: true
   end
 
+  add_foreign_key "organizations", "companies"
   add_foreign_key "users", "countries"
 end
