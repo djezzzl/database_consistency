@@ -26,8 +26,12 @@ ActiveRecord::Schema[7.0].define(version: 2021_12_29_101039) do
     t.datetime "updated_at", null: false
   end
 
-# Could not dump table "organizations" because of following StandardError
-#   Unknown type 'bigserial' for column 'id'
+  create_table "organizations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_organizations_on_company_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
