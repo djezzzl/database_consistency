@@ -27,7 +27,7 @@ module DatabaseConsistency
       end
 
       def dependent_destroy_exists?
-        association.class_name.constantize.reflect_on_all_associations.any? do |association|
+        association.klass.reflect_on_all_associations.any? do |association|
           %i[has_many has_one].include?(association.macro) &&
             DEPENDENT_OPTIONS.include?(association.options[:dependent]) &&
             association.table_name == model.table_name
