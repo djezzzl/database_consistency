@@ -1,5 +1,10 @@
 # Changelog
 
+### [2.1.1] - 2025/12/10
+
+- Fix `MissingDependentDestroyChecker` to handle nested classes. Thanks [Robert Keresnyei](https://github.com/yenshirak) for reporting and fixing the issue!
+- Fix `MissingDependentDestroyChecker` to consider `restrict_with_exception` and `restrict_with_error` option. Thanks [Robert Keresnyei](https://github.com/yenshirak) for reporting the issue.
+
 ### [2.1.0] - 2025/12/02
 
 - Implement `MissingDependentDestroyChecker` to find `belongs_to` associations with foreign keys missing appropriate `dependent/on_delete` options. Thanks [Patrick McSweeny](https://github.com/PatrickMcSweeny) for implementing this!
