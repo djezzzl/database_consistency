@@ -10,7 +10,7 @@ module DatabaseConsistency
         :attribute_name
       )
 
-      DEPENDENT_OPTIONS = %i[destroy delete delete_all nullify].freeze
+      DEPENDENT_OPTIONS = %i[destroy delete delete_all nullify restrict_with_error restrict_with_exception].freeze
 
       private
 
