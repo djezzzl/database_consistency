@@ -186,9 +186,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
 
   context 'with compound primary key' do
     before do
-      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
-        skip('Composite primary keys are supported only in Rails 7.1+')
-      end
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
     end
 
     context 'when table has a compound primary key that matches uniqueness validation' do

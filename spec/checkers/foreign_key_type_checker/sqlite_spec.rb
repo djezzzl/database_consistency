@@ -107,6 +107,12 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
         end
       end
     end
+
+    context 'with compound primary key' do
+      before do
+        skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+      end
+    end
   end
 
   context 'with has_one association' do

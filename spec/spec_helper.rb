@@ -50,6 +50,10 @@ RSpec.configure do |config|
     }
   end
 
+  def compound_primary_keys_supported?
+    ActiveRecord::VERSION::MAJOR > 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR >= 1)
+  end
+
   def sqlite_configuration
     {
       adapter: 'sqlite3',

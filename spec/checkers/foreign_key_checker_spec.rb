@@ -142,9 +142,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when the association is covered by a composite foreign key' do
     before do
-      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
-        skip('Composite primary keys are supported only in Rails 7.1+')
-      end
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
 
       define_database do
         create_table :countries do |t|
@@ -196,9 +194,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when foreign key is composite but association is not' do
     before do
-      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
-        skip('Composite primary keys are supported only in Rails 7.1+')
-      end
+      skip('Composite primary keys are supported only in Rails 7.1+') if compound_primary_keys_supported?
 
       define_database do
         create_table :countries do |t|
@@ -246,9 +242,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
   context 'when foreign key is single but association is composite' do
     before do
-      if ActiveRecord::VERSION::MAJOR < 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR < 1)
-        skip('Composite primary keys are supported only in Rails 7.1+')
-      end
+      skip('Composite primary keys are supported only in Rails 7.1+') if compound_primary_keys_supported?
 
       define_database do
         create_table :countries do |t|
