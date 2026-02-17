@@ -3,12 +3,11 @@
 RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
   subject(:checker) { described_class.new(model, association) }
 
-  let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = :id } }
-
   let(:model) { company_class }
   let(:association) { company_class.reflect_on_all_associations.first }
 
   context 'with belongs_to association' do
+    let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = :id } }
     let!(:company_class) { define_class('Company', :companies) { |klass| klass.belongs_to :user } }
 
     before do
@@ -107,15 +106,10 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
         end
       end
     end
-
-    context 'with compound primary key' do
-      before do
-        skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
-      end
-    end
   end
 
   context 'with has_one association' do
+    let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = :id } }
     let!(:company_class) do
       define_class('Company', :companies) do |klass|
         klass.has_one :user
@@ -223,6 +217,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
   end
 
   context 'with has_many association' do
+    let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = :id } }
     let!(:company_class) do
       define_class('Company', :companies) do |klass|
         klass.has_many :users
@@ -325,6 +320,47 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
             fk_name: 'company_id'
           )
         end
+      end
+    end
+  end
+
+  context 'with compound primary key' do
+    before do
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+
+      define_database do
+        create_table :users, id: :bigserial do |t|
+          t.bigint :account_id
+        end
+
+        create_table :companies do |t|
+          t.bigint :user_id
+          t.bigint :account_id
+        end
+      end
+    end
+
+    context 'when foreign key has matching composite keys' do
+      let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = %i[id account_id] } }
+      let!(:company_class) do
+        define_class('Company', :companies) do |klass|
+          klass.belongs_to :user, query_constraints: %i[user_id account_id]
+        end
+      end
+
+      it 'supports proper matching' do
+        expect(checker.report).to have_attributes(
+          checker_name: 'ForeignKeyTypeChecker',
+          table_or_model_name: company_class.name,
+          column_or_attribute_name: association.name.to_s,
+          status: :ok,
+          error_message: nil,
+          error_slug: nil,
+          pk_type: 'bigserial+bigint',
+          pk_name: 'id+account_id',
+          fk_type: 'bigint+bigint',
+          fk_name: 'user_id+account_id'
+        )
       end
     end
   end

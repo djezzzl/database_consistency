@@ -37,9 +37,10 @@ module DatabaseConsistency
       # | covers        | ok     |
       # | doesn't cover | fail   |
       def check # rubocop:disable Metrics/MethodLength,  Metrics/AbcSize
-        if converted_type(associated_column).cover?(converted_type(primary_column))
-          report_template(:ok)
-        elsif !(converted_type(associated_column).numeric? && converted_type(primary_column).numeric?)
+        associated_columns_converted_types = associated_columns.map { |column| converted_type(column) }
+        primary_columns_converted_types = primary_columns.map { |primary_column| converted_type(primary_column) }
+
+        if covers?(associated_columns_converted_types, primary_columns_converted_types)
           report_template(:ok)
         else
           report_template(:fail, error_slug: :inconsistent_types)
@@ -59,11 +60,11 @@ module DatabaseConsistency
           error_slug: error_slug,
           error_message: nil,
           table_to_change: table_to_change,
-          type_to_set: converted_type(primary_column).convert,
-          fk_type: converted_type(associated_column).type,
-          fk_name: associated_key,
-          pk_type: converted_type(primary_column).type,
-          pk_name: primary_key,
+          type_to_set: primary_columns.map { |primary_column| converted_type(primary_column).convert },
+          fk_type: associated_columns.map { |column| converted_type(column).type }.join("+"),
+          fk_name: associated_keys.join("+"),
+          pk_type: primary_columns.map { |primary_column| converted_type(primary_column).type }.join("+"),
+          pk_name: primary_keys.join("+"),
           **report_attributes
         )
       end
@@ -76,36 +77,40 @@ module DatabaseConsistency
                              end
       end
 
-      # @return [String]
-      def primary_key
-        @primary_key ||= if belongs_to_association?
-                           association.association_primary_key
-                         else
-                           association.active_record_primary_key
-                         end.to_s
+      # @return [Array<String>]
+      def primary_keys
+        @primary_keys ||= if belongs_to_association?
+                            Helper.extract_columns(association.association_primary_key)
+                          else
+                            Helper.extract_columns(association.active_record_primary_key)
+                          end
       end
 
-      # @return [String]
-      def associated_key
-        @associated_key ||= association.foreign_key.to_s
+      # @return [Array<String>]
+      def associated_keys
+        @associated_keys ||= Helper.extract_columns(association.foreign_key)
       end
 
-      # @return [ActiveRecord::ConnectionAdapters::Column]
-      def primary_column
-        @primary_column ||= if belongs_to_association?
-                              column(association.klass, primary_key)
-                            else
-                              column(association.active_record, primary_key)
-                            end
+      # @return [Array<ActiveRecord::ConnectionAdapters::Column>]
+      def primary_columns
+        @primary_columns ||= primary_keys.map do |primary_key|
+          if belongs_to_association?
+            column(association.klass, primary_key)
+          else
+            column(association.active_record, primary_key)
+          end
+        end
       end
 
-      # @return [ActiveRecord::ConnectionAdapters::Column]
-      def associated_column
-        @associated_column ||= if belongs_to_association?
-                                 column(association.active_record, associated_key)
-                               else
-                                 column(association.klass, associated_key)
-                               end
+      # @return [Array<ActiveRecord::ConnectionAdapters::Column>]
+      def associated_columns
+        @associated_columns ||= associated_keys.map do |associated_key|
+          if belongs_to_association?
+            column(association.active_record, associated_key)
+          else
+            column(association.klass, associated_key)
+          end
+        end
       end
 
       # @return [DatabaseConsistency::Databases::Factory]
@@ -133,6 +138,12 @@ module DatabaseConsistency
       # @return [String]
       def type(column)
         column.sql_type
+      end
+
+      def covers?(associated_types, primary_types)
+        associated_types.zip(primary_types).all? do |associated_type, primary_type|
+          associated_type.cover?(primary_type)
+        end
       end
 
       # @param [ActiveRecord::ConnectionAdapters::Column]
