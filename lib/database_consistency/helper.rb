@@ -128,7 +128,16 @@ module DatabaseConsistency
     end
 
     def extract_columns(str)
-      str.scan(/(\w+)/).flatten
+      case str
+      when Array
+        str.map(&:to_s)
+      when String
+        str.scan(/(\w+)/).flatten
+      when Symbol
+        [str.to_s]
+      else
+        raise "Unexpected type for columns: #{str.class} with value: #{str}"
+      end
     end
 
     def foreign_key_or_attribute(model, attribute)
