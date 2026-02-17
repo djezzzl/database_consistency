@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Checkers
     # This class checks if association's foreign key type covers associated model's primary key (same or bigger)
-    class ForeignKeyTypeChecker < AssociationChecker
+    class ForeignKeyTypeChecker < AssociationChecker # rubocop:disable Metrics/ClassLength
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,
         :pk_name,
@@ -36,7 +36,7 @@ module DatabaseConsistency
       # | ------------- | ------ |
       # | covers        | ok     |
       # | doesn't cover | fail   |
-      def check # rubocop:disable Metrics/MethodLength,  Metrics/AbcSize
+      def check # rubocop:disable Metrics/MethodLength
         associated_columns_converted_types = associated_columns.map { |column| converted_type(column) }
         primary_columns_converted_types = primary_columns.map { |primary_column| converted_type(primary_column) }
 
@@ -54,17 +54,17 @@ module DatabaseConsistency
         )
       end
 
-      def report_template(status, error_slug: nil) # rubocop:disable Metrics/MethodLength
+      def report_template(status, error_slug: nil) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         Report.new(
           status: status,
           error_slug: error_slug,
           error_message: nil,
           table_to_change: table_to_change,
           type_to_set: primary_columns.map { |primary_column| converted_type(primary_column).convert },
-          fk_type: associated_columns.map { |column| converted_type(column).type }.join("+"),
-          fk_name: associated_keys.join("+"),
-          pk_type: primary_columns.map { |primary_column| converted_type(primary_column).type }.join("+"),
-          pk_name: primary_keys.join("+"),
+          fk_type: associated_columns.map { |column| converted_type(column).type }.join('+'),
+          fk_name: associated_keys.join('+'),
+          pk_type: primary_columns.map { |primary_column| converted_type(primary_column).type }.join('+'),
+          pk_name: primary_keys.join('+'),
           **report_attributes
         )
       end
