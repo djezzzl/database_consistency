@@ -1,5 +1,9 @@
 # Changelog
 
+### [2.1.3] - 2026/02/20
+
+- Fix `MissingDependentDestroyChecker` to support composite keys. Thanks [Andy Allan](https://github.com/gravitystorm) for reporting this! 
+
 ### [2.1.2] - 2026/02/17
 
 - Fix `ForeignKeyTypeChecker` to support composite keys. Thanks [Quentin de Metz](https://github.com/quentindemetz) for reporting this!
