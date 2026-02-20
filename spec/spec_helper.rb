@@ -50,6 +50,10 @@ RSpec.configure do |config|
     }
   end
 
+  def composite_foreign_key_option_name
+    ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR == 1 ? :query_constraints : :foreign_key
+  end
+
   def compound_primary_keys_supported?
     ActiveRecord::VERSION::MAJOR > 7 || (ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR >= 1)
   end

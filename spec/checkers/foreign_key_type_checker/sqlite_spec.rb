@@ -343,10 +343,8 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyTypeChecker, :sqlite do
     context 'when foreign key has matching composite keys' do
       let!(:user_class) { define_class('User', :users) { |klass| klass.primary_key = %i[id account_id] } }
       let!(:company_class) do
-        key = ActiveRecord::VERSION::MAJOR == 7 && ActiveRecord::VERSION::MINOR == 1 ? :query_constraints : :foreign_key
-
         define_class('Company', :companies) do |klass|
-          klass.belongs_to :user, key => %i[user_id account_id]
+          klass.belongs_to :user, composite_foreign_key_option_name => %i[user_id account_id]
         end
       end
 
