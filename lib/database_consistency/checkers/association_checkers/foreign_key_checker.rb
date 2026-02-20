@@ -43,7 +43,7 @@ module DatabaseConsistency
       # | persisted   | ok     |
       # | missing     | fail   |
       def check
-        if foreign_key_exists?
+        if foreign_key
           report_template(:ok)
         else
           report_template(:fail, error_slug: :missing_foreign_key)
