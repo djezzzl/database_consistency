@@ -15,7 +15,7 @@ module DatabaseConsistency
       private
 
       def preconditions
-        association.belongs_to? && foreign_key_exists?
+        association.belongs_to? && foreign_key
       end
 
       def check
@@ -32,13 +32,6 @@ module DatabaseConsistency
             DEPENDENT_OPTIONS.include?(association.options[:dependent]) &&
             association.table_name == model.table_name
         end
-      end
-
-      def foreign_key
-        association.klass
-                   .connection
-                   .foreign_keys(model.table_name)
-                   .find { |fk| fk.column == association.foreign_key.to_s }
       end
 
       def cascade?

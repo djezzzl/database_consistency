@@ -172,11 +172,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
     let(:entity_class) do
       define_class do |klass|
-        if ActiveRecord::VERSION::MAJOR == 7
-          klass.belongs_to :country, query_constraints: %i[country_code country_id]
-        else
-          klass.belongs_to :country, foreign_key: %i[country_code country_id]
-        end
+        klass.belongs_to :country, composite_foreign_key_option_name => %i[country_code country_id]
       end
     end
 
@@ -266,11 +262,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
 
     let(:entity_class) do
       define_class do |klass|
-        if ActiveRecord::VERSION::MAJOR == 7
-          klass.belongs_to :country, query_constraints: %i[country_code country_id]
-        else
-          klass.belongs_to :country, foreign_key: %i[country_code country_id]
-        end
+        klass.belongs_to :country, composite_foreign_key_option_name => %i[country_code country_id]
       end
     end
 
