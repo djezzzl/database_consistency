@@ -43,7 +43,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingDependentDestroyChecker, :s
 
     let!(:entity_class) do
       define_class do |klass|
-        klass.belongs_to :thing, composite_foreign_key_option_name => %i[account_id thing_id], primary_key: %i[account_id id]
+        klass.belongs_to :thing,
+                         composite_foreign_key_option_name => %i[account_id thing_id],
+                         primary_key: %i[account_id id]
       end
     end
 
