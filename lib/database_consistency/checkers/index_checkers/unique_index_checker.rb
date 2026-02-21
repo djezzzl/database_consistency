@@ -8,8 +8,9 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - index is not unique
+      #  - index is a partial index (has a where clause)
       def preconditions
-        index.unique
+        index.unique && index.where.nil?
       end
 
       # Table of possible statuses
