@@ -102,6 +102,33 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
+  context 'when column is used via bang dynamic finder (find_by_column_name!)' do
+    let(:source_file) do
+      Tempfile.new(['model', '.rb']).tap do |f|
+        f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
+        f.flush
+        f.close
+      end
+    end
+
+    before do
+      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+    end
+
+    after { source_file.unlink }
+
+    context 'when index is missing' do
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by
+        )
+      end
+    end
+  end
+
   context 'when column is used via hash-style finder (find_by(column: ...))' do
     let(:source_file) do
       Tempfile.new(['model', '.rb']).tap do |f|
@@ -126,6 +153,33 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
           status: :fail,
           error_slug: :missing_index_find_by,
           error_message: nil
+        )
+      end
+    end
+  end
+
+  context 'when column is used via no-parens finder (find_by column: ...)' do
+    let(:source_file) do
+      Tempfile.new(['model', '.rb']).tap do |f|
+        f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
+        f.flush
+        f.close
+      end
+    end
+
+    before do
+      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+    end
+
+    after { source_file.unlink }
+
+    context 'when index is missing' do
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by
         )
       end
     end
