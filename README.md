@@ -95,6 +95,7 @@ MissingAssociationClassChecker fail Company anything refers to undefined model "
 MissingTableChecker fail LegacyModel should have a table in the database
 ImplicitOrderingChecker fail Secondary::User id implicit_order_column is recommended when using uuid column type for primary 
 MissingDependentDestroyChecker fail Organization company should have a corresponding has_one/has_many association with dependent option (destroy, delete, delete_all, nullify) or a foreign key with on_delete (cascade, nullify)
+MissingIndexFindByChecker fail User email column is used in find_by but is missing an index
 ```
 
 ## Funding
