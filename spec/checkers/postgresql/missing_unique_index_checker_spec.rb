@@ -102,4 +102,40 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
       end
     end
   end
+
+  context 'when uniqueness validation has conditions option' do
+    let(:attribute) { :account_id }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :account_id, uniqueness: { scope: :default, conditions: -> { where(default: true) } }
+      end
+    end
+
+    context 'when partial unique index is provided' do
+      before do
+        define_database_with_entity do |table|
+          table.integer :account_id
+          table.boolean :default
+          table.index %i[account_id], unique: true, where: 'default = true'
+        end
+      end
+
+      specify do
+        expect(checker.report).to be_nil
+      end
+    end
+
+    context 'when no index is provided' do
+      before do
+        define_database_with_entity do |table|
+          table.integer :account_id
+          table.boolean :default
+        end
+      end
+
+      specify do
+        expect(checker.report).to be_nil
+      end
+    end
+  end
 end
