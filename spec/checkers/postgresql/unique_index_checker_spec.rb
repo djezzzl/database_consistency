@@ -13,15 +13,15 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :postgresql do
     before do
       define_database_with_entity do |table|
         table.integer :account_id
-        table.boolean :default
-        table.index %i[account_id], unique: true, name: index_name, where: 'default = true'
+        table.boolean :is_default
+        table.index %i[account_id], unique: true, name: index_name, where: 'is_default = true'
       end
     end
 
     context 'when validation with conditions is present' do
       let(:klass) do
         define_class do |klass|
-          klass.validates :account_id, uniqueness: { scope: :default, conditions: -> { where(default: true) } }
+          klass.validates :account_id, uniqueness: { scope: :is_default, conditions: -> { where(is_default: true) } }
         end
       end
 

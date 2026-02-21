@@ -107,7 +107,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
     let(:attribute) { :account_id }
     let(:klass) do
       define_class do |klass|
-        klass.validates :account_id, uniqueness: { scope: :default, conditions: -> { where(default: true) } }
+        klass.validates :account_id, uniqueness: { scope: :is_default, conditions: -> { where(is_default: true) } }
       end
     end
 
@@ -115,8 +115,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
       before do
         define_database_with_entity do |table|
           table.integer :account_id
-          table.boolean :default
-          table.index %i[account_id], unique: true, where: 'default = true'
+          table.boolean :is_default
+          table.index %i[account_id], unique: true, where: 'is_default = true'
         end
       end
 
@@ -129,7 +129,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
       before do
         define_database_with_entity do |table|
           table.integer :account_id
-          table.boolean :default
+          table.boolean :is_default
         end
       end
 
