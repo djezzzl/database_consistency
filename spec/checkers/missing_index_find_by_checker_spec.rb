@@ -85,6 +85,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is missing' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
@@ -105,6 +106,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is present' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email, index: true
         end
@@ -137,6 +139,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is missing' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
@@ -167,6 +170,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is missing' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
@@ -199,6 +203,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is missing' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
@@ -229,6 +234,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
     context 'when index is missing' do
       before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end

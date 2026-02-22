@@ -68,15 +68,15 @@ module DatabaseConsistency
         nil
       end
 
-      # Prism AST visitor that detects find_by calls referencing a specific column.
-      # Handles:
-      #  - find_by_<col>(<value>) / Model.find_by_<col>!  (dynamic finder)
-      #  - find_by(col: <value>) / Model.find_by col:     (symbol-key hash)
-      #  - find_by("col" => <value>)                      (string-key hash)
-      #
-      # Defined only when Prism is available; otherwise this constant does not exist and
-      # the checker's preconditions guard (defined?(Prism)) prevents it from being used.
       if defined?(Prism)
+        # Prism AST visitor that detects find_by calls referencing a specific column.
+        # Handles:
+        #  - find_by_<col>(<value>) / Model.find_by_<col>!  (dynamic finder)
+        #  - find_by(col: <value>) / Model.find_by col:     (symbol-key hash)
+        #  - find_by("col" => <value>)                      (string-key hash)
+        #
+        # Defined only when Prism is available; otherwise this constant does not exist and
+        # the checker's preconditions guard (defined?(Prism)) prevents it from being used.
         class FindByVisitor < Prism::Visitor
           attr_reader :found
 
