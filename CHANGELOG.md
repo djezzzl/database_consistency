@@ -1,5 +1,10 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `UniqueIndexChecker` to skip partial indexes (indexes with a `WHERE` clause).
+- Fix `MissingUniqueIndexChecker` to skip uniqueness validators with a `conditions` option.
+
 ### [2.1.3] - 2026/02/20
 
 - Fix `MissingDependentDestroyChecker` to support composite keys. Thanks [Andy Allan](https://github.com/gravitystorm) for reporting this! 
