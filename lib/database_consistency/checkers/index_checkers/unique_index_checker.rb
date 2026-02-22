@@ -29,11 +29,13 @@ module DatabaseConsistency
       def valid?
         uniqueness_validators = model.validators.select { |validator| validator.kind == :uniqueness }
 
-        uniqueness_validators.any? do |validator|
-          validator.attributes.any? do |attribute|
-            sorted_index_columns == Helper.sorted_uniqueness_validator_columns(attribute, validator, model) &&
-              (index.where.nil? || validator.options[:conditions].present?)
-          end
+        uniqueness_validators.any? { |validator| validator_matches?(validator) }
+      end
+
+      def validator_matches?(validator)
+        validator.attributes.any? do |attribute|
+          sorted_index_columns == Helper.sorted_uniqueness_validator_columns(attribute, validator, model) &&
+            Helper.conditions_match_index?(model, validator.options[:conditions], index.where)
         end
       end
 

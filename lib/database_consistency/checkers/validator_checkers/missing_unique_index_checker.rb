@@ -47,11 +47,13 @@ module DatabaseConsistency
       end
 
       def unique_index
-        @unique_index ||= model.connection.indexes(model.table_name).find do |index|
-          index.unique &&
-            Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns &&
-            (validator.options[:conditions].nil? || index.where.present?)
-        end
+        @unique_index ||= model.connection.indexes(model.table_name).find { |index| index_matches?(index) }
+      end
+
+      def index_matches?(index)
+        index.unique &&
+          Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns &&
+          Helper.conditions_match_index?(model, validator.options[:conditions], index.where)
       end
 
       def primary_key_covers_validation?

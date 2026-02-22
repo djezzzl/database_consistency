@@ -34,5 +34,26 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
         )
       end
     end
+    context 'when partial unique index where clause does not match validator conditions' do
+      before do
+        define_database_with_entity do |table|
+          table.integer :account_id
+          table.boolean :is_default
+          table.boolean :deleted
+          table.index %i[account_id], unique: true, where: 'deleted = 0'
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingUniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'account_id',
+          status: :fail,
+          error_message: nil,
+          error_slug: :missing_unique_index
+        )
+      end
+    end
   end
 end
