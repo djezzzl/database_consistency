@@ -281,15 +281,24 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
       end
     end
 
-    before do
-      define_database_with_entity do |table|
-        table.integer :account_id
-        table.boolean :is_default
+    context 'when partial unique index is missing' do
+      before do
+        define_database_with_entity do |table|
+          table.integer :account_id
+          table.boolean :is_default
+        end
       end
-    end
 
-    specify do
-      expect(checker.report).to be_nil
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingUniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'account_id',
+          status: :fail,
+          error_message: nil,
+          error_slug: :missing_unique_index
+        )
+      end
     end
   end
 end

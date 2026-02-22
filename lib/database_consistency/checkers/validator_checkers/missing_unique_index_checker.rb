@@ -18,9 +18,8 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - validator is not a uniqueness validator
-      #  - validator has a conditions option (partial validation, may correspond to partial index)
       def preconditions
-        validator.kind == :uniqueness && validator.options[:conditions].nil?
+        validator.kind == :uniqueness
       end
 
       # Table of possible statuses
@@ -49,7 +48,9 @@ module DatabaseConsistency
 
       def unique_index
         @unique_index ||= model.connection.indexes(model.table_name).find do |index|
-          index.unique && Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns
+          index.unique &&
+            Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns &&
+            (validator.options[:conditions].nil? || index.where.present?)
         end
       end
 

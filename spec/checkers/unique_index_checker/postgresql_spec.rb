@@ -17,10 +17,38 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :postgresql do
       end
     end
 
-    let(:klass) { define_class }
+    context 'when conditions validation is missing' do
+      let(:klass) { define_class }
 
-    specify do
-      expect(checker.report).to be_nil
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'UniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :fail,
+          error_message: nil,
+          error_slug: :missing_uniqueness_validation
+        )
+      end
+    end
+
+    context 'when conditions validation is present' do
+      let(:klass) do
+        define_class do |klass|
+          klass.validates :account_id, uniqueness: { conditions: -> { where(is_default: true) } }
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'UniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
     end
   end
 end
