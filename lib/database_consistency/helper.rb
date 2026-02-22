@@ -151,8 +151,7 @@ module DatabaseConsistency
       where_part = sql.split(/\bWHERE\b/i, 2).last
       return nil unless where_part
 
-      where_part.gsub("#{model.quoted_table_name}.", '').gsub('"', '')
-                .gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0').strip
+      normalize_sql(where_part.gsub("#{model.quoted_table_name}.", '').gsub('"', ''))
     rescue StandardError
       nil
     end
@@ -165,8 +164,16 @@ module DatabaseConsistency
       return false if conditions.nil? || index_where.blank?
 
       conditions_sql = conditions_where_sql(model, conditions)
-      normalized_where = index_where.gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0')
+      # Strip one level of outer parentheses that some databases (e.g. PostgreSQL)
+      # add when storing/returning the index WHERE clause.
+      normalized_where = normalize_sql(index_where.sub(/\A\s*\((.+)\)\s*\z/m, '\1'))
       conditions_sql&.casecmp?(normalized_where)
+    end
+
+    def normalize_sql(sql)
+      sql.gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0')
+         .gsub(/ = 't'/, ' = 1').gsub(/ = 'f'/, ' = 0')
+         .strip
     end
 
     # @return [String]

@@ -33,10 +33,6 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :sqlite do
     end
 
     context 'when conditions validation is present' do
-      before do
-        skip('SQL comparison for conditions requires ActiveRecord >= 5') if ActiveRecord::VERSION::MAJOR < 5
-      end
-
       let(:klass) do
         define_class do |klass|
           klass.validates :account_id, uniqueness: { conditions: -> { where(is_default: true) } }
