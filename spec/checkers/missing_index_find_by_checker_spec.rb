@@ -9,14 +9,11 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
   let(:klass) { define_class }
   let(:column) { klass.columns.find { |c| c.name == 'email' } }
 
-  before do
-    define_database_with_entity do |t|
-      t.string :email
-    end
-  end
-
   context 'when Prism is not available' do
     before do
+      define_database_with_entity do |t|
+        t.string :email
+      end
       hide_const('Prism')
     end
 
@@ -27,6 +24,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
   context 'when the model source file cannot be found' do
     before do
+      define_database_with_entity do |t|
+        t.string :email
+      end
       allow(Module).to receive(:const_source_location).and_return([nil, nil])
     end
 
@@ -37,6 +37,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
 
   context 'when const_source_location is not available' do
     before do
+      define_database_with_entity do |t|
+        t.string :email
+      end
       allow(Module).to receive(:respond_to?).with(:const_source_location).and_return(false)
       allow(Module).to receive(:respond_to?).with(anything).and_call_original
     end
@@ -56,6 +59,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
 
     before do
+      define_database_with_entity do |t|
+        t.string :email
+      end
       allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
     end
 
@@ -75,13 +81,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
     end
 
-    before do
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
-    end
-
     after { source_file.unlink }
 
     context 'when index is missing' do
+      before do
+        define_database_with_entity do |t|
+          t.string :email
+        end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+      end
+
       specify do
         expect(checker.report).to have_attributes(
           checker_name: 'MissingIndexFindByChecker',
@@ -99,6 +108,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email, index: true
         end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
@@ -123,13 +133,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
     end
 
-    before do
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
-    end
-
     after { source_file.unlink }
 
     context 'when index is missing' do
+      before do
+        define_database_with_entity do |t|
+          t.string :email
+        end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+      end
+
       specify do
         expect(checker.report).to have_attributes(
           checker_name: 'MissingIndexFindByChecker',
@@ -150,13 +163,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
     end
 
-    before do
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
-    end
-
     after { source_file.unlink }
 
     context 'when index is missing' do
+      before do
+        define_database_with_entity do |t|
+          t.string :email
+        end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+      end
+
       specify do
         expect(checker.report).to have_attributes(
           checker_name: 'MissingIndexFindByChecker',
@@ -179,13 +195,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
     end
 
-    before do
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
-    end
-
     after { source_file.unlink }
 
     context 'when index is missing' do
+      before do
+        define_database_with_entity do |t|
+          t.string :email
+        end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+      end
+
       specify do
         expect(checker.report).to have_attributes(
           checker_name: 'MissingIndexFindByChecker',
@@ -206,13 +225,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
     end
 
-    before do
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
-    end
-
     after { source_file.unlink }
 
     context 'when index is missing' do
+      before do
+        define_database_with_entity do |t|
+          t.string :email
+        end
+        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
+      end
+
       specify do
         expect(checker.report).to have_attributes(
           checker_name: 'MissingIndexFindByChecker',
@@ -239,6 +261,9 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
 
     before do
+      define_database_with_entity do |t|
+        t.string :email
+      end
       allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
     end
 
