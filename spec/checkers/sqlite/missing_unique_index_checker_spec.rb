@@ -16,6 +16,10 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
 
     context 'when partial unique index is provided' do
       before do
+        skip('SQL comparison for conditions requires ActiveRecord >= 5') if ActiveRecord::VERSION::MAJOR < 5
+      end
+
+      before do
         define_database_with_entity do |table|
           table.integer :account_id
           table.boolean :is_default
