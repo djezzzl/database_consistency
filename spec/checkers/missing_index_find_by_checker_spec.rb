@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tempfile'
+
 RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite, :mysql, :postgresql do
   subject(:checker) { described_class.new(model, column) }
 
@@ -225,23 +227,18 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
   end
 
   context 'when column is the primary key' do
-    let(:column) { klass.columns.find { |c| c.name == klass.primary_key } }
+    let(:klass) { define_class { |k| k.primary_key = 'email' } }
+    let(:column) { klass.columns.find { |c| c.name == 'email' } }
 
     let(:source_file) do
       Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by_id(params[:id])\nend")
+        f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
         f.flush
         f.close
       end
     end
 
     before do
-      define_database do
-        create_table :entities do |t|
-          t.string :email
-        end
-      end
-
       allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
     end
 

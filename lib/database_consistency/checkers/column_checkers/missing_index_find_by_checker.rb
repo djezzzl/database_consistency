@@ -87,7 +87,7 @@ module DatabaseConsistency
         def visit_call_node(node)
           name = node.name.to_s
 
-          if name == "find_by_#{@column_name}" || name == "find_by_#{@column_name}!"
+          if ["find_by_#{@column_name}", "find_by_#{@column_name}!"].include?(name)
             @found = true
           elsif name == 'find_by' && node.arguments
             @found = true if find_by_hash_includes_column?(node.arguments)
