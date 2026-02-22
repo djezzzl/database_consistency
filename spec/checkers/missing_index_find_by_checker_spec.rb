@@ -22,12 +22,12 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
-  context 'when the model source file cannot be found' do
+  context 'when no project source files are found' do
     before do
       define_database_with_entity do |t|
         t.string :email
       end
-      allow(Module).to receive(:const_source_location).and_return([nil, nil])
+      allow(ObjectSpace).to receive(:each_object).with(Module)
     end
 
     it 'skips the check' do
@@ -50,57 +50,48 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
   end
 
   context 'when column is not referenced in any find_by call in the model source' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\nend")
-        f.flush
-        f.close
-      end
-    end
-
     before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
       define_database_with_entity do |t|
         t.string :email
       end
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
     end
 
-    after { source_file.unlink }
-
     it 'skips the check' do
-      expect(checker.report).to be_nil
+      Tempfile.new(['model', '.rb']) do |f|
+        f.write("class Entity < ApplicationRecord\nend")
+        f.flush
+        allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+        allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+        expect(checker.report).to be_nil
+      end
     end
   end
 
   context 'when column is used via dynamic finder (find_by_column_name)' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-        f.flush
-        f.close
-      end
-    end
-
-    after { source_file.unlink }
-
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_slug: :missing_index_find_by,
-          error_message: nil
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_slug: :missing_index_find_by,
+            error_message: nil
+          )
+        end
       end
     end
 
@@ -110,146 +101,131 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email, index: true
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'email',
-          status: :ok,
-          error_slug: nil,
-          error_message: nil
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :ok,
+            error_slug: nil,
+            error_message: nil
+          )
+        end
       end
     end
   end
 
   context 'when column is used via bang dynamic finder (find_by_column_name!)' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
-        f.flush
-        f.close
-      end
-    end
-
-    after { source_file.unlink }
-
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_slug: :missing_index_find_by
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_slug: :missing_index_find_by
+          )
+        end
       end
     end
   end
 
   context 'when column is used via hash-style finder (find_by(column: ...))' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email])\nend")
-        f.flush
-        f.close
-      end
-    end
-
-    after { source_file.unlink }
-
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_slug: :missing_index_find_by,
-          error_message: nil
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email])\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_slug: :missing_index_find_by,
+            error_message: nil
+          )
+        end
       end
     end
   end
 
   context 'when column is used via no-parens finder (find_by column: ...)' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
-        f.flush
-        f.close
-      end
-    end
-
-    after { source_file.unlink }
-
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_slug: :missing_index_find_by
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_slug: :missing_index_find_by
+          )
+        end
       end
     end
   end
 
   context 'when column is used via string-key finder (find_by("column" => ...))' do
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by(\"email\" => params[:email])\nend")
-        f.flush
-        f.close
-      end
-    end
-
-    after { source_file.unlink }
-
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
-        allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
       end
 
       specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingIndexFindByChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'email',
-          status: :fail,
-          error_slug: :missing_index_find_by,
-          error_message: nil
-        )
+        Tempfile.new(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  find_by(\"email\" => params[:email])\nend")
+          f.flush
+          allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+          allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexFindByChecker',
+            table_or_model_name: klass.name,
+            column_or_attribute_name: 'email',
+            status: :fail,
+            error_slug: :missing_index_find_by,
+            error_message: nil
+          )
+        end
       end
     end
   end
@@ -258,25 +234,21 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     let(:klass) { define_class { |k| k.primary_key = 'email' } }
     let(:column) { klass.columns.find { |c| c.name == 'email' } }
 
-    let(:source_file) do
-      Tempfile.new(['model', '.rb']).tap do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-        f.flush
-        f.close
-      end
-    end
-
     before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
       define_database_with_entity do |t|
         t.string :email
       end
-      allow(Module).to receive(:const_source_location).and_return([source_file.path, 1])
     end
 
-    after { source_file.unlink }
-
     it 'skips the check' do
-      expect(checker.report).to be_nil
+      Tempfile.new(['model', '.rb']) do |f|
+        f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
+        f.flush
+        allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
+        allow(Module).to receive(:const_source_location).with(klass.name).and_return([f.path, 1])
+        expect(checker.report).to be_nil
+      end
     end
   end
 end
