@@ -158,18 +158,15 @@ module DatabaseConsistency
     end
 
     # Returns true when validator conditions and index WHERE clause are a valid
-    # pairing: no conditions matches any index; conditions present requires a
-    # partial index; when both present the normalized SQL is compared (nil
-    # conditions_sql means we cannot compare so we assume a match).
+    # pairing: both absent means a match; exactly one present means no match;
+    # when both present the normalized SQL is compared.
     def conditions_match_index?(model, conditions, index_where)
-      return true if conditions.nil?
-      return false if index_where.blank?
+      return true if conditions.nil? && index_where.blank?
+      return false if conditions.nil? || index_where.blank?
 
       conditions_sql = conditions_where_sql(model, conditions)
-      return true if conditions_sql.nil?
-
       normalized_where = index_where.gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0')
-      conditions_sql.casecmp?(normalized_where)
+      conditions_sql&.casecmp?(normalized_where)
     end
 
     # @return [String]
