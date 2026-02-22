@@ -13,6 +13,16 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
+  context 'when Prism is not available' do
+    before do
+      hide_const('Prism')
+    end
+
+    it 'skips the check' do
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'when the model source file cannot be found' do
     before do
       allow(Module).to receive(:const_source_location).and_return([nil, nil])
