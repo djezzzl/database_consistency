@@ -39,6 +39,7 @@ Currently, the tool can:
 - [find models that have missing tables](https://github.com/djezzzl/database_consistency/wiki/missingtablechecker)
 - [find models with UUID primary keys without specified ordering column](https://github.com/djezzzl/database_consistency/wiki/implicitorderingchecker)
 - [find belongs_to associations with foreign keys without dependent/on_delete options](https://github.com/djezzzl/database_consistency/wiki/missingdependentdestroychecker)
+- [find models pointing to views without a primary_key set](https://github.com/djezzzl/database_consistency/wiki/viewprimarykeychecker)
 
 Besides that, the tool provides:
 - [auto-correction](https://github.com/djezzzl/database_consistency/wiki/auto-correction)
@@ -95,6 +96,7 @@ MissingAssociationClassChecker fail Company anything refers to undefined model "
 MissingTableChecker fail LegacyModel should have a table in the database
 ImplicitOrderingChecker fail Secondary::User id implicit_order_column is recommended when using uuid column type for primary 
 MissingDependentDestroyChecker fail Organization company should have a corresponding has_one/has_many association with dependent option (destroy, delete, delete_all, nullify) or a foreign key with on_delete (cascade, nullify)
+ViewPrimaryKeyChecker fail ReportView self model pointing to a view should have primary_key set
 ```
 
 ## Funding

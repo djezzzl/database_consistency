@@ -2,8 +2,8 @@
 
 ### [Unreleased]
 
-- Fix `UniqueIndexChecker` to skip partial indexes (indexes with a `WHERE` clause).
-- Fix `MissingUniqueIndexChecker` to skip uniqueness validators with a `conditions` option.
+- Add `ViewPrimaryKeyChecker` to enforce setting `primary_key` for models pointing to database views.
+- Improve `UniqueIndexChecker` and `MissingUniqueIndexChecker` to support partial indexes and uniqueness validators with `conditions` option.
 
 ### [2.1.3] - 2026/02/20
 
