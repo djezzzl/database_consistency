@@ -195,6 +195,42 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         end
       end
     end
+
+    context 'when find_by belongs to another model' do
+      before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+        define_database_with_entity do |t|
+          t.string :email
+        end
+      end
+
+      it 'skips the check' do
+        Tempfile.create(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  OtherModel.find_by(email: params[:email])\nend")
+          f.flush
+          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          expect(checker.report).to be_nil
+        end
+      end
+    end
+
+    context 'when find_by is triggered with a complex scope (model.where(...))' do
+      before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+        define_database_with_entity do |t|
+          t.string :email
+        end
+      end
+
+      it 'skips the check' do
+        Tempfile.create(['model', '.rb']) do |f|
+          f.write("class Entity < ApplicationRecord\n  Entity.where(active: true).find_by(email: params[:email])\nend")
+          f.flush
+          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          expect(checker.report).to be_nil
+        end
+      end
+    end
   end
 
   context 'when column is used via no-parens finder (find_by column: ...)' do

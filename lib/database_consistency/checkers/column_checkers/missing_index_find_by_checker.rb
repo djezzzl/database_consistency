@@ -38,9 +38,10 @@ module DatabaseConsistency
       end
 
       def find_by_used?
+        model_name = model.name.to_s
         Helper.project_source_files.any? do |file|
           result = Prism.parse(File.read(file))
-          visitor = FindByVisitor.new(column.name.to_s)
+          visitor = FindByVisitor.new(column.name.to_s, model_name)
           visitor.visit(result.value)
           visitor.found?
         end
@@ -70,9 +71,10 @@ module DatabaseConsistency
 
           alias found? found
 
-          def initialize(column_name)
+          def initialize(column_name, model_name)
             super()
             @column_name = column_name
+            @model_name = model_name
             @found = false
           end
 
@@ -80,15 +82,40 @@ module DatabaseConsistency
             name = node.name.to_s
 
             if ["find_by_#{@column_name}", "find_by_#{@column_name}!"].include?(name)
-              @found = true
+              @found = true if valid_receiver?(node.receiver)
             elsif name == 'find_by' && node.arguments
-              @found = true if find_by_hash_includes_column?(node.arguments)
+              @found = true if valid_receiver?(node.receiver) && find_by_hash_includes_column?(node.arguments)
             end
 
             super
           end
 
           private
+
+          def valid_receiver?(receiver)
+            case receiver
+            when nil then true
+            when Prism::ConstantReadNode, Prism::ConstantPathNode
+              constant_path_name(receiver) == @model_name
+            when Prism::CallNode then allowed_scoped_receiver?(receiver)
+            else false
+            end
+          end
+
+          def allowed_scoped_receiver?(call_node)
+            return false unless %w[unscoped includes].include?(call_node.name.to_s)
+
+            rec = call_node.receiver
+            (rec.is_a?(Prism::ConstantReadNode) || rec.is_a?(Prism::ConstantPathNode)) &&
+              constant_path_name(rec) == @model_name
+          end
+
+          def constant_path_name(node)
+            case node
+            when Prism::ConstantReadNode then node.name.to_s
+            when Prism::ConstantPathNode then "#{constant_path_name(node.parent)}::#{node.name}"
+            end
+          end
 
           def find_by_hash_includes_column?(arguments_node)
             arguments_node.arguments.any? do |arg|
