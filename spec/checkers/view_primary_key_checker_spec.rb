@@ -36,6 +36,8 @@ RSpec.describe DatabaseConsistency::Checkers::ViewPrimaryKeyChecker, :sqlite, :m
 
   context 'when table is a view' do
     before do
+      skip('view_exists? not supported before ActiveRecord 5') if ActiveRecord::VERSION::MAJOR < 5
+
       define_database do
         create_table :entities do |t|
           t.string :name
