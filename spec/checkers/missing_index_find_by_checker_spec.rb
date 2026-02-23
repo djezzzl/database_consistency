@@ -58,7 +58,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
 
     it 'skips the check' do
-      Tempfile.new(['model', '.rb']) do |f|
+      Tempfile.create(['model', '.rb']) do |f|
         f.write("class Entity < ApplicationRecord\nend")
         f.flush
         allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -78,7 +78,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -104,7 +104,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -132,7 +132,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -158,7 +158,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email])\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -186,7 +186,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -212,7 +212,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       end
 
       specify do
-        Tempfile.new(['model', '.rb']) do |f|
+        Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by(\"email\" => params[:email])\nend")
           f.flush
           allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)
@@ -242,7 +242,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
 
     it 'skips the check' do
-      Tempfile.new(['model', '.rb']) do |f|
+      Tempfile.create(['model', '.rb']) do |f|
         f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
         f.flush
         allow(ObjectSpace).to receive(:each_object).with(Module).and_yield(klass)

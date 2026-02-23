@@ -45,6 +45,8 @@ require 'database_consistency/writers/simple/missing_table'
 require 'database_consistency/writers/simple/implicit_order_column_missing'
 require 'database_consistency/writers/simple/missing_dependent_destroy'
 require 'database_consistency/writers/simple/missing_index_find_by'
+require 'database_consistency/writers/simple/view_missing_primary_key'
+require 'database_consistency/writers/simple/view_primary_key_column_missing'
 require 'database_consistency/writers/simple_writer'
 
 require 'database_consistency/writers/autofix/helpers/migration'
@@ -78,6 +80,7 @@ require 'database_consistency/checkers/enum_checkers/enum_type_checker'
 
 require 'database_consistency/checkers/model_checkers/model_checker'
 require 'database_consistency/checkers/model_checkers/missing_table_checker'
+require 'database_consistency/checkers/model_checkers/view_primary_key_checker'
 
 require 'database_consistency/checkers/association_checkers/association_checker'
 require 'database_consistency/checkers/association_checkers/missing_index_checker'

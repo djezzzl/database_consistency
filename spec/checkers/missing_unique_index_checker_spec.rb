@@ -272,4 +272,24 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :sqlite
       end
     end
   end
+
+  context 'when uniqueness validation has conditions option' do
+    let(:attribute) { :account_id }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :account_id, uniqueness: { conditions: -> { where(is_default: true) } }
+      end
+    end
+
+    before do
+      define_database_with_entity do |table|
+        table.integer :account_id
+        table.boolean :is_default
+      end
+    end
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
 end

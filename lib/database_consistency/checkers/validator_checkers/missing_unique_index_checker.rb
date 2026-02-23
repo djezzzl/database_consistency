@@ -18,8 +18,9 @@ module DatabaseConsistency
 
       # We skip check when:
       #  - validator is not a uniqueness validator
+      #  - validator has a conditions option (partial validation, may correspond to partial index)
       def preconditions
-        validator.kind == :uniqueness
+        validator.kind == :uniqueness && validator.options[:conditions].nil?
       end
 
       # Table of possible statuses
