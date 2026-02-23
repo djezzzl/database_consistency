@@ -102,5 +102,51 @@ RSpec.describe DatabaseConsistency::Checkers::ViewPrimaryKeyChecker, :sqlite, :m
         )
       end
     end
+
+    context 'with composite primary_key set to existing columns' do
+      let(:view_klass) do
+        define_class('EntityView', :entity_views) do |klass|
+          klass.primary_key = %i[id name]
+        end
+      end
+
+      before do
+        skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'ViewPrimaryKeyChecker',
+          table_or_model_name: view_klass.name,
+          column_or_attribute_name: 'self',
+          status: :ok,
+          error_slug: nil,
+          error_message: nil
+        )
+      end
+    end
+
+    context 'with composite primary_key where one column is missing' do
+      let(:view_klass) do
+        define_class('EntityView', :entity_views) do |klass|
+          klass.primary_key = %i[id nonexistent]
+        end
+      end
+
+      before do
+        skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'ViewPrimaryKeyChecker',
+          table_or_model_name: view_klass.name,
+          column_or_attribute_name: 'self',
+          status: :fail,
+          error_slug: :view_primary_key_column_missing,
+          error_message: nil
+        )
+      end
+    end
   end
 end

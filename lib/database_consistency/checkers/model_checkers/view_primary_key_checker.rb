@@ -29,7 +29,7 @@ module DatabaseConsistency
       end
 
       def primary_key_column_exists?
-        model.column_names.include?(model.primary_key.to_s)
+        Array(model.primary_key).all? { |key| model.column_names.include?(key.to_s) }
       end
     end
   end
