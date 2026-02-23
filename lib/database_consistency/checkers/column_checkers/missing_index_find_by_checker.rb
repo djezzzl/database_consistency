@@ -38,7 +38,7 @@ module DatabaseConsistency
       end
 
       def find_by_used?
-        project_source_files.any? do |file|
+        Helper.project_source_files.any? do |file|
           result = Prism.parse(File.read(file))
           visitor = FindByVisitor.new(column.name.to_s)
           visitor.visit(result.value)
@@ -46,33 +46,9 @@ module DatabaseConsistency
         end
       end
 
-      def project_source_files
-        return [] unless Module.respond_to?(:const_source_location)
-
-        files = []
-        ObjectSpace.each_object(Module) do |mod|
-          file = source_file_for(mod)
-          files << file if file
-        end
-        files.uniq
-      end
-
-      def source_file_for(mod)
-        name = mod.name
-        return unless name
-
-        file, = Module.const_source_location(name)
-        return unless file && File.exist?(file)
-        return if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
-
-        file
-      rescue NameError
-        nil
-      end
-
       def indexed?
         model.connection.indexes(model.table_name).any? do |index|
-          Helper.extract_index_columns(index.columns).include?(column.name.to_s)
+          Helper.extract_index_columns(index.columns).first == column.name.to_s
         end
       end
 
@@ -117,12 +93,12 @@ module DatabaseConsistency
           def find_by_hash_includes_column?(arguments_node)
             arguments_node.arguments.any? do |arg|
               next unless arg.is_a?(Prism::KeywordHashNode)
+              next unless arg.elements.size == 1
 
-              arg.elements.any? do |assoc|
-                next unless assoc.is_a?(Prism::AssocNode)
+              assoc = arg.elements.first
+              next unless assoc.is_a?(Prism::AssocNode)
 
-                assoc_key_matches?(assoc.key)
-              end
+              assoc_key_matches?(assoc.key)
             end
           end
 

@@ -60,6 +60,35 @@ module DatabaseConsistency
       end
     end
 
+    # Returns all unique project source file paths (non-gem Ruby files from loaded constants).
+    # Memoized so the file system walk happens once per database_consistency run.
+    def project_source_files
+      @project_source_files ||=
+        if Module.respond_to?(:const_source_location)
+          collect_source_files
+        else
+          []
+        end
+    end
+
+    def collect_source_files
+      files = []
+      ObjectSpace.each_object(Module) { |mod| files << source_file_path(mod) }
+      files.compact.uniq
+    end
+
+    def source_file_path(mod)
+      return unless (name = mod.name)
+
+      file, = Module.const_source_location(name)
+      return unless file && File.exist?(file)
+      return if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
+
+      file
+    rescue NameError
+      nil
+    end
+
     # @param klass [ActiveRecord::Base]
     #
     # @return [Boolean]
