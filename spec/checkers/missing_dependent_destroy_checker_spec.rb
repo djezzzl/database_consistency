@@ -61,6 +61,18 @@ RSpec.describe DatabaseConsistency::Checkers::MissingDependentDestroyChecker, :s
     end
   end
 
+  context 'when association is polymorphic' do
+    let!(:entity_class) do
+      define_class do |klass|
+        klass.belongs_to :thing, polymorphic: true
+      end
+    end
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'when there is a foreign key constraint without a cascade' do
     before do
       define_database do

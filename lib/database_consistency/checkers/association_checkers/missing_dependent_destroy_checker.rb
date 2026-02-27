@@ -15,7 +15,7 @@ module DatabaseConsistency
       private
 
       def preconditions
-        association.belongs_to? && foreign_key
+        association.belongs_to? && !association.polymorphic? && foreign_key
       end
 
       def check
