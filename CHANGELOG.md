@@ -6,6 +6,7 @@
 - Improve `UniqueIndexChecker` and `MissingUniqueIndexChecker` to support partial indexes and uniqueness validators with `conditions` option.
 - Fix `UniqueIndexChecker` to skip partial indexes (indexes with a `WHERE` clause).
 - Fix `MissingUniqueIndexChecker` to skip uniqueness validators with a `conditions` option.
+- Fix `MissingDependentDestroyChecker` to skip polymorphic associations. Thanks [Andy Allan](https://github.com/gravitystorm) for reporting this!
 
 ### [2.1.3] - 2026/02/20
 
