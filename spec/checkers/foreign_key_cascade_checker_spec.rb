@@ -191,7 +191,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
         define_class('Entity', :entities) do |klass|
           klass.primary_key = %i[id1 id2]
           klass.has_many :countries,
-                         foreign_key: %i[entity_id1 entity_id2],
+                         composite_foreign_key_option_name => %i[entity_id1 entity_id2],
                          dependent: :delete_all
         end
       end
@@ -213,7 +213,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyCascadeChecker, :sqlite,
         define_class('Entity', :entities) do |klass|
           klass.primary_key = %i[id1 id2]
           klass.has_many :countries,
-                         foreign_key: %i[entity_id1 entity_id2],
+                         composite_foreign_key_option_name => %i[entity_id1 entity_id2],
                          dependent: :nullify
         end
       end
