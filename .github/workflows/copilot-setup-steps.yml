@@ -8,36 +8,6 @@ jobs:
     permissions:
       contents: read
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: root
-          POSTGRES_DB: database_consistency_test
-          POSTGRES_PASSWORD: database_consistency_password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-      mysql:
-        image: mysql
-        env:
-          MYSQL_ROOT_HOST: "%"
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: database_consistency_password
-          MYSQL_DATABASE: database_consistency_test
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    env:
-      DB_HOST: 127.0.0.1
-      DB_USER: root
-      DB_PASSWORD: database_consistency_password
-
     steps:
       - uses: actions/checkout@v3
 
