@@ -27,7 +27,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       define_database_with_entity do |t|
         t.string :email
       end
-      allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([])
+      allow(DatabaseConsistency::Helper).to receive(:parsed_source_files).and_return({})
     end
 
     it 'skips the check' do
@@ -47,7 +47,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       Tempfile.create(['model', '.rb']) do |f|
         f.write("class Entity < ApplicationRecord\nend")
         f.flush
-        allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+        allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+          .and_return({ f.path => Prism.parse(File.read(f.path)).value })
         expect(checker.report).to be_nil
       end
     end
@@ -66,14 +67,15 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             table_or_model_name: klass.name,
             column_or_attribute_name: 'email',
             status: :fail,
             error_slug: :missing_index_find_by,
-            error_message: nil
+            source_location: "#{f.path}:2"
           )
         end
       end
@@ -91,14 +93,15 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             table_or_model_name: klass.name,
             column_or_attribute_name: 'email',
             status: :ok,
             error_slug: nil,
-            error_message: nil
+            source_location: nil
           )
         end
       end
@@ -120,8 +123,10 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
-          expect(checker.report).to have_attributes(status: :fail, error_slug: :missing_index_find_by)
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
+          expect(checker.report).to have_attributes(status: :fail, error_slug: :missing_index_find_by,
+                                                    source_location: "#{f.path}:2")
         end
       end
     end
@@ -140,12 +145,14 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             column_or_attribute_name: 'email',
             status: :fail,
-            error_slug: :missing_index_find_by
+            error_slug: :missing_index_find_by,
+            source_location: "#{f.path}:2"
           )
         end
       end
@@ -165,14 +172,15 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             table_or_model_name: klass.name,
             column_or_attribute_name: 'email',
             status: :fail,
             error_slug: :missing_index_find_by,
-            error_message: nil
+            source_location: "#{f.path}:2"
           )
         end
       end
@@ -190,7 +198,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email], name: params[:name])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to be_nil
         end
       end
@@ -208,7 +217,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  OtherModel.find_by(email: params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to be_nil
         end
       end
@@ -226,7 +236,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  Entity.where(active: true).find_by(email: params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to be_nil
         end
       end
@@ -246,12 +257,14 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             column_or_attribute_name: 'email',
             status: :fail,
-            error_slug: :missing_index_find_by
+            error_slug: :missing_index_find_by,
+            source_location: "#{f.path}:2"
           )
         end
       end
@@ -271,14 +284,15 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         Tempfile.create(['model', '.rb']) do |f|
           f.write("class Entity < ApplicationRecord\n  find_by(\"email\" => params[:email])\nend")
           f.flush
-          allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
           expect(checker.report).to have_attributes(
             checker_name: 'MissingIndexFindByChecker',
             table_or_model_name: klass.name,
             column_or_attribute_name: 'email',
             status: :fail,
             error_slug: :missing_index_find_by,
-            error_message: nil
+            source_location: "#{f.path}:2"
           )
         end
       end
@@ -300,7 +314,8 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       Tempfile.create(['model', '.rb']) do |f|
         f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
         f.flush
-        allow(DatabaseConsistency::Helper).to receive(:project_source_files).and_return([f.path])
+        allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
+          .and_return({ f.path => Prism.parse(File.read(f.path)).value })
         expect(checker.report).to be_nil
       end
     end

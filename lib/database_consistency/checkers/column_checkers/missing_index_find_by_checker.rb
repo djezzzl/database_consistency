@@ -14,6 +14,11 @@ module DatabaseConsistency
     # calls such as find_by_<column>, find_by(column: ...) and find_by("column" => ...).
     # The checker is automatically skipped on Ruby versions where Prism is not available.
     class MissingIndexFindByChecker < ColumnChecker
+      Report = ReportBuilder.define(
+        DatabaseConsistency::Report,
+        :source_location
+      )
+
       private
 
       # We skip check when:
@@ -37,14 +42,30 @@ module DatabaseConsistency
         end
       end
 
+      def report_template(status, error_slug: nil)
+        Report.new(
+          status: status,
+          error_slug: error_slug,
+          error_message: nil,
+          source_location: (status == :fail ? @find_by_location : nil),
+          **report_attributes
+        )
+      end
+
       def find_by_used?
+        @find_by_location = search_find_by_location
+        !!@find_by_location
+      end
+
+      def search_find_by_location
+        col_name = column.name.to_s
         model_name = model.name.to_s
-        Helper.project_source_files.any? do |file|
-          result = Prism.parse(File.read(file))
-          visitor = FindByVisitor.new(column.name.to_s, model_name)
-          visitor.visit(result.value)
-          visitor.found?
+        Helper.parsed_source_files.each do |file, ast|
+          visitor = FindByVisitor.new(col_name, model_name)
+          visitor.visit(ast)
+          return "#{file}:#{visitor.found_line}" if visitor.found?
         end
+        nil
       end
 
       def indexed?
@@ -67,7 +88,7 @@ module DatabaseConsistency
         # Defined only when Prism is available; otherwise this constant does not exist and
         # the checker's preconditions guard (defined?(Prism)) prevents it from being used.
         class FindByVisitor < Prism::Visitor
-          attr_reader :found
+          attr_reader :found, :found_line
 
           alias found? found
 
@@ -76,21 +97,27 @@ module DatabaseConsistency
             @column_name = column_name
             @model_name = model_name
             @found = false
+            @found_line = nil
           end
 
           def visit_call_node(node)
             name = node.name.to_s
 
             if ["find_by_#{@column_name}", "find_by_#{@column_name}!"].include?(name)
-              @found = true if valid_receiver?(node.receiver)
+              record_match(node) if valid_receiver?(node.receiver)
             elsif name == 'find_by' && node.arguments
-              @found = true if valid_receiver?(node.receiver) && find_by_hash_includes_column?(node.arguments)
+              record_match(node) if valid_receiver?(node.receiver) && find_by_hash_includes_column?(node.arguments)
             end
 
             super
           end
 
           private
+
+          def record_match(node)
+            @found = true
+            @found_line = node.location.start_line
+          end
 
           def valid_receiver?(receiver)
             case receiver

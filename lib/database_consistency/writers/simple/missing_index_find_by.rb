@@ -7,7 +7,11 @@ module DatabaseConsistency
         private
 
         def template
-          'column is used in find_by but is missing an index'
+          'column is used in find_by but is missing an index%<source_location>s'
+        end
+
+        def attributes
+          { source_location: report.source_location ? " (found at #{report.source_location})" : '' }
         end
 
         def unique_attributes

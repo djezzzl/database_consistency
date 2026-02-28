@@ -85,8 +85,24 @@ module DatabaseConsistency
       return if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
 
       file
-    rescue NameError
+    rescue NameError, NoMethodError
       nil
+    end
+
+    # Returns memoized map of project source file path => parsed Prism AST value.
+    # Requires Prism (Ruby 3.3+); returns empty hash otherwise.
+    def parsed_source_files
+      return {} unless defined?(Prism)
+
+      @parsed_source_files ||= build_parsed_source_files
+    end
+
+    def build_parsed_source_files
+      project_source_files.each_with_object({}) do |file, memo|
+        memo[file] = Prism.parse(File.read(file)).value
+      rescue StandardError
+        nil
+      end
     end
 
     # @param klass [ActiveRecord::Base]
