@@ -28,6 +28,7 @@ module DatabaseConsistency
       def preconditions
         !association.polymorphic? &&
           !association.belongs_to? &&
+          association.association_primary_key.present? &&
           foreign_key &&
           DEPENDENT_OPTIONS.include?(dependent_option)
       rescue StandardError
@@ -68,7 +69,7 @@ module DatabaseConsistency
           association.klass
                      .connection
                      .foreign_keys(association.klass.table_name)
-                     .find { |fk| fk.column == association.foreign_key.to_s }
+                     .find { |fk| (Helper.extract_columns(association.foreign_key) - Array.wrap(fk.column)).empty? }
       end
 
       def report_template(status, error_slug: nil)
@@ -77,9 +78,9 @@ module DatabaseConsistency
           error_message: nil,
           error_slug: error_slug,
           primary_table: association.table_name.to_s,
-          primary_key: association.association_primary_key.to_s,
+          primary_key: Helper.extract_columns(association.association_primary_key).join('+'),
           foreign_table: association.active_record.table_name.to_s,
-          foreign_key: association.foreign_key.to_s,
+          foreign_key: Helper.extract_columns(association.foreign_key).join('+'),
           cascade_option: required_foreign_key_cascade,
           **report_attributes
         )
