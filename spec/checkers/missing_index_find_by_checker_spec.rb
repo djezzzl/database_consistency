@@ -27,7 +27,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       define_database_with_entity do |t|
         t.string :email
       end
-      allow(DatabaseConsistency::Helper).to receive(:parsed_source_files).and_return({})
+      allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index).and_return({})
     end
 
     it 'skips the check' do
@@ -35,22 +35,17 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
-  context 'when column is not referenced in any find_by call in the model source' do
+  context 'when column is not referenced in any find_by call in the project' do
     before do
       skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
       define_database_with_entity do |t|
         t.string :email
       end
+      allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index).and_return({})
     end
 
     it 'skips the check' do
-      Tempfile.create(['model', '.rb']) do |f|
-        f.write("class Entity < ApplicationRecord\nend")
-        f.flush
-        allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-          .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-        expect(checker.report).to be_nil
-      end
+      expect(checker.report).to be_nil
     end
   end
 
@@ -61,23 +56,19 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            table_or_model_name: klass.name,
-            column_or_attribute_name: 'email',
-            status: :fail,
-            error_slug: :missing_index_find_by,
-            source_location: "#{f.path}:2"
-          )
-        end
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
       end
     end
 
@@ -87,23 +78,19 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email, index: true
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            table_or_model_name: klass.name,
-            column_or_attribute_name: 'email',
-            status: :ok,
-            error_slug: nil,
-            source_location: nil
-          )
-        end
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :ok,
+          error_slug: nil,
+          source_location: nil
+        )
       end
     end
 
@@ -117,17 +104,13 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
           end
           add_index :entities, %i[name email]
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(status: :fail, error_slug: :missing_index_find_by,
-                                                    source_location: "#{f.path}:2")
-        end
+        expect(checker.report).to have_attributes(status: :fail, error_slug: :missing_index_find_by,
+                                                   source_location: 'app/models/entity.rb:2')
       end
     end
   end
@@ -139,22 +122,18 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  Entity.find_by_email!(params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            column_or_attribute_name: 'email',
-            status: :fail,
-            error_slug: :missing_index_find_by,
-            source_location: "#{f.path}:2"
-          )
-        end
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
       end
     end
   end
@@ -166,80 +145,48 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            table_or_model_name: klass.name,
-            column_or_attribute_name: 'email',
-            status: :fail,
-            error_slug: :missing_index_find_by,
-            source_location: "#{f.path}:2"
-          )
-        end
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
       end
     end
 
-    context 'when find_by has multiple keys in the hash' do
+    context 'when column is referenced only via another model' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'OtherModel' => { 'email' => 'app/models/other.rb:2' } })
       end
 
       it 'skips the check' do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by(email: params[:email], name: params[:name])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to be_nil
-        end
+        expect(checker.report).to be_nil
       end
     end
 
-    context 'when find_by belongs to another model' do
+    context 'when column is referenced only via a complex scope (model.where(...))' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index).and_return({})
       end
 
       it 'skips the check' do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  OtherModel.find_by(email: params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to be_nil
-        end
-      end
-    end
-
-    context 'when find_by is triggered with a complex scope (model.where(...))' do
-      before do
-        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
-        define_database_with_entity do |t|
-          t.string :email
-        end
-      end
-
-      it 'skips the check' do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  Entity.where(active: true).find_by(email: params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to be_nil
-        end
+        expect(checker.report).to be_nil
       end
     end
   end
@@ -251,22 +198,18 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  Entity.find_by email: params[:email]\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            column_or_attribute_name: 'email',
-            status: :fail,
-            error_slug: :missing_index_find_by,
-            source_location: "#{f.path}:2"
-          )
-        end
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
       end
     end
   end
@@ -278,23 +221,40 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         define_database_with_entity do |t|
           t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
-        Tempfile.create(['model', '.rb']) do |f|
-          f.write("class Entity < ApplicationRecord\n  find_by(\"email\" => params[:email])\nend")
-          f.flush
-          allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-            .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-          expect(checker.report).to have_attributes(
-            checker_name: 'MissingIndexFindByChecker',
-            table_or_model_name: klass.name,
-            column_or_attribute_name: 'email',
-            status: :fail,
-            error_slug: :missing_index_find_by,
-            source_location: "#{f.path}:2"
-          )
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingIndexFindByChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'email',
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
+      end
+    end
+  end
+
+  context 'when column is used via bare find_by (nil receiver)' do
+    context 'when index is missing' do
+      before do
+        skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+        define_database_with_entity do |t|
+          t.string :email
         end
+        allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+          .and_return({ nil => { 'email' => 'app/models/entity.rb:2' } })
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: 'app/models/entity.rb:2'
+        )
       end
     end
   end
@@ -308,15 +268,67 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
       define_database_with_entity do |t|
         t.string :email
       end
+      allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+        .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
     end
 
     it 'skips the check' do
-      Tempfile.create(['model', '.rb']) do |f|
-        f.write("class Entity < ApplicationRecord\n  find_by_email(params[:email])\nend")
-        f.flush
-        allow(DatabaseConsistency::Helper).to receive(:parsed_source_files)
-          .and_return({ f.path => Prism.parse(File.read(f.path)).value })
-        expect(checker.report).to be_nil
+      expect(checker.report).to be_nil
+    end
+  end
+
+  # Unit tests for FindByCollector: verify AST parsing produces the correct index entries
+  if defined?(Prism)
+    describe described_class::FindByCollector do
+      def collect(source)
+        Tempfile.create(['model', '.rb']) do |f|
+          f.write(source)
+          f.flush
+          collector = described_class.new(f.path)
+          collector.visit(Prism.parse_file(f.path).value)
+          return collector.results.transform_values { |loc| loc.rpartition(':').last.to_i }
+        end
+      end
+
+      it 'detects dynamic finder' do
+        expect(collect("Entity.find_by_email(x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'detects bang dynamic finder' do
+        expect(collect("Entity.find_by_email!(x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'detects hash-style with symbol key' do
+        expect(collect("Entity.find_by(email: x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'detects hash-style with string key' do
+        expect(collect("Entity.find_by('email' => x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'detects bare find_by (nil model key)' do
+        expect(collect("find_by(email: x)")).to include([nil, 'email'] => 1)
+      end
+
+      it 'detects unscoped receiver' do
+        expect(collect("Entity.unscoped.find_by(email: x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'detects includes receiver' do
+        expect(collect("Entity.includes(:posts).find_by(email: x)")).to include(['Entity', 'email'] => 1)
+      end
+
+      it 'ignores multi-key hash' do
+        expect(collect("Entity.find_by(email: x, name: y)")).not_to include(['Entity', 'email'] => 1)
+      end
+
+      it 'stores other model under its own key' do
+        results = collect("OtherModel.find_by_email(x)")
+        expect(results).to include(['OtherModel', 'email'] => 1)
+      end
+
+      it 'skips complex scope (where receiver)' do
+        expect(collect("Entity.where(active: true).find_by(email: x)")).to be_empty
       end
     end
   end

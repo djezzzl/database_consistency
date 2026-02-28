@@ -82,26 +82,47 @@ module DatabaseConsistency
 
       file, = Module.const_source_location(name)
       return unless file && File.exist?(file)
-      return if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
+      return if excluded_source_file?(file)
 
       file
-    rescue NameError, NoMethodError
+    rescue NameError, NoMethodError, ArgumentError
       nil
     end
 
-    # Returns memoized map of project source file path => parsed Prism AST value.
-    # Requires Prism (Ruby 3.3+); returns empty hash otherwise.
-    def parsed_source_files
-      return {} unless defined?(Prism)
+    def excluded_source_file?(file)
+      return true if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
+      return true if defined?(Gem) && file.include?(Gem::RUBYGEMS_DIR)
+      return true if defined?(RbConfig) &&
+        (file.include?(RbConfig::CONFIG['rubylibdir']) ||
+         file.include?(RbConfig::CONFIG['bindir']) ||
+         file.include?(RbConfig::CONFIG['sbindir']))
 
-      @parsed_source_files ||= build_parsed_source_files
+      false
     end
 
-    def build_parsed_source_files
-      project_source_files.each_with_object({}) do |file, memo|
-        memo[file] = Prism.parse(File.read(file)).value
+    # Returns a memoized index: {model_name_or_nil => {column_name => "file:line"}}.
+    # Built once per run by scanning all project source files with Prism (Ruby 3.3+).
+    # nil model_name key represents bare find_by calls with no explicit receiver.
+    def find_by_calls_index
+      return {} unless defined?(Prism)
+
+      @find_by_calls_index ||= build_find_by_calls_index
+    end
+
+    def build_find_by_calls_index
+      project_source_files.each_with_object({}) do |file, index|
+        collector = Checkers::MissingIndexFindByChecker::FindByCollector.new(file)
+        collector.visit(Prism.parse_file(file).value)
+        merge_collector_results(collector.results, index)
       rescue StandardError
         nil
+      end
+    end
+
+    def merge_collector_results(results, index)
+      results.each do |(model_key, col), location|
+        index[model_key] ||= {}
+        index[model_key][col] ||= location
       end
     end
 
