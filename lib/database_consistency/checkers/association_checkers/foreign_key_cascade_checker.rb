@@ -72,7 +72,7 @@ module DatabaseConsistency
                      .find { |fk| (Helper.extract_columns(association.foreign_key) - Array.wrap(fk.column)).empty? }
       end
 
-      def report_template(status, error_slug: nil)
+      def report_template(status, error_slug: nil) # rubocop:disable Metrics/AbcSize
         Report.new(
           status: status,
           error_message: nil,
