@@ -238,7 +238,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
-  context 'when column is used via bare find_by (nil receiver)' do
+  context 'when column is used via bare find_by inside the model class' do
     context 'when index is missing' do
       before do
         skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
@@ -246,7 +246,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
           t.string :email
         end
         allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
-          .and_return({ nil => { 'email' => 'app/models/entity.rb:2' } })
+          .and_return({ 'Entity' => { 'email' => 'app/models/entity.rb:2' } })
       end
 
       specify do
@@ -256,6 +256,21 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
           source_location: 'app/models/entity.rb:2'
         )
       end
+    end
+  end
+
+  context 'when bare find_by is inside a different model class' do
+    before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+      define_database_with_entity do |t|
+        t.string :email
+      end
+      allow(DatabaseConsistency::Helper).to receive(:find_by_calls_index)
+        .and_return({ 'OtherModel' => { 'email' => 'app/models/other.rb:5' } })
+    end
+
+    it 'skips the check' do
+      expect(checker.report).to be_nil
     end
   end
 
@@ -306,8 +321,12 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         expect(collect("Entity.find_by('email' => x)")).to include(['Entity', 'email'] => 1)
       end
 
-      it 'detects bare find_by (nil model key)' do
-        expect(collect("find_by(email: x)")).to include([nil, 'email'] => 1)
+      it 'detects bare find_by inside class using lexical scope' do
+        expect(collect("class Entity\nfind_by(email: x)\nend")).to include(['Entity', 'email'] => 2)
+      end
+
+      it 'ignores bare find_by at top level (no class scope)' do
+        expect(collect("find_by(email: x)")).to be_empty
       end
 
       it 'detects unscoped receiver' do

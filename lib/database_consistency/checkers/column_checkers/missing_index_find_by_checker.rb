@@ -60,8 +60,7 @@ module DatabaseConsistency
       def search_find_by_location
         model_name = model.name.to_s
         col_name = column.name.to_s
-        index = Helper.find_by_calls_index
-        index.dig(model_name, col_name) || index.dig(nil, col_name)
+        Helper.find_by_calls_index.dig(model_name, col_name)
       end
 
       def indexed?
@@ -76,7 +75,8 @@ module DatabaseConsistency
 
       if defined?(Prism)
         # Prism AST visitor that collects ALL find_by calls from a source file into a results hash.
-        # Key: [model_name_or_nil, column_name] — nil means bare call with no receiver.
+        # Key: [model_name, column_name] — model_name is derived from the explicit receiver or the
+        # lexical class/module scope for bare calls. Bare calls outside any class are ignored.
         # Value: "file:line" location of the first matching call.
         #
         # Handles:
@@ -98,6 +98,21 @@ module DatabaseConsistency
             super()
             @file = file
             @results = {}
+            @scope_stack = []
+          end
+
+          def visit_class_node(node)
+            @scope_stack.push(constant_path_name(node.constant_path))
+            super
+          ensure
+            @scope_stack.pop
+          end
+
+          def visit_module_node(node)
+            @scope_stack.push(constant_path_name(node.constant_path))
+            super
+          ensure
+            @scope_stack.pop
           end
 
           def visit_call_node(node)
@@ -115,13 +130,17 @@ module DatabaseConsistency
 
           private
 
+          def current_scope
+            @scope_stack.empty? ? nil : @scope_stack.join('::')
+          end
+
           def store(model_key, col, node)
             @results[[model_key, col]] ||= "#{@file}:#{node.location.start_line}"
           end
 
           def receiver_to_model_key(receiver)
             case receiver
-            when nil then nil
+            when nil then current_scope || :skip
             when Prism::ConstantReadNode, Prism::ConstantPathNode
               constant_path_name(receiver)
             when Prism::CallNode

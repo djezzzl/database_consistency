@@ -100,9 +100,9 @@ module DatabaseConsistency
       false
     end
 
-    # Returns a memoized index: {model_name_or_nil => {column_name => "file:line"}}.
+    # Returns a memoized index: {model_name => {column_name => "file:line"}}.
     # Built once per run by scanning all project source files with Prism (Ruby 3.3+).
-    # nil model_name key represents bare find_by calls with no explicit receiver.
+    # Bare find_by calls are resolved to their lexical class/module scope; top-level bare calls are ignored.
     def find_by_calls_index
       return {} unless defined?(Prism)
 
