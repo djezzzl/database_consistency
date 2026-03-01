@@ -16,7 +16,8 @@ module DatabaseConsistency
     class MissingIndexFindByChecker < ColumnChecker
       Report = ReportBuilder.define(
         DatabaseConsistency::Report,
-        :source_location
+        :source_location,
+        :total_findings_count
       )
 
       private
@@ -48,19 +49,18 @@ module DatabaseConsistency
           error_slug: error_slug,
           error_message: nil,
           source_location: (status == :fail ? @find_by_location : nil),
+          total_findings_count: (status == :fail ? @find_by_count : nil),
           **report_attributes
         )
       end
 
       def find_by_used?
-        @find_by_location = search_find_by_location
-        !!@find_by_location
-      end
+        entry = PrismHelper.find_by_calls_index.dig(model.name.to_s, column.name.to_s)
+        return false unless entry
 
-      def search_find_by_location
-        model_name = model.name.to_s
-        col_name = column.name.to_s
-        PrismHelper.find_by_calls_index.dig(model_name, col_name)
+        @find_by_location = entry[:first_location]
+        @find_by_count = entry[:total_findings_count]
+        true
       end
 
       def indexed?
@@ -135,7 +135,9 @@ module DatabaseConsistency
           end
 
           def store(model_key, col, node)
-            @results[[model_key, col]] ||= "#{@file}:#{node.location.start_line}"
+            key = [model_key, col]
+            @results[key] ||= []
+            @results[key] << "#{@file}:#{node.location.start_line}"
           end
 
           def receiver_to_model_key(receiver)

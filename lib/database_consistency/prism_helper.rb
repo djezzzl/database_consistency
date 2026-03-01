@@ -25,9 +25,13 @@ module DatabaseConsistency
     end
 
     def merge_collector_results(results, index)
-      results.each do |(model_key, col), location|
+      results.each do |(model_key, col), locations|
         index[model_key] ||= {}
-        index[model_key][col] ||= location
+        if (entry = index[model_key][col])
+          entry[:total_findings_count] += locations.size
+        else
+          index[model_key][col] = { first_location: locations.first, total_findings_count: locations.size }
+        end
       end
     end
   end
