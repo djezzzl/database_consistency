@@ -130,7 +130,7 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
           f.flush
           allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([f.path])
           expect(checker.report).to have_attributes(status: :fail, error_slug: :missing_index_find_by,
-                                                     source_location: "#{f.path}:1")
+                                                    source_location: "#{f.path}:1")
         end
       end
     end

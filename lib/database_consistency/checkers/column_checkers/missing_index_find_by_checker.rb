@@ -75,7 +75,7 @@ module DatabaseConsistency
 
       if defined?(Prism)
         # Prism AST visitor that collects ALL find_by calls from a source file into a results hash.
-        # Key: [model_name, column_name] — model_name is derived from the explicit receiver or the
+        # Key: [model_name, column_name] -- model_name is derived from the explicit receiver or the
         # lexical class/module scope for bare calls. Bare calls outside any class are ignored.
         # Value: "file:line" location of the first matching call.
         #
@@ -87,10 +87,10 @@ module DatabaseConsistency
         # Defined only when Prism is available (Ruby 3.3+).
         class FindByCollector < Prism::Visitor
           # Matches the full column name from a dynamic finder method name.
-          # e.g. find_by_email → "email", find_by_first_name → "first_name"
+          # e.g. find_by_email -> "email", find_by_first_name -> "first_name"
           # Multi-column patterns like find_by_name_and_email extract "name_and_email"
           # which won't match any single-column name, so there are no false positives.
-          DYNAMIC_FINDER_RE = /\Afind_by_(.+?)!?\z/
+          DYNAMIC_FINDER_RE = /\Afind_by_(.+?)!?\z/.freeze
 
           attr_reader :results
 

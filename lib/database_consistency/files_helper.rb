@@ -30,19 +30,23 @@ module DatabaseConsistency
       return if excluded_source_file?(file)
 
       file
-    rescue NameError, NoMethodError, ArgumentError
+    rescue NameError, ArgumentError
       nil
     end
 
     def excluded_source_file?(file)
       return true if defined?(Bundler) && file.include?(Bundler.bundle_path.to_s)
       return true if defined?(Gem) && file.include?(Gem::RUBYGEMS_DIR)
-      return true if defined?(RbConfig) &&
-        (file.include?(RbConfig::CONFIG['rubylibdir']) ||
-         file.include?(RbConfig::CONFIG['bindir']) ||
-         file.include?(RbConfig::CONFIG['sbindir']))
 
-      false
+      excluded_by_ruby_stdlib?(file)
+    end
+
+    def excluded_by_ruby_stdlib?(file)
+      return false unless defined?(RbConfig)
+
+      file.include?(RbConfig::CONFIG['rubylibdir']) ||
+        file.include?(RbConfig::CONFIG['bindir']) ||
+        file.include?(RbConfig::CONFIG['sbindir'])
     end
   end
 end
