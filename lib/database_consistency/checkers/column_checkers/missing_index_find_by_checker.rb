@@ -60,7 +60,7 @@ module DatabaseConsistency
       def search_find_by_location
         model_name = model.name.to_s
         col_name = column.name.to_s
-        Helper.find_by_calls_index.dig(model_name, col_name)
+        PrismHelper.find_by_calls_index.dig(model_name, col_name)
       end
 
       def indexed?

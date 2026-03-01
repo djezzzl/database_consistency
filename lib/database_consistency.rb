@@ -4,6 +4,8 @@ require 'active_record'
 
 require 'database_consistency/version'
 require 'database_consistency/helper'
+require 'database_consistency/files_helper'
+require 'database_consistency/prism_helper'
 require 'database_consistency/configuration'
 require 'database_consistency/rescue_error'
 require 'database_consistency/errors'
