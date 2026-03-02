@@ -39,6 +39,7 @@ Currently, the tool can:
 - [find models that have missing tables](https://github.com/djezzzl/database_consistency/wiki/missingtablechecker)
 - [find models with UUID primary keys without specified ordering column](https://github.com/djezzzl/database_consistency/wiki/implicitorderingchecker)
 - [find belongs_to associations with foreign keys without dependent/on_delete options](https://github.com/djezzzl/database_consistency/wiki/missingdependentdestroychecker)
+- [find columns used in `find_by` calls that are missing a database index](https://github.com/djezzzl/database_consistency/wiki/missingindexfindbychecker)
 - [find models pointing to views without a primary_key set](https://github.com/djezzzl/database_consistency/wiki/viewprimarykeychecker)
 
 Besides that, the tool provides:
