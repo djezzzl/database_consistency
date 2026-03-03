@@ -1,0 +1,1 @@
+This checker helps to identify redundant uniqueness on some indexes. Assuming you have a unique index in the database that covers columns A and B (order is not important) and another unique index that covers column A only. In this case, the first unique constraint is redundant as it is covered by the second one.

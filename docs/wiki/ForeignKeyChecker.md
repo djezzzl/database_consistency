@@ -1,0 +1,1 @@
+Imagine your model has `belongs_to :user`. It can happen that the user, it's being belonging to, may not be existing anymore in the database. This could bring bugs and in order to ensure data consistency, you need to have a foreign key constraint in the database.

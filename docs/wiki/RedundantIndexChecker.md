@@ -1,0 +1,1 @@
+This checker helps to identify redundant non-unique indexes. Assuming you have an index in the database that covers column A and another index that covers columns A and B (order is important). In this case, the first index may be removed as it is covered by second one.

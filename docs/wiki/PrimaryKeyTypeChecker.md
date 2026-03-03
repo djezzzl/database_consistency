@@ -1,0 +1,1 @@
+ActiveRecord has changed its default types for primary keys ([PR](https://github.com/rails/rails/pull/26266/files)). Given no one is immune to [problems short types may create](https://m.signalvnoise.com/update-on-basecamp-3-being-stuck-in-read-only-as-of-nov-8-922am-cst/), we added a checker to identify those IDs.

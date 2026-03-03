@@ -1,0 +1,1 @@
+It's dangerous to have a foreign key type be smaller than paired primary key type. Given no one is immune to [possible problems](https://m.signalvnoise.com/update-on-basecamp-3-being-stuck-in-read-only-as-of-nov-8-922am-cst/), we added a checker to identify those mismatches.
