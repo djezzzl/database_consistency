@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.1] - 2026/03/07
 
 - Improve grammar, spelling, and terminology in checker messages. Thanks [julik](https://github.com/julik) for the contribution!
 
