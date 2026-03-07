@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'enum has [%<enum_values>s] values but ActiveRecord inclusion validation has [%<declared_values>s] values'
+          'database enum has values [%<enum_values>s] but inclusion validation has values [%<declared_values>s]'
         end
 
         def attributes

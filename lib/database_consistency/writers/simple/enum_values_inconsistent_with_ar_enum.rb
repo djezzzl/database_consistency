@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'enum has [%<enum_values>s] values but ActiveRecord enum has [%<declared_values>s] values'
+          'database enum has values [%<enum_values>s] but ActiveRecord enum has values [%<declared_values>s]'
         end
 
         def attributes

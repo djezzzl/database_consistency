@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'implicit_order_column is recommended when using uuid column type for primary key'
+          'setting implicit_order_column is recommended when using UUID as the primary key type'
         end
 
         def unique_attributes

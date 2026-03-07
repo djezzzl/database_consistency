@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'should have foreign key with on_delete: :%<cascade_option>s in the database'
+          'should have a foreign key with on_delete: :%<cascade_option>s in the database'
         end
 
         def attributes

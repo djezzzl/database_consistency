@@ -13,7 +13,7 @@ module DatabaseConsistency
       if existing_paths.any?
         puts "Loaded configurations: #{existing_paths.join(', ')}"
       else
-        puts 'No configurations were provided'
+        puts 'No configuration files were provided'
       end
 
       @configuration = extract_configurations(existing_paths)

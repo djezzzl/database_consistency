@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'should have a table in the database'
+          'should have a corresponding table in the database'
         end
 
         def unique_attributes

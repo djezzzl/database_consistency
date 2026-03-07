@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'should have foreign key in the database'
+          'should have a foreign key in the database'
         end
 
         def unique_attributes

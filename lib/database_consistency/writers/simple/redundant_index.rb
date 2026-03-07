@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'index is redundant as %<covered_index_name>s covers it'
+          'index is redundant because %<covered_index_name>s covers it'
         end
 
         def attributes

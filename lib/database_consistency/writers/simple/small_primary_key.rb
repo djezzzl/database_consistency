@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column has int/serial type but recommended to have bigint/bigserial/uuid'
+          'column has int/serial type but it is recommended to use bigint/bigserial/uuid'
         end
 
         def unique_attributes

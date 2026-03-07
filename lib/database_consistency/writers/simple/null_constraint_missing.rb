@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column should be required in the database'
+          'column should be NOT NULL'
         end
 
         def unique_attributes

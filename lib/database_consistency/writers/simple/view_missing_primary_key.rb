@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'model pointing to a view should have primary_key set'
+          'model backed by a database view should have primary_key set'
         end
 
         def unique_attributes

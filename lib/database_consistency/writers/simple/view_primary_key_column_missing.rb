@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'model pointing to a view has a non-existent primary_key column set'
+          'model backed by a database view has primary_key set to a non-existent column'
         end
 
         def unique_attributes

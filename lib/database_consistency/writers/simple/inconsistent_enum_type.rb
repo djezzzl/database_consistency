@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'enum has %<values_types>s types but column has %<column_type>s type'
+          'enum values have %<values_types>s types but the column has %<column_type>s type'
         end
 
         def attributes

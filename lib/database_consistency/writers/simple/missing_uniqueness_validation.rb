@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'index is unique in the database but do not have uniqueness validator'
+          'index is unique in the database but does not have a uniqueness validator'
         end
 
         def unique_attributes

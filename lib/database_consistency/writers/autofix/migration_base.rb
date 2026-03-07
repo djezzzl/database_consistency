@@ -10,7 +10,7 @@ module DatabaseConsistency
           file_path = migration_path(migration_name)
 
           if Dir[migration_path_pattern(migration_name)].any?
-            p "Skipping migration #{migration_name} because it already exists"
+            puts "Skipping migration #{migration_name} because it already exists"
           else
             File.write(file_path, migration)
           end

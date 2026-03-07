@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column is required but there is possible null value insert'
+          'column is NOT NULL but may receive a NULL value'
         end
 
         def unique_attributes

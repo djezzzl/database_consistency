@@ -13,7 +13,7 @@ module DatabaseConsistency
         def attributes
           if report.source_location
             count = report.total_findings_count || 1
-            count_str = count > 1 ? ", and #{count - 1} more occurrences" : ''
+            count_str = count > 1 ? ", and #{count - 1} more" : ''
             { source_location: " (found at #{report.source_location}#{count_str})" }
           else
             { source_location: '' }

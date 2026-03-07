@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          "has case insensitive type and doesn't require case_sensitive: false option"
+          'column has a case-insensitive type and does not need the case_sensitive: false option'
         end
 
         def unique_attributes

@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'association foreign type column should be required in the database'
+          'association foreign type column should be NOT NULL'
         end
 
         def unique_attributes

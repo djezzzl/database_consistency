@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column is required in the database but do not have presence validator for association %<association_name>s'
+          'column is NOT NULL but does not have a presence validator for association %<association_name>s'
         end
 
         def attributes

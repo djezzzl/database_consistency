@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'associated model should have proper index in the database'
+          'associated model should have an index in the database'
         end
 
         def unique_attributes

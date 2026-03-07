@@ -49,7 +49,7 @@ module DatabaseConsistency
     def connected?(klass)
       klass.connection
     rescue ActiveRecord::ConnectionNotEstablished
-      puts "#{klass} doesn't have active connection: ignoring"
+      puts "#{klass} does not have an active connection, skipping"
       false
     end
 

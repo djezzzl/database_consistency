@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'column has limit in the database but do not have length validator'
+          'column has a character length limit but does not have a length validator'
         end
 
         def unique_attributes

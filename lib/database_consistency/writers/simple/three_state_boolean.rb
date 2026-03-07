@@ -7,7 +7,7 @@ module DatabaseConsistency
         private
 
         def template
-          'boolean column should have NOT NULL constraint'
+          'boolean column should be NOT NULL'
         end
 
         def unique_attributes
