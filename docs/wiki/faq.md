@@ -5,7 +5,7 @@
 HasAndBelongsToMany association outputs an issue:
 
 ```
-fail HABTM_Categories article_id column is required in the database but do not have presence validator
+fail HABTM_Categories article_id column is NOT NULL but does not have a presence validator for association article
 ```
 
 but I don't have a model defined, how to fix it?
