@@ -10,5 +10,5 @@ Avoid unpredictable behaviors when using non-sortable column as primary key, thi
 Message:
 
 ```
-ImplicitOrderingChecker fail <Model> <Column> implicit_order_column is recommended when using uuid column type for primary key
+ImplicitOrderingChecker fail <Model> <Column> setting implicit_order_column is recommended when using UUID as the primary key type
 ```
