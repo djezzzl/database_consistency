@@ -23,11 +23,7 @@ module DatabaseConsistency
     end
 
     def source_file_path(mod)
-      name = begin
-        mod.name
-      rescue StandardError, ScriptError
-        return
-      end
+      name = mod.name
       return unless name
 
       file, = Module.const_source_location(name)
@@ -35,7 +31,7 @@ module DatabaseConsistency
       return if excluded_source_file?(file)
 
       file
-    rescue NameError, ArgumentError
+    rescue StandardError, ScriptError
       nil
     end
 
