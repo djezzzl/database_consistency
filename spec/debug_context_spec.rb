@@ -4,7 +4,7 @@ RSpec.describe DatabaseConsistency::DebugContext, :sqlite, :mysql, :postgresql d
   subject(:context) { described_class.instance }
 
   before do
-    # Reset singleton state between tests
+    # Reset singleton state to avoid test pollution between examples
     context.send(:clear!)
   end
 

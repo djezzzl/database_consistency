@@ -22,11 +22,6 @@ RSpec.describe DatabaseConsistency::Writers::TodoWriter, :sqlite, :mysql, :postg
       allow(File).to receive(:exist?).and_return(false)
     end
 
-    after do
-      # Cleanup any generated todo files
-      Dir.glob('.database_consistency.todo*.yml').each { |f| File.delete(f) if File.exist?(f) }
-    end
-
     context 'when there are no reports' do
       let(:reports) { [] }
 
