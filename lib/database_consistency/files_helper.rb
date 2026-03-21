@@ -23,14 +23,15 @@ module DatabaseConsistency
     end
 
     def source_file_path(mod)
-      return unless (name = mod.name)
+      name = mod.name
+      return unless name
 
       file, = Module.const_source_location(name)
       return unless file && File.exist?(file)
       return if excluded_source_file?(file)
 
       file
-    rescue NameError, ArgumentError
+    rescue StandardError, ScriptError
       nil
     end
 
