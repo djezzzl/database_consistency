@@ -28,6 +28,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::NullConstraintMissing, :sq
       before do
         allow(Dir).to receive(:[]).with('db/migrate/*_change_users_email_null_constraint.rb').and_return([])
         allow(File).to receive(:write)
+        allow(ActiveRecord::Migration).to receive(:current_version).and_return('4.2')
       end
 
       it 'writes the migration file' do

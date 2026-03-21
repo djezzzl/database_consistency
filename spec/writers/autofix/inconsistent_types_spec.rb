@@ -24,6 +24,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::InconsistentTypes, :sqlite
       )
       allow(Dir).to receive(:[]).with('db/migrate/*_change_orders_user_id_to_bigint.rb').and_return([])
       allow(File).to receive(:write)
+      allow(ActiveRecord::Migration).to receive(:current_version).and_return('4.2')
     end
 
     it 'writes a migration that changes the column type' do

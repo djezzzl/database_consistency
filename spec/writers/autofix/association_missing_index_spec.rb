@@ -21,7 +21,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::AssociationMissingIndex, :
 
     context 'with multiple columns' do
       let(:report) do
-        double('report', table_name: 'posts', columns: ['user_id', 'type'])
+        double('report', table_name: 'posts', columns: %w[user_id type])
       end
       let(:writer) { described_class.new(report) }
 
@@ -64,6 +64,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::AssociationMissingIndex, :
       before do
         allow(Dir).to receive(:[]).with('db/migrate/*_add_posts_user_id_index.rb').and_return([])
         allow(File).to receive(:write)
+        allow(ActiveRecord::Migration).to receive(:current_version).and_return('4.2')
       end
 
       it 'writes the migration file' do

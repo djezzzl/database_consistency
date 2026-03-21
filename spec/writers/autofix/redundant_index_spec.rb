@@ -24,6 +24,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::RedundantIndex, :sqlite, :
       )
       allow(Dir).to receive(:[]).with('db/migrate/*_remove_index_users_on_email_index.rb').and_return([])
       allow(File).to receive(:write)
+      allow(ActiveRecord::Migration).to receive(:current_version).and_return('4.2')
     end
 
     it 'writes a migration that removes the index' do

@@ -29,6 +29,7 @@ RSpec.describe DatabaseConsistency::Writers::Autofix::MissingForeignKey, :sqlite
       )
       allow(Dir).to receive(:[]).with('db/migrate/*_add_users_id_orders_user_id_fk.rb').and_return([])
       allow(File).to receive(:write)
+      allow(ActiveRecord::Migration).to receive(:current_version).and_return('4.2')
     end
 
     it 'writes a migration that adds the foreign key constraint' do
