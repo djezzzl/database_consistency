@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+
+SimpleCov.start do
+  add_filter '/spec/'
+  enable_coverage :branch
+end
+
 require 'bundler/setup'
 require 'logger'
 require 'database_consistency'
