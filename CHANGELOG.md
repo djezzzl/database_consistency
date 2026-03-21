@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.2] - 2026/03/21
 
 - Fix `FilesHelper` to rescue `StandardError` and `ScriptError` when calling `.name` on classes during `ObjectSpace` iteration, preventing crashes when gems like `easy_talk` define classes that override `.name` to raise an error (e.g. `NotImplementedError`). Thanks [tim-gq](https://github.com/tim-gq) for reporting this!
 
