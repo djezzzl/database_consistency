@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe DatabaseConsistency::Writers::Simple::NullConstraintAssociationMissesValidator, :sqlite, :mysql, :postgresql do
+RSpec.describe(
+  DatabaseConsistency::Writers::Simple::NullConstraintAssociationMissesValidator,
+  :sqlite, :mysql, :postgresql
+) do
   let(:config) { DatabaseConsistency::Configuration.new }
   let(:report) do
     double('report',
