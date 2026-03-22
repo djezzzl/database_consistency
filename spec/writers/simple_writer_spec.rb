@@ -4,22 +4,10 @@ RSpec.describe DatabaseConsistency::Writers::SimpleWriter, :sqlite, :mysql, :pos
   let(:config) { DatabaseConsistency::Configuration.new }
 
   def build_report(**opts)
-    opts = {
-      error_slug: nil,
-      error_message: nil,
-      table_or_model_name: 'users',
-      column_or_attribute_name: 'email',
-      checker_name: 'NullConstraintChecker'
-    }.merge(opts)
-    double('report',
-           status: opts[:status],
-           error_slug: opts[:error_slug],
-           error_message: opts[:error_message],
-           table_or_model_name: opts[:table_or_model_name],
-           column_or_attribute_name: opts[:column_or_attribute_name],
-           checker_name: opts[:checker_name],
-           to_h: { checker_name: opts[:checker_name], table_or_model_name: opts[:table_or_model_name],
-                   column_or_attribute_name: opts[:column_or_attribute_name] })
+    opts = { error_slug: nil, error_message: nil, table_or_model_name: 'users',
+             column_or_attribute_name: 'email', checker_name: 'NullConstraintChecker' }.merge(opts)
+    to_h = opts.slice(:checker_name, :table_or_model_name, :column_or_attribute_name)
+    double('report', **opts, to_h: to_h)
   end
 
   describe '#write' do

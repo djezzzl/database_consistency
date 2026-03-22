@@ -16,6 +16,7 @@ RSpec.describe DatabaseConsistency::Processors::AssociationsProcessor, :sqlite d
   end
 
   before do
+    skip('older versions are not supported with sqlite3') if ActiveRecord::VERSION::MAJOR < 5 && adapter == 'sqlite3'
     allow(DatabaseConsistency::Helper).to receive(:models).and_return([entity_class])
   end
 
