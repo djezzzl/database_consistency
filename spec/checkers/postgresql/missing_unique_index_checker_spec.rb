@@ -255,25 +255,32 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
         error_slug: nil
       )
     end
+  end
 
-    context 'when full unique index is provided' do
-      before do
-        define_database_with_entity do |table|
-          table.string :reset_password_token
-          table.index %i[reset_password_token], unique: true
-        end
+  context 'when uniqueness validation uses allow_nil and full unique index is provided' do
+    let(:attribute) { :reset_password_token }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :reset_password_token, uniqueness: true, allow_nil: true
       end
+    end
 
-      specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingUniqueIndexChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'reset_password_token',
-          status: :ok,
-          error_message: nil,
-          error_slug: nil
-        )
+    before do
+      define_database_with_entity do |table|
+        table.string :reset_password_token
+        table.index %i[reset_password_token], unique: true
       end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'MissingUniqueIndexChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'reset_password_token',
+        status: :ok,
+        error_message: nil,
+        error_slug: nil
+      )
     end
   end
 
@@ -288,7 +295,11 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
     before do
       define_database_with_entity do |table|
         table.string :external_id
-        table.index %i[external_id], unique: true, where: "((external_id)::text <> ''::text) AND (external_id IS NOT NULL)"
+        table.index(
+          %i[external_id],
+          unique: true,
+          where: "((external_id)::text <> ''::text) AND (external_id IS NOT NULL)"
+        )
       end
     end
 
@@ -302,25 +313,32 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
         error_slug: nil
       )
     end
+  end
 
-    context 'when full unique index is provided' do
-      before do
-        define_database_with_entity do |table|
-          table.string :external_id
-          table.index %i[external_id], unique: true
-        end
+  context 'when uniqueness validation uses allow_blank and full unique index is provided' do
+    let(:attribute) { :external_id }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :external_id, uniqueness: true, allow_blank: true
       end
+    end
 
-      specify do
-        expect(checker.report).to have_attributes(
-          checker_name: 'MissingUniqueIndexChecker',
-          table_or_model_name: klass.name,
-          column_or_attribute_name: 'external_id',
-          status: :ok,
-          error_message: nil,
-          error_slug: nil
-        )
+    before do
+      define_database_with_entity do |table|
+        table.string :external_id
+        table.index %i[external_id], unique: true
       end
+    end
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'MissingUniqueIndexChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'external_id',
+        status: :ok,
+        error_message: nil,
+        error_slug: nil
+      )
     end
   end
 

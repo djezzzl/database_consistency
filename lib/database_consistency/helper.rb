@@ -205,9 +205,7 @@ module DatabaseConsistency
     def strip_outer_parentheses(sql)
       stripped_sql = sql.strip
 
-      while wrapped_with_parentheses?(stripped_sql)
-        stripped_sql = stripped_sql[1..-2].strip
-      end
+      stripped_sql = stripped_sql[1..-2].strip while wrapped_with_parentheses?(stripped_sql)
 
       stripped_sql
     end
@@ -217,13 +215,23 @@ module DatabaseConsistency
 
       depth = 0
 
-      sql.chars.each_with_index do |char, index|
-        depth += 1 if char == '('
-        depth -= 1 if char == ')'
-        return false if depth.zero? && index < sql.length - 1
+      sql[1..-2].each_char do |char|
+        depth = parenthesis_depth(depth, char)
+        return false if depth.negative?
       end
 
       depth.zero?
+    end
+
+    def parenthesis_depth(depth, char)
+      case char
+      when '('
+        depth + 1
+      when ')'
+        depth - 1
+      else
+        depth
+      end
     end
 
     def normalize_boolean_predicates(sql)
