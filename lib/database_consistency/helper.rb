@@ -160,7 +160,7 @@ module DatabaseConsistency
       conditions_sql = conditions_where_sql(model, validator.options[:conditions])
       guard_sql = uniqueness_validator_guard_sql(model, attribute, validator)
 
-      sql_parts = [conditions_sql, guard_sql].compact_blank
+      sql_parts = [conditions_sql, guard_sql].reject { |part| part.nil? || part == '' }
       return nil if sql_parts.empty?
 
       normalize_condition_sql(sql_parts.join(' AND '))
