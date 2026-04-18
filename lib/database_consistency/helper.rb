@@ -151,29 +151,128 @@ module DatabaseConsistency
       where_part = sql.split(/\bWHERE\b/i, 2).last
       return nil unless where_part
 
-      normalize_sql(where_part.gsub("#{model.quoted_table_name}.", '').gsub('"', ''))
+      normalize_condition_sql(where_part.gsub("#{model.quoted_table_name}.", '').gsub('"', ''))
     rescue StandardError
       nil
+    end
+
+    def uniqueness_validator_where_sql(model, attribute, validator)
+      conditions_sql = conditions_where_sql(model, validator.options[:conditions])
+      guard_sql = uniqueness_validator_guard_sql(model, attribute, validator)
+
+      sql_parts = [conditions_sql, guard_sql].compact_blank
+      return nil if sql_parts.empty?
+
+      normalize_condition_sql(sql_parts.join(' AND '))
     end
 
     # Returns true when validator conditions and index WHERE clause are a valid
     # pairing: both absent means a match; exactly one present means no match;
     # when both present the normalized SQL is compared.
-    def conditions_match_index?(model, conditions, index_where)
-      return true if conditions.nil? && index_where.blank?
-      return false if conditions.nil? || index_where.blank?
+    def conditions_match_index?(model, attribute, validator, index_where)
+      validator_where = uniqueness_validator_where_sql(model, attribute, validator)
+      return true if validator_where.nil? && index_where.blank?
+      return true if index_where.blank? && validator_guard_only?(model, attribute, validator)
+      return false if validator_where.nil? || index_where.blank?
 
-      conditions_sql = conditions_where_sql(model, conditions)
-      # Strip one level of outer parentheses that some databases (e.g. PostgreSQL)
-      # add when storing/returning the index WHERE clause.
-      normalized_where = normalize_sql(index_where.sub(/\A\s*\((.+)\)\s*\z/m, '\1'))
-      conditions_sql&.casecmp?(normalized_where)
+      normalized_where = normalize_condition_sql(index_where)
+      validator_where.casecmp?(normalized_where)
+    end
+
+    def normalize_condition_sql(sql)
+      sql
+        .to_s
+        .then { |value| strip_outer_parentheses(value) }
+        .then { |value| normalize_sql(value) }
+        .then { |value| normalize_boolean_predicates(value) }
+        .then { |value| normalize_array_any_predicates(value) }
+        .then { |value| normalize_negated_blank_or_nil_predicates(value) }
+        .then { |value| sort_and_clauses(value) }
     end
 
     def normalize_sql(sql)
-      sql.gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0')
+      sql.gsub(/::\w+/, '')
+         .gsub(/\(([a-z_][\w.]*)\)/i, '\1')
+         .gsub(/\bTRUE\b/i, '1').gsub(/\bFALSE\b/i, '0')
+         .gsub(/\s*<>\s*/, ' != ')
+         .gsub(/\bIS\s+NOT\s+NULL\b/i, ' IS NOT NULL')
+         .gsub(/\bIS\s+NULL\b/i, ' IS NULL')
          .gsub(/ = 't'/, ' = 1').gsub(/ = 'f'/, ' = 0')
+         .gsub(/\s+/, ' ')
          .strip
+    end
+
+    def strip_outer_parentheses(sql)
+      stripped_sql = sql.strip
+
+      while wrapped_with_parentheses?(stripped_sql)
+        stripped_sql = stripped_sql[1..-2].strip
+      end
+
+      stripped_sql
+    end
+
+    def wrapped_with_parentheses?(sql)
+      return false unless sql.start_with?('(') && sql.end_with?(')')
+
+      depth = 0
+
+      sql.chars.each_with_index do |char, index|
+        depth += 1 if char == '('
+        depth -= 1 if char == ')'
+        return false if depth.zero? && index < sql.length - 1
+      end
+
+      depth.zero?
+    end
+
+    def normalize_boolean_predicates(sql)
+      normalized_sql = sql.dup
+
+      normalized_sql.gsub!(
+        /(^|(?:\bAND\b|\bOR\b|\())\s*NOT\s+([a-z_][\w.]*)\s*(?=$|(?:\bAND\b|\bOR\b|\)))/i
+      ) { "#{Regexp.last_match(1)} #{Regexp.last_match(2)} = 0" }
+
+      normalized_sql.gsub!(
+        /(^|(?:\bAND\b|\bOR\b|\())\s*([a-z_][\w.]*)\s*(?=$|(?:\bAND\b|\bOR\b|\)))/i
+      ) { "#{Regexp.last_match(1)} #{Regexp.last_match(2)} = 1" }
+
+      normalized_sql.gsub(/\s+/, ' ').strip
+    end
+
+    def normalize_array_any_predicates(sql)
+      sql.gsub(
+        /([a-z_][\w.]*)\s*=\s*ANY\s*\(ARRAY\[(.*?)\]\)/i
+      ) { "#{Regexp.last_match(1)} IN (#{Regexp.last_match(2).gsub(/\s+/, ' ').strip})" }
+    end
+
+    def normalize_negated_blank_or_nil_predicates(sql)
+      sql.gsub(
+        /NOT\s+\(\s*\(?([a-z_][\w.]*)\s*=\s*''\s+OR\s+\1\s+IS\s+NULL\)?\s*\)/i
+      ) { "#{Regexp.last_match(1)} IS NOT NULL AND #{Regexp.last_match(1)} != ''" }
+    end
+
+    def sort_and_clauses(sql)
+      clauses = sql.split(/\s+AND\s+/i)
+      return sql if clauses.length == 1
+
+      clauses.map! { |clause| strip_outer_parentheses(clause) }
+      clauses.sort.join(' AND ')
+    end
+
+    def uniqueness_validator_guard_sql(model, attribute, validator)
+      attribute_name = foreign_key_or_attribute(model, attribute).to_s
+
+      if validator.options[:allow_blank]
+        "#{attribute_name} IS NOT NULL AND #{attribute_name} != ''"
+      elsif validator.options[:allow_nil]
+        "#{attribute_name} IS NOT NULL"
+      end
+    end
+
+    def validator_guard_only?(model, attribute, validator)
+      uniqueness_validator_guard_sql(model, attribute, validator).present? &&
+        validator.options[:conditions].nil?
     end
 
     # @return [String]

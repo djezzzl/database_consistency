@@ -35,7 +35,7 @@ module DatabaseConsistency
       def validator_matches?(validator)
         validator.attributes.any? do |attribute|
           sorted_index_columns == Helper.sorted_uniqueness_validator_columns(attribute, validator, model) &&
-            Helper.conditions_match_index?(model, validator.options[:conditions], index.where)
+            Helper.conditions_match_index?(model, attribute, validator, index.where)
         end
       end
 
