@@ -16,6 +16,8 @@ _The project is greatly supported by [Pennylane](https://www.pennylane.com)! Hug
     <img src="logos/pennylane.png" width="200px"/>
 </div>
 
+Special thanks to [@chaadow](https://github.com/chaadow) for the amazing contribution in [#298](https://github.com/djezzzl/database_consistency/pull/298)!
+
 For detailed information, please read the [wiki](docs/wiki/home.md).
 
 Currently, the tool can:
