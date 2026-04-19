@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-- Special thanks to [Chedli Bourguiba](https://github.com/chaadow) for the amazing contribution in [#298](https://github.com/djezzzl/database_consistency/pull/298)!
+- Special thanks to [Chedli Bourguiba](https://github.com/chaadow) for improving conditional index matching in [#298](https://github.com/djezzzl/database_consistency/pull/298)!
 
 ### [3.0.2] - 2026/03/21
 
