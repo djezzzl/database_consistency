@@ -53,7 +53,7 @@ module DatabaseConsistency
       def index_matches?(index)
         index.unique &&
           Helper.extract_index_columns(index.columns).sort == sorted_uniqueness_validator_columns &&
-          Helper.conditions_match_index?(model, validator.options[:conditions], index.where)
+          Helper.conditions_match_index?(model, attribute, validator, index.where)
       end
 
       def primary_key_covers_validation?
