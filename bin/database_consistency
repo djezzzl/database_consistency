@@ -39,8 +39,10 @@ opt_parser = OptionParser.new do |opts|
     options[:todo] = true
   end
 
-  opts.on('-f', '--autofix', 'Automatically fixes issues by adjusting the code or generating missing migrations.') do
-    options[:autofix] = true
+  opts.on('-f', '--autofix [CHECKER,CHECKER,...]', Array,
+          'Automatically fixes issues by adjusting the code or generating missing migrations. ' \
+          'Optionally accepts a comma-separated list of checker class names to scope the fix (e.g. ColumnPresenceChecker).') do |checkers|
+    options[:autofix] = checkers || true
   end
 
   opts.on('-h', '--help', 'Prints this help.') do
@@ -75,5 +77,10 @@ $LOAD_PATH.unshift(File.expand_path('lib', __dir__))
 require 'database_consistency'
 
 # Process checks
-code = DatabaseConsistency.run(config, **options)
+begin
+  code = DatabaseConsistency.run(config, **options)
+rescue DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError => e
+  warn e.message
+  exit 1
+end
 exit code

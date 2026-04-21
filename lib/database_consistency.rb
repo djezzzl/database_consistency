@@ -121,7 +121,7 @@ module DatabaseConsistency
       reports = Processors.reports(configuration)
 
       if opts[:autofix]
-        Writers::AutofixWriter.write(reports, config: configuration)
+        Writers::AutofixWriter.write(reports, config: configuration, opts: opts[:autofix])
 
         0
       elsif opts[:todo]
