@@ -22,23 +22,34 @@ module DatabaseConsistency
         three_state_boolean: Autofix::NullConstraintMissing
       }.freeze
 
+      class << self
+        def validate_scope!(scope)
+          return if scope.nil?
+
+          known = concrete_checker_names
+          unknown = scope - known
+          return if unknown.empty?
+
+          raise UnknownCheckerError,
+                "unknown checker(s): #{unknown.join(', ')}. Known: #{known.join(', ')}"
+        end
+
+        private
+
+        def concrete_checker_names
+          Checkers::BaseChecker.descendants
+                               .reject { |checker| checker.superclass == Checkers::BaseChecker }
+                               .map(&:checker_name)
+                               .uniq
+                               .sort
+        end
+      end
+
       def write
-        validate_scope!
         unique_generators.each(&:fix!)
       end
 
       private
-
-      def validate_scope!
-        return unless opts.is_a?(Array)
-
-        known = Checkers::BaseChecker.descendants.map(&:checker_name)
-        unknown = opts - known
-        return if unknown.empty?
-
-        raise UnknownCheckerError,
-              "unknown checker(s): #{unknown.join(', ')}. Known: #{known.sort.uniq.join(', ')}"
-      end
 
       def unique_generators
         results
@@ -53,7 +64,7 @@ module DatabaseConsistency
       end
 
       def scoped?(report)
-        return true unless opts.is_a?(Array)
+        return true if opts.nil?
 
         opts.include?(report.checker_name)
       end

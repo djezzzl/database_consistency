@@ -39,10 +39,15 @@ opt_parser = OptionParser.new do |opts|
     options[:todo] = true
   end
 
-  opts.on('-f', '--autofix [CHECKER,CHECKER,...]', Array,
-          'Automatically fixes issues by adjusting the code or generating missing migrations. ' \
-          'Optionally accepts a comma-separated list of checker class names to scope the fix (e.g. ColumnPresenceChecker).') do |checkers|
-    options[:autofix] = checkers || true
+  opts.on('-f', '--autofix',
+          'Automatically fixes issues by adjusting the code or generating missing migrations.') do
+    options[:autofix] = true
+  end
+
+  opts.on('--only-checkers=LIST', Array,
+          'When used with --autofix, restricts the fix to offenses produced by the listed checker ' \
+          'class names (comma-separated, e.g. ColumnPresenceChecker,NullConstraintChecker).') do |checkers|
+    options[:only_checkers] = checkers
   end
 
   opts.on('-h', '--help', 'Prints this help.') do
@@ -52,6 +57,11 @@ opt_parser = OptionParser.new do |opts|
 end
 
 opt_parser.parse!
+
+if options[:only_checkers] && !options[:autofix]
+  warn '--only-checkers requires --autofix'
+  exit 1
+end
 
 base_dir = File.join(Dir.pwd, ARGV.first.to_s)
 unless File.realpath(base_dir).start_with?(Dir.pwd)

@@ -147,52 +147,59 @@ RSpec.describe DatabaseConsistency::Writers::AutofixWriter, :sqlite, :mysql, :po
         write
       end
     end
+  end
 
-    context 'when opts contains an unknown checker name' do
-      subject(:write) { described_class.write(reports, config: config, opts: ['DoesNotExist']) }
+  describe '.validate_scope!' do
+    subject(:validate) { described_class.validate_scope!(scope) }
 
-      let(:reports) { [build_report(status: :fail, error_slug: :null_constraint_missing)] }
+    context 'when scope is nil' do
+      let(:scope) { nil }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when scope is empty' do
+      let(:scope) { [] }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when every name is a concrete checker' do
+      let(:scope) { %w[NullConstraintChecker RedundantIndexChecker ColumnPresenceChecker] }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when a name is unknown' do
+      let(:scope) { ['DoesNotExist'] }
 
       it 'raises UnknownCheckerError listing the unknown name' do
-        expect { write }.to raise_error(
+        expect { validate }.to raise_error(
           DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
           /DoesNotExist/
         )
       end
     end
 
-    context 'when opts mixes known and unknown names' do
-      subject(:write) do
-        described_class.write(reports, config: config, opts: %w[NullConstraintChecker DoesNotExist])
-      end
+    context 'when scope mixes known and unknown names' do
+      let(:scope) { %w[NullConstraintChecker DoesNotExist] }
 
-      let(:reports) { [build_report(status: :fail, error_slug: :null_constraint_missing)] }
-
-      it 'raises UnknownCheckerError without fixing anything' do
-        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::NullConstraintMissing)
-          .not_to receive(:fix!)
-        expect { write }.to raise_error(
+      it 'raises UnknownCheckerError regardless of the known ones' do
+        expect { validate }.to raise_error(
           DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
           /DoesNotExist/
         )
       end
     end
 
-    context 'when opts is true (flag without arg)' do
-      subject(:write) { described_class.write(reports, config: config, opts: true) }
+    context 'when scope references an abstract parent class' do
+      let(:scope) { ['ColumnChecker'] }
 
-      let(:report) { build_report(status: :fail, error_slug: :null_constraint_missing) }
-      let(:reports) { [report] }
-
-      before do
-        allow(report).to receive(:table_name).and_return('users')
-        allow(report).to receive(:column_name).and_return('email')
-      end
-
-      it 'fixes everything like the unscoped flag' do
-        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::NullConstraintMissing)
-          .to receive(:fix!).once
-        write
+      it 'rejects abstract parents' do
+        expect { validate }.to raise_error(
+          DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
+          /ColumnChecker/
+        )
       end
     end
   end
