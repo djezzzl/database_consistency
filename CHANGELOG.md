@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+### [3.0.4] - 2026/04/24
+
 - Add `--only-checkers=LIST` to scope `--autofix` to offenses produced by specific checker class names (comma-separated, e.g. `--only-checkers=ColumnPresenceChecker,NullConstraintChecker`). Unknown names are rejected before any checks run. Thanks to [Fabien Dobat](https://github.com/fabdbt)! 
 
 ### [3.0.3] - 2026/04/19
