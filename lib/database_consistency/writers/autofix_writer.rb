@@ -5,6 +5,8 @@ module DatabaseConsistency
   module Writers
     # The simplest formatter
     class AutofixWriter < BaseWriter
+      UnknownCheckerError = Class.new(StandardError)
+
       SLUG_TO_GENERATOR = {
         association_missing_index: Autofix::AssociationMissingIndex,
         association_missing_null_constraint: Autofix::NullConstraintMissing,
@@ -19,6 +21,29 @@ module DatabaseConsistency
         small_primary_key: Autofix::InconsistentTypes,
         three_state_boolean: Autofix::NullConstraintMissing
       }.freeze
+
+      class << self
+        def validate_scope!(scope)
+          return if scope.nil?
+
+          known = concrete_checker_names
+          unknown = scope - known
+          return if unknown.empty?
+
+          raise UnknownCheckerError,
+                "unknown checker(s): #{unknown.join(', ')}. Known: #{known.join(', ')}"
+        end
+
+        private
+
+        def concrete_checker_names
+          Checkers::BaseChecker.descendants
+                               .reject { |checker| checker.superclass == Checkers::BaseChecker }
+                               .map(&:checker_name)
+                               .uniq
+                               .sort
+        end
+      end
 
       def write
         unique_generators.each(&:fix!)
@@ -35,7 +60,13 @@ module DatabaseConsistency
       end
 
       def fix?(report)
-        report.status == :fail
+        report.status == :fail && scoped?(report)
+      end
+
+      def scoped?(report)
+        return true if opts.nil?
+
+        opts.include?(report.checker_name)
       end
 
       def generator(report)

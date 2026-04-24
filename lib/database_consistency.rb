@@ -116,12 +116,15 @@ require 'database_consistency/checkers/index_checkers/redundant_unique_index_che
 # The root module
 module DatabaseConsistency
   class << self
-    def run(*args, **opts) # rubocop:disable Metrics/MethodLength
+    def run(*args, **opts) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       configuration = Configuration.new(*args)
+
+      Writers::AutofixWriter.validate_scope!(opts[:only_checkers]) if opts[:autofix]
+
       reports = Processors.reports(configuration)
 
       if opts[:autofix]
-        Writers::AutofixWriter.write(reports, config: configuration)
+        Writers::AutofixWriter.write(reports, config: configuration, opts: opts[:only_checkers])
 
         0
       elsif opts[:todo]

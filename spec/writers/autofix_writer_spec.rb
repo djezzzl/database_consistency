@@ -3,8 +3,8 @@
 RSpec.describe DatabaseConsistency::Writers::AutofixWriter, :sqlite, :mysql, :postgresql do
   let(:config) { DatabaseConsistency::Configuration.new }
 
-  def build_report(status:, error_slug:)
-    double('report', status: status, error_slug: error_slug)
+  def build_report(status:, error_slug:, checker_name: 'NullConstraintChecker')
+    double('report', status: status, error_slug: error_slug, checker_name: checker_name)
   end
 
   describe '#write' do
@@ -71,7 +71,9 @@ RSpec.describe DatabaseConsistency::Writers::AutofixWriter, :sqlite, :mysql, :po
 
     context 'when there are different generators' do
       let(:null_report) { build_report(status: :fail, error_slug: :null_constraint_missing) }
-      let(:index_report) { build_report(status: :fail, error_slug: :redundant_index) }
+      let(:index_report) do
+        build_report(status: :fail, error_slug: :redundant_index, checker_name: 'RedundantIndexChecker')
+      end
       let(:reports) { [null_report, index_report] }
 
       before do
@@ -87,6 +89,117 @@ RSpec.describe DatabaseConsistency::Writers::AutofixWriter, :sqlite, :mysql, :po
         expect_any_instance_of(DatabaseConsistency::Writers::Autofix::RedundantIndex)
           .to receive(:fix!).once
         write
+      end
+    end
+
+    context 'when opts restricts to a single checker name' do
+      subject(:write) { described_class.write(reports, config: config, opts: ['NullConstraintChecker']) }
+
+      let(:null_report) do
+        build_report(status: :fail, error_slug: :null_constraint_missing, checker_name: 'NullConstraintChecker')
+      end
+      let(:index_report) do
+        build_report(status: :fail, error_slug: :redundant_index, checker_name: 'RedundantIndexChecker')
+      end
+      let(:reports) { [null_report, index_report] }
+
+      before do
+        allow(null_report).to receive(:table_name).and_return('users')
+        allow(null_report).to receive(:column_name).and_return('email')
+        allow(index_report).to receive(:index_name).and_return('index_users_on_email')
+        allow(index_report).to receive(:table_name).and_return('users')
+      end
+
+      it 'calls fix! only on the scoped checker generator' do
+        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::NullConstraintMissing)
+          .to receive(:fix!).once
+        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::RedundantIndex)
+          .not_to receive(:fix!)
+        write
+      end
+    end
+
+    context 'when opts lists several known checker names' do
+      subject(:write) do
+        described_class.write(reports, config: config, opts: %w[NullConstraintChecker RedundantIndexChecker])
+      end
+
+      let(:null_report) do
+        build_report(status: :fail, error_slug: :null_constraint_missing, checker_name: 'NullConstraintChecker')
+      end
+      let(:index_report) do
+        build_report(status: :fail, error_slug: :redundant_index, checker_name: 'RedundantIndexChecker')
+      end
+      let(:reports) { [null_report, index_report] }
+
+      before do
+        allow(null_report).to receive(:table_name).and_return('users')
+        allow(null_report).to receive(:column_name).and_return('email')
+        allow(index_report).to receive(:index_name).and_return('index_users_on_email')
+        allow(index_report).to receive(:table_name).and_return('users')
+      end
+
+      it 'calls fix! on each scoped generator' do
+        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::NullConstraintMissing)
+          .to receive(:fix!).once
+        expect_any_instance_of(DatabaseConsistency::Writers::Autofix::RedundantIndex)
+          .to receive(:fix!).once
+        write
+      end
+    end
+  end
+
+  describe '.validate_scope!' do
+    subject(:validate) { described_class.validate_scope!(scope) }
+
+    context 'when scope is nil' do
+      let(:scope) { nil }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when scope is empty' do
+      let(:scope) { [] }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when every name is a concrete checker' do
+      let(:scope) { %w[NullConstraintChecker RedundantIndexChecker ColumnPresenceChecker] }
+
+      it { expect { validate }.not_to raise_error }
+    end
+
+    context 'when a name is unknown' do
+      let(:scope) { ['DoesNotExist'] }
+
+      it 'raises UnknownCheckerError listing the unknown name' do
+        expect { validate }.to raise_error(
+          DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
+          /DoesNotExist/
+        )
+      end
+    end
+
+    context 'when scope mixes known and unknown names' do
+      let(:scope) { %w[NullConstraintChecker DoesNotExist] }
+
+      it 'raises UnknownCheckerError regardless of the known ones' do
+        expect { validate }.to raise_error(
+          DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
+          /DoesNotExist/
+        )
+      end
+    end
+
+    context 'when scope references an abstract parent class' do
+      let(:scope) { ['ColumnChecker'] }
+
+      it 'rejects abstract parents' do
+        expect { validate }.to raise_error(
+          DatabaseConsistency::Writers::AutofixWriter::UnknownCheckerError,
+          /ColumnChecker/
+        )
       end
     end
   end
