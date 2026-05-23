@@ -25,9 +25,10 @@ module DatabaseConsistency
       # We skip check when:
       #  - Prism is not available (Ruby < 3.3)
       #  - column is the primary key (always indexed)
+      #  - column is a boolean (low-cardinality; single-column indexes are rarely useful)
       #  - column name does not appear in any find_by call across project source files
       def preconditions
-        defined?(Prism) && !primary_key_column? && find_by_used?
+        defined?(Prism) && !primary_key_column? && !boolean_column? && find_by_used?
       end
 
       # Table of possible statuses
@@ -71,6 +72,10 @@ module DatabaseConsistency
 
       def primary_key_column?
         column.name.to_s == model.primary_key.to_s
+      end
+
+      def boolean_column?
+        column.type == :boolean
       end
 
       if defined?(Prism)

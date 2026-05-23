@@ -338,6 +338,26 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
     end
   end
 
+  context 'when column is a boolean' do
+    let(:column) { klass.columns.find { |c| c.name == 'active' } }
+
+    before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+      define_database_with_entity do |t|
+        t.boolean :active
+      end
+    end
+
+    it 'skips the check' do
+      Tempfile.create(['entity', '.rb']) do |f|
+        f.write("Entity.find_by(active: true)\n")
+        f.flush
+        allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([f.path])
+        expect(checker.report).to be_nil
+      end
+    end
+  end
+
   context 'when column is the primary key' do
     let(:klass) { define_class { |k| k.primary_key = 'email' } }
     let(:column) { klass.columns.find { |c| c.name == 'email' } }
