@@ -8,6 +8,11 @@ The checker uses Ruby's built-in [Prism](https://github.com/ruby/prism) parser t
 
 > **Note:** This checker requires Ruby 3.3+ (where Prism is part of the standard library). It is automatically skipped on older Ruby versions.
 
+The checker automatically skips:
+
+- **Primary key columns** — always indexed by definition.
+- **Boolean columns** — low-cardinality; single-column indexes on boolean columns are rarely useful and are typically ignored by the query planner.
+
 Use case example:
 
 ```ruby

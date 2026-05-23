@@ -1,6 +1,8 @@
 # Changelog
 
-### Unreleased
+### [Unreleased]
+
+- Improve `MissingIndexFindByChecker` to skip boolean columns, which are low-cardinality and rarely benefit from single-column indexes. Thanks [Rachael Ghorbani](https://github.com/rachaelghorbani) for reporting this!
 
 ### [3.0.4] - 2026/04/24
 
