@@ -224,6 +224,67 @@ RSpec.describe DatabaseConsistency::Checkers::UniqueIndexChecker, :postgresql do
     end
   end
 
+  context 'when unique partial not-null index matches conditions with allow_nil (database_validations style)' do
+    before do
+      define_database_with_entity do |table|
+        table.string :reset_password_token
+        table.index %i[reset_password_token], unique: true, name: index_name, where: 'reset_password_token IS NOT NULL'
+      end
+    end
+
+    context 'when conditions validation with allow_nil is present' do
+      let(:klass) do
+        define_class do |klass|
+          klass.validates :reset_password_token,
+                          uniqueness: { conditions: -> { where('reset_password_token IS NOT NULL') } },
+                          allow_nil: true
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'UniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
+    end
+  end
+
+  context 'when unique partial index matches a scoped condition combined with allow_nil (database_validations style)' do
+    before do
+      define_database_with_entity do |table|
+        table.integer :account_id
+        table.boolean :deleted
+        table.index %i[account_id], unique: true, name: index_name, where: 'deleted = false'
+      end
+    end
+
+    context 'when conditions validation with allow_nil is present' do
+      let(:klass) do
+        define_class do |klass|
+          klass.validates :account_id,
+                          uniqueness: { conditions: -> { where(deleted: false) } },
+                          allow_nil: true
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'UniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: index_name,
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
+    end
+  end
+
   context 'when full unique index is present for allow_blank validation' do
     before do
       define_database_with_entity do |table|

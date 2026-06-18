@@ -156,12 +156,18 @@ module DatabaseConsistency
       nil
     end
 
-    # Builds the effective uniqueness constraint enforced by a validator by
-    # combining its explicit `conditions` proc with implicit guards such as
-    # `allow_nil` / `allow_blank`.
+    # Builds the effective uniqueness constraint enforced by a validator.
+    #
+    # When the validator carries an explicit `conditions` proc, that proc is the
+    # authoritative partial predicate. The implicit `allow_nil` / `allow_blank`
+    # guard on the validated attribute is redundant against a unique index (which
+    # already treats NULLs as distinct), so it is only used as a fallback when no
+    # explicit conditions are present. Otherwise gems that always set `allow_nil`
+    # (e.g. database_validations) would append a duplicate or extra
+    # `attribute IS NOT NULL` clause and never match the partial index.
     def uniqueness_validator_where_sql(model, attribute, validator)
       conditions_sql = conditions_where_sql(model, validator.options[:conditions])
-      guard_sql = uniqueness_validator_guard_sql(model, attribute, validator)
+      guard_sql = conditions_sql ? nil : uniqueness_validator_guard_sql(model, attribute, validator)
 
       sql_parts = [conditions_sql, guard_sql].reject { |part| part.nil? || part == '' }
       return nil if sql_parts.empty?
