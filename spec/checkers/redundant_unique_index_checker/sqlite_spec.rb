@@ -140,4 +140,29 @@ RSpec.describe DatabaseConsistency::Checkers::RedundantUniqueIndexChecker, :sqli
         )
     end
   end
+
+  context 'when another unique index contains a column subset in a different order' do
+    before do
+      define_database_with_entity do |table|
+        table.string :first_name
+        table.string :second_name
+        table.string :birth_date
+        table.index %i[first_name birth_date], name: 'another_index', unique: true
+        table.index %i[second_name birth_date first_name], name: 'index', unique: true
+      end
+    end
+
+    specify do
+      expect(checker.report)
+        .to have_attributes(
+          checker_name: 'RedundantUniqueIndexChecker',
+          table_or_model_name: model.name,
+          column_or_attribute_name: 'index',
+          status: :fail,
+          error_slug: :redundant_unique_index,
+          error_message: nil,
+          covered_index_name: 'another_index'
+        )
+    end
+  end
 end
