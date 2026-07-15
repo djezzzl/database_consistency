@@ -7,9 +7,18 @@ RSpec.describe DatabaseConsistency::Checkers::PolymorphicAssociationNullabilityC
   let(:association) { entity_class.reflect_on_all_associations.first }
   let(:foreign_key_null) { true }
   let(:foreign_type_null) { true }
+  let(:association_options) do
+    if ActiveRecord::VERSION::MAJOR >= 5
+      { optional: true }
+    else
+      { required: false }
+    end
+  end
   let!(:entity_class) do
+    options = association_options
+
     define_class do |klass|
-      klass.belongs_to :record, polymorphic: true, optional: true
+      klass.belongs_to :record, polymorphic: true, **options
     end
   end
 
@@ -90,8 +99,10 @@ RSpec.describe DatabaseConsistency::Checkers::PolymorphicAssociationNullabilityC
 
   context 'when the association is not polymorphic' do
     let!(:entity_class) do
+      options = association_options
+
       define_class do |klass|
-        klass.belongs_to :record, optional: true
+        klass.belongs_to :record, **options
       end
     end
 
