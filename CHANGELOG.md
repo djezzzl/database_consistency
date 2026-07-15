@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Add `PolymorphicAssociationNullabilityChecker` to detect polymorphic associations whose foreign key and type columns have mismatched null constraints.
+
 ### [3.0.5] - 2026/05/23
 
 - Improve `MissingIndexFindByChecker` to skip boolean columns, which are low-cardinality and rarely benefit from single-column indexes. Thanks [Rachael Ghorbani](https://github.com/rachaelghorbani) for reporting this!

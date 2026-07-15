@@ -39,6 +39,7 @@ Currently, the tool can:
 - [find models that have missing tables](docs/wiki/MissingTableChecker.md)
 - [find models with UUID primary keys without specified ordering column](docs/wiki/ImplicitOrderingChecker.md)
 - [find belongs_to associations with foreign keys without dependent/on_delete options](docs/wiki/MissingDependentDestroyChecker.md)
+- [find polymorphic associations with mismatched foreign key and type null constraints](docs/wiki/PolymorphicAssociationNullabilityChecker.md)
 - [find columns used in `find_by` calls that are missing a database index](docs/wiki/MissingIndexFindByChecker.md)
 - [find models pointing to views without a primary_key set](docs/wiki/ViewPrimaryKeyChecker.md)
 
