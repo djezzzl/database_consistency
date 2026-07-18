@@ -35,6 +35,7 @@ DatabaseConsistency is a tool to find inconsistencies and inefficiencies between
   - [MissingTableChecker](MissingTableChecker.md)
   - [ImplicitOrderingChecker](ImplicitOrderingChecker.md)
   - [MissingDependentDestroyChecker](MissingDependentDestroyChecker.md)
+  - [PolymorphicAssociationNullabilityChecker](PolymorphicAssociationNullabilityChecker.md)
   - [MissingIndexFindByChecker](MissingIndexFindByChecker.md)
   - [ViewPrimaryKeyChecker](ViewPrimaryKeyChecker.md)
 - [FAQ](faq.md)
