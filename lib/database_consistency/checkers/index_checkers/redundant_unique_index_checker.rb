@@ -60,7 +60,7 @@ module DatabaseConsistency
 
       def contain_index?(another_index)
         another_index_columns = Helper.extract_index_columns(another_index.columns)
-        index_columns & another_index_columns == another_index_columns
+        (another_index_columns - index_columns).empty?
       end
 
       def index_columns
