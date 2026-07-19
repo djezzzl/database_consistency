@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.6] - 2026/07/19
 
 - Add `PolymorphicAssociationNullabilityChecker` to detect polymorphic associations whose foreign key and type columns have mismatched null constraints. Thanks [JSap0914](https://github.com/JSap0914) for implementing this!
 - Improved `MissingIndexChecker` and `MissingUniqueIndexChecker` with proper combination of `allow_nil/allow_blank` and `conditions`. Thanks [Alfonso Uceda](https://github.com/AlfonsoUceda) for fixing this!
