@@ -8,6 +8,10 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
   let(:attribute) { :age }
   let(:validators) { klass._validators[attribute] }
 
+  before do
+    skip('check constraints are not supported in this ActiveRecord version') unless model.connection.respond_to?(:check_constraints)
+  end
+
   context 'when check constraint is provided' do
     before do
       define_database_with_entity do |table|

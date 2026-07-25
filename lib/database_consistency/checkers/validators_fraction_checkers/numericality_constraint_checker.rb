@@ -58,7 +58,9 @@ module DatabaseConsistency
                                           .flatten
                                           .map { |identifier| identifier.split('.').last }
 
-        (quoted_identifiers + plain_identifiers).map(&:downcase).reject { |identifier| SQL_KEYWORDS.include?(identifier) }
+        (quoted_identifiers + plain_identifiers).map(&:downcase).reject do |identifier|
+          SQL_KEYWORDS.include?(identifier)
+        end
       end
 
       def column
