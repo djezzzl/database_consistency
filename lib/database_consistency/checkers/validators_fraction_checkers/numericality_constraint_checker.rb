@@ -21,8 +21,7 @@ module DatabaseConsistency
       def preconditions
         model.connection.respond_to?(:check_constraints) &&
           model.connection.table_exists?(model.table_name) &&
-          column &&
-          validators.any?
+          column
       end
 
       def check
