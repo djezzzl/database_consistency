@@ -16,6 +16,7 @@ DatabaseConsistency is a tool to find inconsistencies and inefficiencies between
 - [Implementing Custom Checker](custom-checker.md)
 - Checkers
   - [ColumnPresenceChecker](ColumnPresenceChecker.md)
+  - [NumericalityConstraintChecker](NumericalityConstraintChecker.md)
   - [LengthConstraintChecker](LengthConstraintChecker.md)
   - [NullConstraintChecker](NullConstraintChecker.md)
   - [UniqueIndexChecker](UniqueIndexChecker.md)

@@ -20,6 +20,7 @@ For detailed information, please read the [wiki](docs/wiki/home.md).
 
 Currently, the tool can:
 - [find missing null constraints](docs/wiki/ColumnPresenceChecker.md)
+- [find missing check constraints for numericality validations](docs/wiki/NumericalityConstraintChecker.md)
 - [find missing length validations](docs/wiki/LengthConstraintChecker.md)
 - [find missing presence validations](docs/wiki/NullConstraintChecker.md)
 - [find missing uniqueness validations](docs/wiki/UniqueIndexChecker.md)

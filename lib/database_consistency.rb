@@ -36,6 +36,7 @@ require 'database_consistency/writers/simple/missing_uniqueness_validation'
 require 'database_consistency/writers/simple/null_constraint_misses_validator'
 require 'database_consistency/writers/simple/null_constraint_missing'
 require 'database_consistency/writers/simple/possible_null'
+require 'database_consistency/writers/simple/numericality_check_constraint_missing'
 require 'database_consistency/writers/simple/small_primary_key'
 require 'database_consistency/writers/simple/inconsistent_enum_type'
 require 'database_consistency/writers/simple/enum_values_inconsistent_with_ar_enum'
@@ -109,6 +110,7 @@ require 'database_consistency/checkers/validator_checkers/case_sensitive_unique_
 
 require 'database_consistency/checkers/validators_fraction_checkers/validators_fraction_checker'
 require 'database_consistency/checkers/validators_fraction_checkers/column_presence_checker'
+require 'database_consistency/checkers/validators_fraction_checkers/numericality_constraint_checker'
 
 require 'database_consistency/checkers/index_checkers/index_checker'
 require 'database_consistency/checkers/index_checkers/unique_index_checker'
