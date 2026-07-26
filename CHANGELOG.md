@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.7] - 2026/07/26
 
 - Add `NumericalityConstraintChecker` to detect `numericality` validators without matching DB `CHECK` constraints. Thanks [Chedli Bourguiba](https://github.com/chaadow) for reporting this in [#181](https://github.com/djezzzl/database_consistency/issues/181)!
 
