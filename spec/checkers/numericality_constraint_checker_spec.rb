@@ -99,6 +99,18 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
     end
   end
 
+  context 'when attribute has no numericality validator' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :age, presence: true } }
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'when check constraint exists for another column' do
     before do
       define_database_with_entity do |table|
