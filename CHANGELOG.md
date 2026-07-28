@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.8] - 2026/07/28
 
 - Fix `NumericalityConstraintChecker` false positives for attributes that have validators but no `numericality` validator. Thanks [panteo](https://github.com/panteo) for reporting this in [#309](https://github.com/djezzzl/database_consistency/issues/309)!
 
