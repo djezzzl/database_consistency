@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `NumericalityConstraintChecker` to skip `numericality` validators without a range option (e.g. bare `numericality: true`), since no `CHECK` constraint can express them.
+
 ### [3.0.8] - 2026/07/28
 
 - Fix `NumericalityConstraintChecker` false positives for attributes that have validators but no `numericality` validator. Thanks [panteo](https://github.com/panteo) for reporting this in [#309](https://github.com/djezzzl/database_consistency/issues/309)!

@@ -22,7 +22,7 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
       end
     end
 
-    let(:klass) { define_class { |klass| klass.validates :age, numericality: true } }
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than_or_equal_to: 0 } } }
 
     specify do
       expect(checker.report).to have_attributes(
@@ -44,7 +44,7 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
       end
     end
 
-    let(:klass) { define_class { |klass| klass.validates :age, numericality: true } }
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than_or_equal_to: 0 } } }
 
     specify do
       expect(checker.report).to have_attributes(
@@ -66,7 +66,7 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
       end
     end
 
-    let(:klass) { define_class { |klass| klass.validates :age, numericality: true } }
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than_or_equal_to: 0 } } }
 
     specify do
       expect(checker.report).to have_attributes(
@@ -85,7 +85,81 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
       define_database_with_entity { |table| table.integer :age }
     end
 
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than_or_equal_to: 0 } } }
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'NumericalityConstraintChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'age',
+        status: :fail,
+        error_message: nil,
+        error_slug: :numericality_check_constraint_missing
+      )
+    end
+  end
+
+  context 'when numericality validator has no options' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
     let(:klass) { define_class { |klass| klass.validates :age, numericality: true } }
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
+
+  context 'when numericality validator has only non-range options' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { only_integer: true } } }
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
+
+  context 'when numericality validator has only allow_nil' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { allow_nil: true } } }
+
+    specify do
+      expect(checker.report).to be_nil
+    end
+  end
+
+  context 'when numericality validator has a range option' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than: 0 } } }
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'NumericalityConstraintChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'age',
+        status: :fail,
+        error_message: nil,
+        error_slug: :numericality_check_constraint_missing
+      )
+    end
+  end
+
+  context 'when numericality validator combines range and non-range options' do
+    before do
+      define_database_with_entity { |table| table.integer :age }
+    end
+
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { only_integer: true, less_than: 100 } } }
 
     specify do
       expect(checker.report).to have_attributes(
@@ -120,7 +194,7 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
       end
     end
 
-    let(:klass) { define_class { |klass| klass.validates :age, numericality: true } }
+    let(:klass) { define_class { |klass| klass.validates :age, numericality: { greater_than_or_equal_to: 0 } } }
 
     specify do
       expect(checker.report).to have_attributes(
@@ -144,7 +218,7 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
     end
 
     let(:attribute) { :abs }
-    let(:klass) { define_class { |klass| klass.validates :abs, numericality: true } }
+    let(:klass) { define_class { |klass| klass.validates :abs, numericality: { greater_than_or_equal_to: 0 } } }
 
     specify do
       expect(checker.report).to have_attributes(
