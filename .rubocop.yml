@@ -3,12 +3,13 @@ Layout:
     Max: 120
 
 AllCops:
+  NewCops: disable
   Exclude:
     - 'rails*-example/**/*'
     - 'bin/**/*'
     - 'vendor/bundle/**/*'
     - 'lib/database_consistency/report_builder.rb'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
 
 Metrics/BlockLength:
   Exclude:
