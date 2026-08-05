@@ -11,11 +11,25 @@ module DatabaseConsistency
       ].freeze
       PLAIN_IDENTIFIER_PATTERN =
         /\b([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)?)\b(?!\s*\()/.freeze
+      # Without one of these options, `numericality` only asserts "is a number",
+      # which the column's numeric type already guarantees. There is no
+      # corresponding CHECK constraint to look for in that case, so validators
+      # with none of these options are skipped.
+      # Listed explicitly rather than excluding the known non-range options
+      # (`only_integer`, `allow_nil`, ...) so that an unrecognized option never
+      # makes us demand a constraint that cannot exist. The tradeoff is that a
+      # future range option must be added here to be reported on.
+      RANGE_OPTIONS = %i[
+        greater_than greater_than_or_equal_to
+        less_than less_than_or_equal_to
+        equal_to other_than in
+      ].freeze
 
       private
 
       def filter(validator)
-        validator.kind == :numericality
+        validator.kind == :numericality &&
+          validator.options.slice(*RANGE_OPTIONS).any?
       end
 
       def preconditions
