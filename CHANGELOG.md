@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.9] - 2026/08/05
 
 - Fix `NumericalityConstraintChecker` to skip `numericality` validators without a range option (e.g. bare `numericality: true`), since no `CHECK` constraint can express them.
 
