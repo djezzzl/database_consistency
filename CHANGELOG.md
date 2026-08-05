@@ -1,5 +1,10 @@
 # Changelog
 
+### Unreleased
+
+- Update CI test matrix to supported Ruby/ActiveRecord versions (Ruby 3.3/3.4/4.0, ActiveRecord 7.2/8.0/8.1).
+- Upgrade rubocop to `~> 1.75`.
+
 ### [3.0.9] - 2026/08/05
 
 - Fix `NumericalityConstraintChecker` to skip `numericality` validators without a range option (e.g. bare `numericality: true`), since no `CHECK` constraint can express them.
