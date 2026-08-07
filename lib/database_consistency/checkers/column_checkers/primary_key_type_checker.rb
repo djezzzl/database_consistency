@@ -18,6 +18,7 @@ module DatabaseConsistency
         'serial' => 'bigserial',
         'integer' => 'bigint'
       }.freeze
+      PREFIXED_UUID_FUNCTION_NAME = 'prefixed_uuid_generate_v4'
       SQLITE_ADAPTER_NAME = 'SQLite'
 
       # We skip check when:
@@ -58,9 +59,17 @@ module DatabaseConsistency
 
       # @return [Boolean]
       def valid?
+        valid_sql_type? || prefixed_uuid_default_function?
+      end
+
+      def valid_sql_type?
         VALID_TYPES.any? do |type|
           column.sql_type.to_s.match?(type)
         end
+      end
+
+      def prefixed_uuid_default_function?
+        column.default_function.to_s.match?(/\b#{PREFIXED_UUID_FUNCTION_NAME}\s*\(/)
       end
 
       # @return [Boolean]
