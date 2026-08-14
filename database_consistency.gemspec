@@ -36,7 +36,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.require_paths = ['lib']
   spec.executables   = ['database_consistency']
 
-  spec.required_ruby_version = '>= 2.6.0' # rubocop:disable Gemspec/RequiredRubyVersion
+  spec.required_ruby_version = '>= 2.6.0'
 
   spec.add_dependency 'activerecord', '>= 3.2'
 
@@ -46,6 +46,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_development_dependency 'rake', '>= 12.3.3'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rspec_junit_formatter', '~> 0.4'
-  spec.add_development_dependency 'rubocop', '~> 0.55'
+  spec.add_development_dependency 'rubocop', '>= 0.55'
   spec.add_development_dependency 'sqlite3', '> 1.3'
 end

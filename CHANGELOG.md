@@ -1,5 +1,10 @@
 # Changelog
 
+### [Unreleased]
+
+- Extend the CI test matrix to Ruby 2.6-4.0 against ActiveRecord 4.2-8.1, keeping every existing combination and adding ActiveRecord 7.2/8.0/8.1 on Ruby 3.3/3.4/4.0.
+- Allow a broad `rubocop` range in the gemspec and pin a compatible version per gemfile, so linting resolves across Ruby 2.6-4.0.
+
 ### [3.0.9] - 2026/08/05
 
 - Fix `NumericalityConstraintChecker` to skip `numericality` validators without a range option (e.g. bare `numericality: true`), since no `CHECK` constraint can express them.
