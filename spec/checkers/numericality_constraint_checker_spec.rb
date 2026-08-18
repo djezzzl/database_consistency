@@ -58,6 +58,30 @@ RSpec.describe DatabaseConsistency::Checkers::NumericalityConstraintChecker, :sq
     end
   end
 
+  context 'when the column is named after a SQL keyword' do
+    before do
+      define_database_with_entity do |table|
+        table.integer :limit
+        quoted_column = ActiveRecord::Base.connection.quote_column_name(:limit)
+        table.check_constraint "#{quoted_column} > 0"
+      end
+    end
+
+    let(:attribute) { :limit }
+    let(:klass) { define_class { |klass| klass.validates :limit, numericality: { greater_than: 0 } } }
+
+    specify do
+      expect(checker.report).to have_attributes(
+        checker_name: 'NumericalityConstraintChecker',
+        table_or_model_name: klass.name,
+        column_or_attribute_name: 'limit',
+        status: :ok,
+        error_message: nil,
+        error_slug: nil
+      )
+    end
+  end
+
   context 'when check constraint uses table-qualified column name' do
     before do
       define_database_with_entity do |table|
