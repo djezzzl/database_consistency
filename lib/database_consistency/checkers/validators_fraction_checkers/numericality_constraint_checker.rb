@@ -72,9 +72,12 @@ module DatabaseConsistency
                                           .flatten
                                           .map { |identifier| identifier.split('.').last }
 
-        (quoted_identifiers + plain_identifiers).map(&:downcase).reject do |identifier|
-          SQL_KEYWORDS.include?(identifier)
-        end
+        # Keywords are only stripped from plain identifiers. A quoted identifier is
+        # always a column, even when it spells a reserved word, so filtering those
+        # would hide constraints on columns such as `"limit"` or `"order"`.
+        plain_columns = plain_identifiers.reject { |identifier| SQL_KEYWORDS.include?(identifier.downcase) }
+
+        (quoted_identifiers + plain_columns).map(&:downcase)
       end
 
       def column
