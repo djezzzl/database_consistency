@@ -4,7 +4,7 @@
 
 - Extend the CI test matrix to Ruby 2.6-4.0 against ActiveRecord 4.2-8.1, keeping every existing combination and adding ActiveRecord 7.2/8.0/8.1 on Ruby 3.3/3.4/4.0.
 - Allow a broad `rubocop` range in the gemspec and pin a compatible version per gemfile, so linting resolves across Ruby 2.6-4.0.
-- Fix `NumericalityConstraintChecker` false positives for columns named after SQL keywords (e.g. `limit`, `order`), whose quoted identifiers in the `CHECK` expression were filtered out as keywords. See [#313](https://github.com/djezzzl/database_consistency/issues/313).
+- Fix `NumericalityConstraintChecker` false positives for columns named after SQL keywords (e.g. `limit`, `order`), whose quoted identifiers in the `CHECK` expression were filtered out as keywords. Thanks [yenshirak](https://github.com/yenshirak) for reporting this in [#313](https://github.com/djezzzl/database_consistency/issues/313)!
 
 ### [3.0.9] - 2026/08/05
 
