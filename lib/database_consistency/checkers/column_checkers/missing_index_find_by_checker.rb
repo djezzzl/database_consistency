@@ -71,7 +71,9 @@ module DatabaseConsistency
       end
 
       def primary_key_column?
-        column.name.to_s == model.primary_key.to_s
+        primary_key = model.connection.primary_key(model.table_name)
+
+        column.name.to_s == Array(primary_key).first.to_s
       end
 
       def boolean_column?

@@ -359,14 +359,11 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
   end
 
   context 'when column is the primary key' do
-    let(:klass) { define_class { |k| k.primary_key = 'email' } }
     let(:column) { klass.columns.find { |c| c.name == 'email' } }
 
     before do
       skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
-      define_database_with_entity do |t|
-        t.string :email
-      end
+      define_database { create_table(:entities, primary_key: :email) }
     end
 
     it 'skips the check' do
@@ -375,6 +372,97 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexFindByChecker, :sqlite
         f.flush
         allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([f.path])
         expect(checker.report).to be_nil
+      end
+    end
+  end
+
+  context 'when model declares a primary key without a database primary key' do
+    let(:klass) { define_class { |k| k.primary_key = 'email' } }
+
+    before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+      define_database_with_entity do |table|
+        table.string :email
+      end
+    end
+
+    it 'reports a missing index' do
+      Tempfile.create(['entity', '.rb']) do |file|
+        file.write("Entity.find_by(email: x)\n")
+        file.flush
+        allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([file.path])
+        expect(checker.report).to have_attributes(
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: "#{file.path}:1"
+        )
+      end
+    end
+  end
+
+  context 'when column belongs to a composite primary key' do
+    let(:klass) { define_class { |k| k.primary_key = %i[email name] } }
+
+    before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+      define_database do
+        create_table(:entities, primary_key: %i[email name]) do |table|
+          table.string :email
+          table.string :name
+        end
+      end
+    end
+
+    it 'skips the leading primary key column' do
+      Tempfile.create(['entity', '.rb']) do |file|
+        file.write("Entity.find_by(email: x)\n")
+        file.flush
+        allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([file.path])
+        expect(checker.report).to be_nil
+      end
+    end
+
+    context 'when checking the second primary key column' do
+      let(:column) { klass.columns.find { |candidate| candidate.name == 'name' } }
+
+      it 'reports a missing index' do
+        Tempfile.create(['entity', '.rb']) do |file|
+          file.write("Entity.find_by(name: x)\n")
+          file.flush
+          allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([file.path])
+          expect(checker.report).to have_attributes(
+            status: :fail,
+            error_slug: :missing_index_find_by,
+            source_location: "#{file.path}:1"
+          )
+        end
+      end
+    end
+  end
+
+  context 'when model declares a composite primary key without a database primary key' do
+    let(:klass) { define_class { |k| k.primary_key = %i[email name] } }
+
+    before do
+      skip 'Prism not available (Ruby < 3.3)' unless defined?(Prism)
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+      define_database_with_entity do |table|
+        table.string :email
+        table.string :name
+      end
+    end
+
+    it 'reports a missing index for the leading model primary key column' do
+      Tempfile.create(['entity', '.rb']) do |file|
+        file.write("Entity.find_by(email: x)\n")
+        file.flush
+        allow(DatabaseConsistency::FilesHelper).to receive(:project_source_files).and_return([file.path])
+        expect(checker.report).to have_attributes(
+          status: :fail,
+          error_slug: :missing_index_find_by,
+          source_location: "#{file.path}:1"
+        )
       end
     end
   end

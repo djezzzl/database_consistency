@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `MissingIndexFindByChecker` false positives for lookups by the leading column of a composite primary key. Thanks [Eito Katagiri](https://github.com/eito-katagiri-LITALICO) for reporting and fixing this!
+
 ### [3.0.10] - 2026/08/19
 
 - Extend the CI test matrix to Ruby 2.6-4.0 against ActiveRecord 4.2-8.1, keeping every existing combination and adding ActiveRecord 7.2/8.0/8.1 on Ruby 3.3/3.4/4.0.
