@@ -226,6 +226,14 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1.5, 2.5])'))
           .to eq(described_class.normalize_condition_sql('price IN (1.5, 2.5)'))
       end
+
+      it 'normalizes a Postgres indexdef-style ANY array wrapped in extra parentheses' do
+        expect(described_class.normalize_condition_sql(
+                 "((state)::text = ANY ((ARRAY['draft'::character varying, " \
+                 "'canon'::character varying])::text[]))"
+               ))
+          .to eq(described_class.normalize_condition_sql("state IN ('draft', 'canon')"))
+      end
     end
   end
 end

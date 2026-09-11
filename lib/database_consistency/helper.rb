@@ -349,9 +349,11 @@ module DatabaseConsistency
     # so it matches the SQL Active Record typically generates for arrays.
     def normalize_array_any_predicates(sql)
       sql.gsub(
-        # Matches `column = ANY (ARRAY[...])`, capturing the column name and the
-        # full array payload so it can be converted to `column IN (...)`.
-        /([a-z_][\w.]*)\s*=\s*ANY\s*\(ARRAY\[(.*?)\]\)/i
+        # Matches `column = ANY (ARRAY[...])` or `column = ANY ((ARRAY[...]))`,
+        # capturing the column name and the full array payload so it can be
+        # converted to `column IN (...)`. The optional inner parentheses come
+        # from Postgres indexdefs that wrap the array expression before casting.
+        /([a-z_][\w.]*)\s*=\s*ANY\s*\(\(?ARRAY\[(.*?)\]\)?\)/i
       ) { "#{Regexp.last_match(1)} IN (#{Regexp.last_match(2).gsub(/\s+/, ' ').strip})" }
     end
 
