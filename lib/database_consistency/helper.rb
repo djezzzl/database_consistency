@@ -270,6 +270,13 @@ module DatabaseConsistency
       # `/\(([a-z_][\w.]*)\)/i` unwraps a bare identifier surrounded by
       # parentheses, e.g. `(internal_name)` -> `internal_name`.
       normalized_sql = normalized_sql.gsub(/\(([a-z_][\w.]*)\)/i, '\1')
+      # `/\((-?\d+(?:\.\d+)?(?:e-?\d+)?)\)/` unwraps a parenthesized
+      # numeric literal, e.g. `(0)` -> `0` and `(0.001)` -> `0.001`, so
+      # Postgres casts like `(0)::numeric` normalize to the same form Active
+      # Record generates for bare numeric comparisons. (Scientific notation is
+      # accepted on input but Postgres normalizes it to decimal. Nested parens
+      # get unwrapped.)
+      true while normalized_sql.gsub!(/\((-?\d+(?:\.\d+)?(?:e-?\d+)?)\)/, '\1')
       # `/\s*<>\s*/` rewrites the SQL inequality operator `<>` to `!=`.
       normalized_sql = normalized_sql.gsub(/\s*<>\s*/, ' != ')
       normalized_sql.gsub(/\s+/, ' ').strip

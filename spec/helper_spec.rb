@@ -142,5 +142,43 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq(described_class.normalize_condition_sql("state = 'draft'"))
       end
     end
+
+    context 'with parenthesized numeric literals' do
+      it 'unwraps a parenthesized integer literal with a cast' do
+        expect(described_class.normalize_condition_sql('price > (0)::numeric'))
+          .to eq(described_class.normalize_condition_sql('price > 0'))
+      end
+
+      it 'unwraps a parenthesized decimal literal with a cast' do
+        expect(described_class.normalize_condition_sql('price > (0.0)::float8'))
+          .to eq(described_class.normalize_condition_sql('price > 0.0'))
+      end
+
+      it 'unwraps a parenthesized small decimal literal' do
+        expect(described_class.normalize_condition_sql('price > (0.00001)::float8'))
+          .to eq(described_class.normalize_condition_sql('price > 0.00001'))
+      end
+
+      it 'unwraps a parenthesized large integer literal with a cast' do
+        expect(described_class.normalize_condition_sql('price > (1000000)::numeric'))
+          .to eq(described_class.normalize_condition_sql('price > 1000000'))
+      end
+
+      it 'unwraps a parenthesized decimal through nested casts' do
+        expect(described_class.normalize_condition_sql('price > ((1.23)::real)::numeric'))
+          .to eq(described_class.normalize_condition_sql('price > 1.23'))
+      end
+
+      it 'unwraps a decimal through three levels of nested casts' do
+        expect(described_class.normalize_condition_sql('price > (((1.23)::real)::numeric)::float8'))
+          .to eq(described_class.normalize_condition_sql('price > 1.23'))
+      end
+
+      it 'does not unwrap parentheses around a number-string literal' do
+        expect(described_class.normalize_condition_sql("code = '(0)'")).not_to eq(
+          described_class.normalize_condition_sql("code = '0'")
+        )
+      end
+    end
   end
 end
