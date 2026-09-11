@@ -155,7 +155,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'unwraps a parenthesized small decimal literal' do
-        expect(described_class.normalize_condition_sql('price > (0.00001)::float8'))
+        expect(described_class.normalize_condition_sql('price > (0.00001)::double precision'))
           .to eq(described_class.normalize_condition_sql('price > 0.00001'))
       end
 
@@ -170,7 +170,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'unwraps a decimal through three levels of nested casts' do
-        expect(described_class.normalize_condition_sql('price > (((1.23)::real)::numeric)::float8'))
+        expect(described_class.normalize_condition_sql('price > (((1.23)::real)::numeric)::double precision'))
           .to eq(described_class.normalize_condition_sql('price > 1.23'))
       end
 
@@ -178,6 +178,53 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         expect(described_class.normalize_condition_sql("code = '(0)'")).not_to eq(
           described_class.normalize_condition_sql("code = '0'")
         )
+      end
+    end
+
+    context 'with multi-word and array casts' do
+      it 'strips a double precision cast' do
+        expect(described_class.normalize_condition_sql('price > (0.0)::double precision'))
+          .to eq(described_class.normalize_condition_sql('price > 0.0'))
+      end
+
+      it 'strips a character varying cast' do
+        expect(described_class.normalize_condition_sql("label = 'x'::character varying"))
+          .to eq(described_class.normalize_condition_sql("label = 'x'"))
+      end
+
+      it 'strips a timestamp without time zone cast' do
+        expect(described_class.normalize_condition_sql("created_at > '2024-01-01'::timestamp without time zone"))
+          .to eq(described_class.normalize_condition_sql("created_at > '2024-01-01'"))
+      end
+
+      it 'strips an array cast and normalizes ANY (ARRAY[...]) to IN (...)' do
+        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'::character varying]::text[])"))
+          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+      end
+
+      it 'normalizes a simple ANY (ARRAY[...]) with one text element' do
+        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'])"))
+          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+      end
+
+      it 'normalizes a simple ANY (ARRAY[...]) with multiple text elements' do
+        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft', 'published'])"))
+          .to eq(described_class.normalize_condition_sql("state IN ('draft', 'published')"))
+      end
+
+      it 'normalizes ANY (ARRAY[...]) with a cast element' do
+        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'::text])"))
+          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+      end
+
+      it 'normalizes ANY (ARRAY[...]) with numeric elements' do
+        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1, 2, 3])'))
+          .to eq(described_class.normalize_condition_sql('price IN (1, 2, 3)'))
+      end
+
+      it 'normalizes ANY (ARRAY[...]) with float elements' do
+        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1.5, 2.5])'))
+          .to eq(described_class.normalize_condition_sql('price IN (1.5, 2.5)'))
       end
     end
   end

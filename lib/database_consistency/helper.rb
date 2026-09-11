@@ -265,8 +265,13 @@ module DatabaseConsistency
       # Strips quoted identifiers (double quotes on PostgreSQL/SQLite,
       # backticks on MySQL) so the same column normalizes across adapters.
       normalized_sql = sql.gsub(/["`]/, '')
-      # `/::\w+/` removes PostgreSQL casts like `column::text`.
-      normalized_sql = normalized_sql.gsub(/::\w+/, '')
+      # Removes PostgreSQL casts such as `column::text`, `column::text[]`,
+      # `column::double precision`, `column::character varying`, and
+      # `column::timestamp without time zone`.
+      normalized_sql = normalized_sql.gsub(
+        /::(?:character\s+varying|double\s+precision|timestamp\s+(?:with|without)\s+time\s+zone|\w+)(?:\[\])?/i,
+        ''
+      )
       # `/\(([a-z_][\w.]*)\)/i` unwraps a bare identifier surrounded by
       # parentheses, e.g. `(internal_name)` -> `internal_name`.
       normalized_sql = normalized_sql.gsub(/\(([a-z_][\w.]*)\)/i, '\1')
