@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.0.12] - 2026/09/15
 
 - Mask string literals during predicate normalization to prevent false positives from SQL-like characters inside literal values. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this in [#317](https://github.com/djezzzl/database_consistency/pull/317)!
 
