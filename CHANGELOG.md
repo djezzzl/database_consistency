@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Mask string literals during predicate normalization to prevent false positives from SQL-like characters inside literal values. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this in [#317](https://github.com/djezzzl/database_consistency/pull/317)!
+
 ### [3.0.11] - 2026/08/24
 
 - Fix `MissingIndexFindByChecker` false positives for lookups by the leading column of a composite primary key. Thanks [Eito Katagiri](https://github.com/eito-katagiri-LITALICO) for reporting and fixing this!
