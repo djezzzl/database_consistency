@@ -108,10 +108,14 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         )
       end
 
-      it 'does not collapse AND inside a string literal' do
-        expect(described_class.normalize_condition_sql("name = 'foo AND bar'")).not_to eq(
-          described_class.normalize_condition_sql("name = 'foo bar'")
-        )
+      it 'preserves AND inside a string literal' do
+        expect(described_class.normalize_condition_sql("name = 'foo AND bar'"))
+          .to eq("name = 'foo AND bar'")
+      end
+
+      it 'preserves a literal containing AND while sorting real AND clauses' do
+        expect(described_class.normalize_condition_sql("name = 'foo AND bar' AND b = 1"))
+          .to eq("b = 1 AND name = 'foo AND bar'")
       end
 
       it 'does not unwrap parentheses around a value that looks like a column' do
@@ -127,6 +131,91 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       it 'keeps the inequality operator inside a literal' do
         expect(described_class.normalize_condition_sql("note = 'a <> b'")).not_to eq(
           described_class.normalize_condition_sql("note = 'a != b'")
+        )
+      end
+
+      it 'does not normalize TRUE or FALSE inside a string literal' do
+        expect(described_class.normalize_condition_sql("label = 'TRUE'")).to eq(
+          described_class.normalize_condition_sql("label = 'TRUE'")
+        )
+        expect(described_class.normalize_condition_sql("label = 'false'")).to eq(
+          described_class.normalize_condition_sql("label = 'false'")
+        )
+      end
+
+      it 'does not collapse whitespace inside a string literal' do
+        expect(described_class.normalize_condition_sql("label = 'foo  bar'")).not_to eq(
+          described_class.normalize_condition_sql("label = 'foo bar'")
+        )
+      end
+
+      it 'strips outer parentheses even when a literal contains an unmatched parenthesis' do
+        expect(described_class.normalize_condition_sql("(label = 'foo)bar')"))
+          .to eq(described_class.normalize_condition_sql("label = 'foo)bar'"))
+      end
+
+      it 'preserves an escaped inner boolean literal' do
+        expect(described_class.normalize_condition_sql("label = 'x = ''t'''"))
+          .to eq("label = 'x = ''t'''")
+      end
+    end
+
+    context 'with boolean predicate forms' do
+      it "normalizes PostgreSQL 't'/'f' literals with flexible whitespace" do
+        expect(described_class.normalize_condition_sql("flag='t'"))
+          .to eq(described_class.normalize_condition_sql('flag = 1'))
+        expect(described_class.normalize_condition_sql("flag  =   'f'"))
+          .to eq(described_class.normalize_condition_sql('flag = 0'))
+      end
+
+      it "normalizes inequality comparisons to 't'/'f' without collapsing equality" do
+        expect(described_class.normalize_condition_sql("flag <> 't'"))
+          .to eq(described_class.normalize_condition_sql('flag != 1'))
+        expect(described_class.normalize_condition_sql("flag != 'f'"))
+          .to eq(described_class.normalize_condition_sql('flag != 0'))
+        expect(described_class.normalize_condition_sql("flag <> 't'"))
+          .not_to eq(described_class.normalize_condition_sql("flag = 'f'"))
+      end
+
+      it 'normalizes IS TRUE and IS FALSE' do
+        expect(described_class.normalize_condition_sql('flag IS TRUE'))
+          .to eq(described_class.normalize_condition_sql('flag = 1'))
+        expect(described_class.normalize_condition_sql('flag IS FALSE'))
+          .to eq(described_class.normalize_condition_sql('flag = 0'))
+      end
+
+      it 'matches IS TRUE to = TRUE and = t' do
+        expect(described_class.normalize_condition_sql('flag IS TRUE'))
+          .to eq(described_class.normalize_condition_sql('flag = TRUE'))
+        expect(described_class.normalize_condition_sql('flag IS TRUE'))
+          .to eq(described_class.normalize_condition_sql("flag = 't'"))
+      end
+
+      it 'normalizes TRUE = TRUE to 1 = 1' do
+        expect(described_class.normalize_condition_sql('TRUE = TRUE')).to eq('1 = 1')
+      end
+
+      it 'normalizes IS NOT TRUE and IS NOT FALSE without collapsing equality' do
+        expect(described_class.normalize_condition_sql('flag IS NOT TRUE'))
+          .to eq(described_class.normalize_condition_sql('flag IS NOT 1'))
+        expect(described_class.normalize_condition_sql('flag IS NOT FALSE'))
+          .to eq(described_class.normalize_condition_sql('flag IS NOT 0'))
+        expect(described_class.normalize_condition_sql('flag IS NOT TRUE'))
+          .not_to eq(described_class.normalize_condition_sql("flag = 'f'"))
+      end
+
+      it 'normalizes boolean predicate forms on parenthesized columns' do
+        expect(described_class.normalize_condition_sql("(flag) = 't'"))
+          .to eq(described_class.normalize_condition_sql('flag = 1'))
+        expect(described_class.normalize_condition_sql('(flag) IS TRUE'))
+          .to eq(described_class.normalize_condition_sql('flag = 1'))
+        expect(described_class.normalize_condition_sql('(flag) IS NOT TRUE'))
+          .to eq(described_class.normalize_condition_sql('flag IS NOT 1'))
+      end
+
+      it 'preserves boolean keywords inside string literals' do
+        expect(described_class.normalize_condition_sql("label = 'IS TRUE'")).to eq(
+          described_class.normalize_condition_sql("label = 'IS TRUE'")
         )
       end
     end
@@ -233,6 +322,13 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
                  "'canon'::character varying])::text[]))"
                ))
           .to eq(described_class.normalize_condition_sql("state IN ('draft', 'canon')"))
+      end
+    end
+
+    context 'with real-world partial-index predicates' do
+      it 'strips outer parens when a literal has unmatched parens and normalizes booleans' do
+        expect(described_class.normalize_condition_sql("((label = 'Region (North)') AND active = TRUE)"))
+          .to eq(described_class.normalize_condition_sql("active = 1 AND label = 'Region (North)'"))
       end
     end
   end
