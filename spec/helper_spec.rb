@@ -93,4 +93,54 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       expect(models).to contain_exactly(Entities, Scoped::Entities, SubEntities)
     end
   end
+
+  describe '#normalize_condition_sql' do
+    context 'with string literals that contain metacharacters' do
+      it 'does not unwrap parentheses inside a string literal' do
+        expect(described_class.normalize_condition_sql("state = '(draft)'")).not_to eq(
+          described_class.normalize_condition_sql("state = 'draft'")
+        )
+      end
+
+      it 'does not strip casts inside a string literal' do
+        expect(described_class.normalize_condition_sql("label = 'a::text'")).not_to eq(
+          described_class.normalize_condition_sql("label = 'a'")
+        )
+      end
+
+      it 'does not collapse AND inside a string literal' do
+        expect(described_class.normalize_condition_sql("name = 'foo AND bar'")).not_to eq(
+          described_class.normalize_condition_sql("name = 'foo bar'")
+        )
+      end
+
+      it 'does not unwrap parentheses around a value that looks like a column' do
+        expect(described_class.normalize_condition_sql("code = '(none)'")).not_to eq(
+          described_class.normalize_condition_sql("code = 'none'")
+        )
+      end
+
+      it 'preserves escaped single quotes inside literals' do
+        expect(described_class.normalize_condition_sql("value = 'it''s'")).to include("'it''s'")
+      end
+
+      it 'keeps the inequality operator inside a literal' do
+        expect(described_class.normalize_condition_sql("note = 'a <> b'")).not_to eq(
+          described_class.normalize_condition_sql("note = 'a != b'")
+        )
+      end
+    end
+
+    context 'when identifiers are quoted' do
+      it 'strips double-quoted identifiers' do
+        expect(described_class.normalize_condition_sql("\"state\" = 'draft'"))
+          .to eq(described_class.normalize_condition_sql("state = 'draft'"))
+      end
+
+      it 'strips backtick-quoted identifiers' do
+        expect(described_class.normalize_condition_sql("`state` = 'draft'"))
+          .to eq(described_class.normalize_condition_sql("state = 'draft'"))
+      end
+    end
+  end
 end
