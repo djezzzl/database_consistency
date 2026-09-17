@@ -97,15 +97,13 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
   describe '#normalize_condition_sql' do
     context 'with string literals that contain metacharacters' do
       it 'does not unwrap parentheses inside a string literal' do
-        expect(described_class.normalize_condition_sql("state = '(draft)'")).not_to eq(
-          described_class.normalize_condition_sql("state = 'draft'")
-        )
+        expect(described_class.normalize_condition_sql("state = '(draft)'"))
+          .to eq("state = '(draft)'")
       end
 
       it 'does not strip casts inside a string literal' do
-        expect(described_class.normalize_condition_sql("label = 'a::text'")).not_to eq(
-          described_class.normalize_condition_sql("label = 'a'")
-        )
+        expect(described_class.normalize_condition_sql("label = 'a::text'"))
+          .to eq("label = 'a::text'")
       end
 
       it 'preserves AND inside a string literal' do
@@ -119,9 +117,8 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'does not unwrap parentheses around a value that looks like a column' do
-        expect(described_class.normalize_condition_sql("code = '(none)'")).not_to eq(
-          described_class.normalize_condition_sql("code = 'none'")
-        )
+        expect(described_class.normalize_condition_sql("code = '(none)'"))
+          .to eq("code = '(none)'")
       end
 
       it 'preserves escaped single quotes inside literals' do
@@ -129,24 +126,18 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'keeps the inequality operator inside a literal' do
-        expect(described_class.normalize_condition_sql("note = 'a <> b'")).not_to eq(
-          described_class.normalize_condition_sql("note = 'a != b'")
-        )
+        expect(described_class.normalize_condition_sql("note = 'a <> b'"))
+          .to eq("note = 'a <> b'")
       end
 
       it 'does not normalize TRUE or FALSE inside a string literal' do
-        expect(described_class.normalize_condition_sql("label = 'TRUE'")).to eq(
-          described_class.normalize_condition_sql("label = 'TRUE'")
-        )
-        expect(described_class.normalize_condition_sql("label = 'false'")).to eq(
-          described_class.normalize_condition_sql("label = 'false'")
-        )
+        expect(described_class.normalize_condition_sql("label = 'TRUE'")).to eq("label = 'TRUE'")
+        expect(described_class.normalize_condition_sql("label = 'false'")).to eq("label = 'false'")
       end
 
       it 'does not collapse whitespace inside a string literal' do
-        expect(described_class.normalize_condition_sql("label = 'foo  bar'")).not_to eq(
-          described_class.normalize_condition_sql("label = 'foo bar'")
-        )
+        expect(described_class.normalize_condition_sql("label = 'foo  bar'"))
+          .to eq("label = 'foo  bar'")
       end
 
       it 'strips outer parentheses even when a literal contains an unmatched parenthesis' do
@@ -169,12 +160,9 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it "normalizes inequality comparisons to 't'/'f' without collapsing equality" do
-        expect(described_class.normalize_condition_sql("flag <> 't'"))
-          .to eq(described_class.normalize_condition_sql('flag != 1'))
-        expect(described_class.normalize_condition_sql("flag != 'f'"))
-          .to eq(described_class.normalize_condition_sql('flag != 0'))
-        expect(described_class.normalize_condition_sql("flag <> 't'"))
-          .not_to eq(described_class.normalize_condition_sql("flag = 'f'"))
+        expect(described_class.normalize_condition_sql("flag <> 't'")).to eq('flag != 1')
+        expect(described_class.normalize_condition_sql("flag != 'f'")).to eq('flag != 0')
+        expect(described_class.normalize_condition_sql("flag = 'f'")).to eq('flag = 0')
       end
 
       it 'normalizes IS TRUE and IS FALSE' do
@@ -195,13 +183,9 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         expect(described_class.normalize_condition_sql('TRUE = TRUE')).to eq('1 = 1')
       end
 
-      it 'normalizes IS NOT TRUE and IS NOT FALSE without collapsing equality' do
-        expect(described_class.normalize_condition_sql('flag IS NOT TRUE'))
-          .to eq(described_class.normalize_condition_sql('flag IS NOT 1'))
-        expect(described_class.normalize_condition_sql('flag IS NOT FALSE'))
-          .to eq(described_class.normalize_condition_sql('flag IS NOT 0'))
-        expect(described_class.normalize_condition_sql('flag IS NOT TRUE'))
-          .not_to eq(described_class.normalize_condition_sql("flag = 'f'"))
+      it 'normalizes IS NOT TRUE and IS NOT FALSE' do
+        expect(described_class.normalize_condition_sql('flag IS NOT TRUE')).to eq('flag IS NOT 1')
+        expect(described_class.normalize_condition_sql('flag IS NOT FALSE')).to eq('flag IS NOT 0')
       end
 
       it 'normalizes boolean predicate forms on parenthesized columns' do
@@ -214,9 +198,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'preserves boolean keywords inside string literals' do
-        expect(described_class.normalize_condition_sql("label = 'IS TRUE'")).to eq(
-          described_class.normalize_condition_sql("label = 'IS TRUE'")
-        )
+        expect(described_class.normalize_condition_sql("label = 'IS TRUE'")).to eq("label = 'IS TRUE'")
       end
     end
 
@@ -264,9 +246,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'does not unwrap parentheses around a number-string literal' do
-        expect(described_class.normalize_condition_sql("code = '(0)'")).not_to eq(
-          described_class.normalize_condition_sql("code = '0'")
-        )
+        expect(described_class.normalize_condition_sql("code = '(0)'")).to eq("code = '(0)'")
       end
     end
 
