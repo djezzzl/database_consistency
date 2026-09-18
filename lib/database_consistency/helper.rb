@@ -197,10 +197,11 @@ module DatabaseConsistency
     # Normalizes SQL predicates into a canonical form so semantically equivalent
     # Rails validators and database partial indexes can be compared safely.
     def normalize_condition_sql(sql)
-      # Literal-specific normalizations (PostgreSQL 't'/'f') run before masking
-      # so they can see the literal. Everything structural runs after masking so
-      # it cannot corrupt literal contents.
+      # Literal-specific normalizations (unquoting a coerced number, PostgreSQL
+      # 't'/'f') run before masking so they can see the literal. Everything
+      # structural runs after masking so it cannot corrupt literal contents.
       masked_sql, literals = sql.to_s
+                                .then { |value| unquote_numeric_literals(value) }
                                 .then { |value| normalize_sql_pre_mask_boolean_literals(value) }
                                 .then { |value| mask_condition_literals(value) }
 
@@ -250,6 +251,17 @@ module DatabaseConsistency
         sql = sql.sub(format(LITERAL_PLACEHOLDER, index: index)) { literal }
       end
       sql
+    end
+
+    # PostgreSQL writes any literal it had to coerce as a quoted string with a
+    # cast: `-1` becomes `'-1'::integer`, `-1.5` becomes `'-1.5'::numeric` and
+    # `1e+20` becomes `'1e+20'::double precision`. Unquoting those lets them line
+    # up with the bare numbers Active Record generates. A `::text` cast is left
+    # alone so a genuine string comparison keeps its quotes.
+    def unquote_numeric_literals(sql)
+      sql.gsub(
+        /'(-?\d+(?:\.\d+)?(?:e[+-]?\d+)?)'(?=::(?:integer|bigint|numeric|double\s+precision)\b)/i
+      ) { Regexp.last_match(1) }
     end
 
     # Normalizations that intentionally operate on literal values and therefore

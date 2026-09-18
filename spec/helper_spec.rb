@@ -315,10 +315,11 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
     end
 
-    # A quoted value carries a cast that says whether PostgreSQL wrote it as a
-    # number it had to coerce or as a genuine string: `::integer`, `::numeric`
-    # and `::double precision` for a number, `::text` for a string. These pin
-    # the string side, where the quotes have to survive.
+    # PostgreSQL quotes every negative literal, and the only thing separating
+    # one from a genuine string is the cast it carries: `::integer`, `::bigint`,
+    # `::numeric` or `::double precision` for a number, `::text` for a string.
+    # A number loses its quotes so it lines up with the bare one Active Record
+    # writes; a string keeps them.
     context 'with negative and exponent numeric literals' do
       it 'leaves a quoted value carrying a text cast alone' do
         expect(described_class.normalize_condition_sql("((code)::text = '-1'::text)")).to eq("code = '-1'")
@@ -334,9 +335,58 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq("code IN ('-1', '2')")
       end
 
+      it 'keeps every digit of a wide numeric literal' do
+        expect(described_class.normalize_condition_sql("(amount > '1000000000000000000000000000000'::numeric)"))
+          .to eq('amount > 1000000000000000000000000000000')
+      end
+
+      it 'unquotes a bigint literal' do
+        expect(described_class.normalize_condition_sql("(b > '3000000000'::bigint)")).to eq('b > 3000000000')
+        expect(described_class.normalize_condition_sql("(b > '-3000000000'::bigint)")).to eq('b > -3000000000')
+      end
+
+      it 'unquotes a positive literal that Postgres had to coerce' do
+        expect(described_class.normalize_condition_sql("(amount > '100000000000000000000'::numeric)"))
+          .to eq('amount > 100000000000000000000')
+      end
+
+      it 'unquotes only the numeric side of a mixed predicate' do
+        expect(
+          described_class.normalize_condition_sql(
+            "(((code)::text = '-1'::text) AND (amount > ('-1'::integer)::numeric))"
+          )
+        ).to eq("amount > -1 AND code = '-1'")
+      end
+
       it 'leaves a string literal that merely contains a cast alone' do
         expect(described_class.normalize_condition_sql("((code)::text = '-1::numeric'::text)"))
           .to eq("code = '-1::numeric'")
+      end
+
+      it 'keeps a negative operand parenthesized where precedence needs it' do
+        expect(described_class.normalize_condition_sql("((qty % '-3'::integer) = 0)")).to eq('(qty % -3) = 0')
+      end
+
+      it 'matches a negative integer against the Active Record spelling' do
+        expect(described_class.normalize_condition_sql("(qty > '-1'::integer)")).to eq('qty > -1')
+      end
+
+      it 'matches a negative integer widened by a nested numeric cast' do
+        expect(described_class.normalize_condition_sql("(amount > ('-1'::integer)::numeric)")).to eq('amount > -1')
+      end
+
+      it 'matches a negative decimal against the Active Record spelling' do
+        expect(described_class.normalize_condition_sql("(amount > '-1.5'::numeric)")).to eq('amount > -1.5')
+      end
+
+      it 'matches a negative float through its numeric cast' do
+        expect(described_class.normalize_condition_sql("(ratio > ('-1.5'::numeric)::double precision)"))
+          .to eq('ratio > -1.5')
+      end
+
+      it 'matches a negative element inside an ARRAY' do
+        expect(described_class.normalize_condition_sql("(qty = ANY (ARRAY['-1'::integer, 2]))"))
+          .to eq('qty IN (-1, 2)')
       end
 
       it 'does not expand digits that belong to an identifier' do
