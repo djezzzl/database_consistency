@@ -420,16 +420,27 @@ module DatabaseConsistency
       normalized_sql.gsub(/\s+/, ' ').strip
     end
 
-    # Rewrites PostgreSQL's `= ANY (ARRAY[...])` form into an `IN (...)` form
-    # so it matches the SQL Active Record typically generates for arrays.
+    # Rewrites PostgreSQL's `= ANY (ARRAY[...])` and `<> ALL (ARRAY[...])` forms
+    # into the `IN (...)` and `NOT IN (...)` Active Record generates for arrays.
+    # `<>` has already become `!=` by this point in the pipeline.
     def normalize_array_any_predicates(sql)
       sql.gsub(
-        # Matches `column = ANY (ARRAY[...])` or `column = ANY ((ARRAY[...]))`,
-        # capturing the column name and the full array payload so it can be
-        # converted to `column IN (...)`. The optional inner parentheses come
-        # from Postgres indexdefs that wrap the array expression before casting.
-        /([a-z_][\w.]*)\s*=\s*ANY\s*\(\(?ARRAY\[(.*?)\]\)?\)/i
-      ) { "#{Regexp.last_match(1)} IN (#{Regexp.last_match(2).gsub(/\s+/, ' ').strip})" }
+        # Matches `column = ANY (ARRAY[...])` or `column != ALL ((ARRAY[...]))`,
+        # capturing the column name, the operator and the array payload. The
+        # inner parentheses come from Postgres indexdefs that wrap the array
+        # expression before casting; they are optional, but both or neither,
+        # so a group enclosing the whole predicate keeps its own.
+        /
+          (?<column>[a-z_][\w.]*)\s*
+          (?<operator>=\s*ANY|(?:!=|<>)\s*ALL)\s*
+          \( (?: \(ARRAY\[(?<items>.*?)\]\) | ARRAY\[(?<items>.*?)\] ) \)
+        /xi
+      ) do
+        match = Regexp.last_match
+        membership = match[:operator].match?(/ANY/i) ? 'IN' : 'NOT IN'
+
+        "#{match[:column]} #{membership} (#{match[:items].gsub(/\s+/, ' ').strip})"
+      end
     end
 
     # Rewrites negated "blank or nil" predicates into the same shape used by

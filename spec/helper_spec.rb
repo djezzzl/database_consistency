@@ -309,6 +309,57 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq("state IN ('draft', 'published')")
       end
 
+      # The inner parentheses of the array expression are optional but always
+      # come as a pair, so a group enclosing the whole predicate keeps its own
+      # closing parenthesis and the clauses around it can still be sorted.
+      it 'leaves the parentheses of an enclosing group alone' do
+        expect(described_class.normalize_condition_sql('((qty = ANY (ARRAY[1, 2])) AND (a = 1))'))
+          .to eq('a = 1 AND qty IN (1, 2)')
+      end
+
+      it 'leaves them alone when the array expression carries the inner pair' do
+        expect(described_class.normalize_condition_sql(
+                 "(((state)::text = ANY ((ARRAY['x'::character varying])::text[])) AND (qty > 0))"
+               ))
+          .to eq("qty > 0 AND state IN ('x')")
+      end
+
+      it 'leaves them alone for a NOT IN inside a group' do
+        expect(described_class.normalize_condition_sql("(((state)::text <> ALL (ARRAY['x'::text])) AND (qty > 0))"))
+          .to eq("qty > 0 AND state NOT IN ('x')")
+      end
+
+      # PostgreSQL deparses `NOT IN` as `<> ALL (ARRAY[...])`, the mirror of
+      # the `= ANY (ARRAY[...])` it deparses `IN` into. `where.not(col: [...])`
+      # is what puts it in front of us.
+      it 'normalizes ALL (ARRAY[...]) to NOT IN (...)' do
+        expect(described_class.normalize_condition_sql("state <> ALL (ARRAY['x', 'y'])"))
+          .to eq("state NOT IN ('x', 'y')")
+      end
+
+      it 'normalizes ALL (ARRAY[...]) with one element' do
+        expect(described_class.normalize_condition_sql("state <> ALL (ARRAY['x'])"))
+          .to eq("state NOT IN ('x')")
+      end
+
+      it 'normalizes ALL (ARRAY[...]) with numeric elements' do
+        expect(described_class.normalize_condition_sql('qty <> ALL (ARRAY[1, 2])'))
+          .to eq('qty NOT IN (1, 2)')
+      end
+
+      it 'normalizes an ALL array whose elements carry a cast' do
+        expect(described_class.normalize_condition_sql("((state)::text <> ALL (ARRAY['x'::text, 'y'::text]))"))
+          .to eq("state NOT IN ('x', 'y')")
+      end
+
+      it 'normalizes a Postgres indexdef-style ALL array wrapped in extra parentheses' do
+        expect(described_class.normalize_condition_sql(
+                 "((state)::text <> ALL ((ARRAY['x'::character varying, " \
+                 "'y'::character varying])::text[]))"
+               ))
+          .to eq("state NOT IN ('x', 'y')")
+      end
+
       it 'normalizes the NOT IN that Active Record generates to the same thing' do
         expect(described_class.normalize_condition_sql("state NOT IN ('x', 'y')"))
           .to eq("state NOT IN ('x', 'y')")
