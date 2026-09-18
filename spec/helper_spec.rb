@@ -142,7 +142,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
 
       it 'strips outer parentheses even when a literal contains an unmatched parenthesis' do
         expect(described_class.normalize_condition_sql("(label = 'foo)bar')"))
-          .to eq(described_class.normalize_condition_sql("label = 'foo)bar'"))
+          .to eq("label = 'foo)bar'")
       end
 
       it 'preserves an escaped inner boolean literal' do
@@ -309,29 +309,28 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq("state IN ('draft', 'published')")
       end
 
-      # The inner parentheses of the array expression are optional but always
-      # come as a pair, so a group enclosing the whole predicate keeps its own
-      # closing parenthesis and the clauses around it can still be sorted.
-      it 'leaves the parentheses of an enclosing group alone' do
+      # The parentheses around `ARRAY[...]` are optional but always come as a
+      # pair, so a group enclosing the whole predicate keeps its own.
+      it 'leaves an enclosing group intact around an IN list' do
         expect(described_class.normalize_condition_sql('((qty = ANY (ARRAY[1, 2])) AND (a = 1))'))
           .to eq('a = 1 AND qty IN (1, 2)')
       end
 
-      it 'leaves them alone when the array expression carries the inner pair' do
+      it 'leaves it intact when the array carries the optional pair as well' do
         expect(described_class.normalize_condition_sql(
                  "(((state)::text = ANY ((ARRAY['x'::character varying])::text[])) AND (qty > 0))"
                ))
           .to eq("qty > 0 AND state IN ('x')")
       end
 
-      it 'leaves them alone for a NOT IN inside a group' do
+      it 'leaves an enclosing group intact around a NOT IN list' do
         expect(described_class.normalize_condition_sql("(((state)::text <> ALL (ARRAY['x'::text])) AND (qty > 0))"))
           .to eq("qty > 0 AND state NOT IN ('x')")
       end
 
-      # PostgreSQL deparses `NOT IN` as `<> ALL (ARRAY[...])`, the mirror of
-      # the `= ANY (ARRAY[...])` it deparses `IN` into. `where.not(col: [...])`
-      # is what puts it in front of us.
+      # PostgreSQL deparses `NOT IN` as `<> ALL (ARRAY[...])`, the mirror of the
+      # `= ANY (ARRAY[...])` it deparses `IN` into. `where.not(col: [...])` is
+      # what generates it.
       it 'normalizes ALL (ARRAY[...]) to NOT IN (...)' do
         expect(described_class.normalize_condition_sql("state <> ALL (ARRAY['x', 'y'])"))
           .to eq("state NOT IN ('x', 'y')")
@@ -360,14 +359,14 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq("state NOT IN ('x', 'y')")
       end
 
-      it 'normalizes the NOT IN that Active Record generates to the same thing' do
+      it 'leaves the NOT IN Active Record generates unchanged' do
         expect(described_class.normalize_condition_sql("state NOT IN ('x', 'y')"))
           .to eq("state NOT IN ('x', 'y')")
       end
     end
 
-    # PostgreSQL quotes every negative literal, and the only thing separating
-    # one from a genuine string is the cast it carries: `::integer`, `::bigint`,
+    # PostgreSQL quotes every negative and every exponent literal, and the only
+    # thing separating one from a string is the cast: `::integer`, `::bigint`,
     # `::numeric` or `::double precision` for a number, `::text` for a string.
     # A number loses its quotes so it lines up with the bare one Active Record
     # writes; a string keeps them.
@@ -418,33 +417,33 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         expect(described_class.normalize_condition_sql("((qty % '-3'::integer) = 0)")).to eq('(qty % -3) = 0')
       end
 
-      it 'matches a negative integer against the Active Record spelling' do
+      it 'unquotes a negative integer' do
         expect(described_class.normalize_condition_sql("(qty > '-1'::integer)")).to eq('qty > -1')
       end
 
-      it 'matches a negative integer widened by a nested numeric cast' do
+      it 'unquotes a negative integer widened by a nested numeric cast' do
         expect(described_class.normalize_condition_sql("(amount > ('-1'::integer)::numeric)")).to eq('amount > -1')
       end
 
-      it 'matches a negative decimal against the Active Record spelling' do
+      it 'unquotes a negative decimal' do
         expect(described_class.normalize_condition_sql("(amount > '-1.5'::numeric)")).to eq('amount > -1.5')
       end
 
-      it 'matches a negative float through its numeric cast' do
+      it 'unquotes a negative float through its numeric cast' do
         expect(described_class.normalize_condition_sql("(ratio > ('-1.5'::numeric)::double precision)"))
           .to eq('ratio > -1.5')
       end
 
-      it 'matches a negative element inside an ARRAY' do
+      it 'unquotes a negative element inside an ARRAY' do
         expect(described_class.normalize_condition_sql("(qty = ANY (ARRAY['-1'::integer, 2]))"))
           .to eq('qty IN (-1, 2)')
       end
 
-      it 'expands an exponent literal the way Postgres expands it on a numeric column' do
+      it 'expands an exponent literal to the decimal Postgres writes' do
         expect(described_class.normalize_condition_sql("(ratio > '1e+20'::double precision)"))
           .to eq('ratio > 100000000000000000000')
-        expect(described_class.normalize_condition_sql("(amount > '100000000000000000000'::numeric)"))
-          .to eq('amount > 100000000000000000000')
+        expect(described_class.normalize_condition_sql("(ratio > '1e-20'::double precision)"))
+          .to eq('ratio > 0.00000000000000000001')
       end
 
       it 'expands a negative exponent with a fractional mantissa' do
@@ -452,9 +451,15 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq('ratio > -0.00000000000000000000000015')
       end
 
-      it 'converges an exponent against the decimal Postgres already expanded' do
+      # Active Record writes a float with an explicit `.0` mantissa.
+      it 'expands the exponent Active Record writes to the same digits' do
+        expect(described_class.normalize_condition_sql('ratio > 1.0e+20')).to eq('ratio > 100000000000000000000')
+        expect(described_class.normalize_condition_sql('ratio > 1.0e-20')).to eq('ratio > 0.00000000000000000001')
+      end
+
+      it 'leaves a decimal Postgres has already expanded alone' do
         expect(described_class.normalize_condition_sql('(amount > 0.00000000000000000001)'))
-          .to eq(described_class.normalize_condition_sql('amount > 1.0e-20'))
+          .to eq('amount > 0.00000000000000000001')
       end
 
       it 'expands an exponent element inside an ARRAY' do
@@ -467,16 +472,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
 
       it 'does not expand digits that belong to an identifier' do
         expect(described_class.normalize_condition_sql('a1e5 = 1')).to eq('a1e5 = 1')
-      end
-
-      it 'converges the two spellings of a large exponent literal' do
-        expect(described_class.normalize_condition_sql("(ratio > '1e+20'::double precision)"))
-          .to eq(described_class.normalize_condition_sql('ratio > 1.0e+20'))
-      end
-
-      it 'converges the two spellings of a small exponent literal' do
-        expect(described_class.normalize_condition_sql("(ratio > '1e-20'::double precision)"))
-          .to eq(described_class.normalize_condition_sql('ratio > 1.0e-20'))
       end
     end
 
