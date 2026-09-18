@@ -303,6 +303,45 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
                ))
           .to eq(described_class.normalize_condition_sql("state IN ('draft', 'canon')"))
       end
+
+      it 'keeps the parentheses of an IN list' do
+        expect(described_class.normalize_condition_sql("(state IN ('draft', 'published'))"))
+          .to eq("state IN ('draft', 'published')")
+      end
+
+      it 'normalizes the NOT IN that Active Record generates to the same thing' do
+        expect(described_class.normalize_condition_sql("state NOT IN ('x', 'y')"))
+          .to eq("state NOT IN ('x', 'y')")
+      end
+    end
+
+    # A quoted value carries a cast that says whether PostgreSQL wrote it as a
+    # number it had to coerce or as a genuine string: `::integer`, `::numeric`
+    # and `::double precision` for a number, `::text` for a string. These pin
+    # the string side, where the quotes have to survive.
+    context 'with negative and exponent numeric literals' do
+      it 'leaves a quoted value carrying a text cast alone' do
+        expect(described_class.normalize_condition_sql("((code)::text = '-1'::text)")).to eq("code = '-1'")
+        expect(described_class.normalize_condition_sql("code = '-1'")).to eq("code = '-1'")
+      end
+
+      it 'leaves a quoted exponent carrying a text cast alone' do
+        expect(described_class.normalize_condition_sql("((code)::text = '1e+20'::text)")).to eq("code = '1e+20'")
+      end
+
+      it 'leaves the elements of a string array alone' do
+        expect(described_class.normalize_condition_sql("((code)::text = ANY (ARRAY['-1'::text, '2'::text]))"))
+          .to eq("code IN ('-1', '2')")
+      end
+
+      it 'leaves a string literal that merely contains a cast alone' do
+        expect(described_class.normalize_condition_sql("((code)::text = '-1::numeric'::text)"))
+          .to eq("code = '-1::numeric'")
+      end
+
+      it 'does not expand digits that belong to an identifier' do
+        expect(described_class.normalize_condition_sql('a1e5 = 1')).to eq('a1e5 = 1')
+      end
     end
 
     context 'with real-world partial-index predicates' do
