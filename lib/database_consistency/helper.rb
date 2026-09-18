@@ -307,6 +307,33 @@ module DatabaseConsistency
       normalized_sql.gsub(/\s+/, ' ').strip
     end
 
+    # Rewrites exponent notation as the plain decimal PostgreSQL itself writes
+    # when it expands a literal, so `1e+20` and the `1.0e+20` Active Record
+    # generates reach the same string. The digits are shifted as text rather
+    # than through a float, so a wide value keeps every one of them.
+    def expand_exponent_literals(sql)
+      sql.gsub(/(?<![\w.])(-?)(\d+)(?:\.(\d+))?e([+-]?\d+)/i) do
+        match = Regexp.last_match
+        shift_decimal_point(match[1], "#{match[2]}#{match[3]}", match[2].length + match[4].to_i)
+      end
+    end
+
+    # Places the decimal point `position` digits into `digits`, padding with
+    # zeros on whichever side falls short and dropping a fraction that ends in
+    # them, so `1e-20` and `1.0e-20` land on the same digits.
+    def shift_decimal_point(sign, digits, position)
+      expanded =
+        if position >= digits.length
+          digits + ('0' * (position - digits.length))
+        elsif position.positive?
+          "#{digits[0...position]}.#{digits[position..]}"
+        else
+          "0.#{'0' * -position}#{digits}"
+        end
+
+      "#{sign}#{expanded}".sub(/(\.\d*?)0+\z/, '\1').chomp('.')
+    end
+
     # Normalizations that run while string literals are masked.
     def normalize_sql_post_mask(sql)
       # Strips quoted identifiers (double quotes on PostgreSQL/SQLite,
@@ -319,6 +346,7 @@ module DatabaseConsistency
         /::(?:character\s+varying|double\s+precision|timestamp\s+(?:with|without)\s+time\s+zone|\w+)(?:\[\])?/i,
         ''
       )
+      normalized_sql = expand_exponent_literals(normalized_sql)
       # `/\(([a-z_][\w.]*)\)/i` unwraps a bare identifier surrounded by
       # parentheses, e.g. `(internal_name)` -> `internal_name`.
       normalized_sql = normalized_sql.gsub(/\(([a-z_][\w.]*)\)/i, '\1')

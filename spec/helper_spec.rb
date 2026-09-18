@@ -389,8 +389,43 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
           .to eq('qty IN (-1, 2)')
       end
 
+      it 'expands an exponent literal the way Postgres expands it on a numeric column' do
+        expect(described_class.normalize_condition_sql("(ratio > '1e+20'::double precision)"))
+          .to eq('ratio > 100000000000000000000')
+        expect(described_class.normalize_condition_sql("(amount > '100000000000000000000'::numeric)"))
+          .to eq('amount > 100000000000000000000')
+      end
+
+      it 'expands a negative exponent with a fractional mantissa' do
+        expect(described_class.normalize_condition_sql("(ratio > '-1.5e-25'::double precision)"))
+          .to eq('ratio > -0.00000000000000000000000015')
+      end
+
+      it 'converges an exponent against the decimal Postgres already expanded' do
+        expect(described_class.normalize_condition_sql('(amount > 0.00000000000000000001)'))
+          .to eq(described_class.normalize_condition_sql('amount > 1.0e-20'))
+      end
+
+      it 'expands an exponent element inside an ARRAY' do
+        expect(
+          described_class.normalize_condition_sql(
+            "(ratio = ANY (ARRAY['1e+20'::double precision, (2)::double precision]))"
+          )
+        ).to eq('ratio IN (100000000000000000000, 2)')
+      end
+
       it 'does not expand digits that belong to an identifier' do
         expect(described_class.normalize_condition_sql('a1e5 = 1')).to eq('a1e5 = 1')
+      end
+
+      it 'converges the two spellings of a large exponent literal' do
+        expect(described_class.normalize_condition_sql("(ratio > '1e+20'::double precision)"))
+          .to eq(described_class.normalize_condition_sql('ratio > 1.0e+20'))
+      end
+
+      it 'converges the two spellings of a small exponent literal' do
+        expect(described_class.normalize_condition_sql("(ratio > '1e-20'::double precision)"))
+          .to eq(described_class.normalize_condition_sql('ratio > 1.0e-20'))
       end
     end
 
