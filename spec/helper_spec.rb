@@ -153,10 +153,8 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
 
     context 'with boolean predicate forms' do
       it "normalizes PostgreSQL 't'/'f' literals with flexible whitespace" do
-        expect(described_class.normalize_condition_sql("flag='t'"))
-          .to eq(described_class.normalize_condition_sql('flag = 1'))
-        expect(described_class.normalize_condition_sql("flag  =   'f'"))
-          .to eq(described_class.normalize_condition_sql('flag = 0'))
+        expect(described_class.normalize_condition_sql("flag='t'")).to eq('flag = 1')
+        expect(described_class.normalize_condition_sql("flag  =   'f'")).to eq('flag = 0')
       end
 
       it "normalizes inequality comparisons to 't'/'f' without collapsing equality" do
@@ -166,17 +164,13 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'normalizes IS TRUE and IS FALSE' do
-        expect(described_class.normalize_condition_sql('flag IS TRUE'))
-          .to eq(described_class.normalize_condition_sql('flag = 1'))
-        expect(described_class.normalize_condition_sql('flag IS FALSE'))
-          .to eq(described_class.normalize_condition_sql('flag = 0'))
+        expect(described_class.normalize_condition_sql('flag IS TRUE')).to eq('flag = 1')
+        expect(described_class.normalize_condition_sql('flag IS FALSE')).to eq('flag = 0')
       end
 
-      it 'matches IS TRUE to = TRUE and = t' do
-        expect(described_class.normalize_condition_sql('flag IS TRUE'))
-          .to eq(described_class.normalize_condition_sql('flag = TRUE'))
-        expect(described_class.normalize_condition_sql('flag IS TRUE'))
-          .to eq(described_class.normalize_condition_sql("flag = 't'"))
+      it "normalizes = TRUE and = 't' to the same comparison as IS TRUE" do
+        expect(described_class.normalize_condition_sql('flag = TRUE')).to eq('flag = 1')
+        expect(described_class.normalize_condition_sql("flag = 't'")).to eq('flag = 1')
       end
 
       it 'normalizes TRUE = TRUE to 1 = 1' do
@@ -189,12 +183,9 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'normalizes boolean predicate forms on parenthesized columns' do
-        expect(described_class.normalize_condition_sql("(flag) = 't'"))
-          .to eq(described_class.normalize_condition_sql('flag = 1'))
-        expect(described_class.normalize_condition_sql('(flag) IS TRUE'))
-          .to eq(described_class.normalize_condition_sql('flag = 1'))
-        expect(described_class.normalize_condition_sql('(flag) IS NOT TRUE'))
-          .to eq(described_class.normalize_condition_sql('flag IS NOT 1'))
+        expect(described_class.normalize_condition_sql("(flag) = 't'")).to eq('flag = 1')
+        expect(described_class.normalize_condition_sql('(flag) IS TRUE')).to eq('flag = 1')
+        expect(described_class.normalize_condition_sql('(flag) IS NOT TRUE')).to eq('flag IS NOT 1')
       end
 
       it 'preserves boolean keywords inside string literals' do
@@ -204,45 +195,38 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
 
     context 'when identifiers are quoted' do
       it 'strips double-quoted identifiers' do
-        expect(described_class.normalize_condition_sql("\"state\" = 'draft'"))
-          .to eq(described_class.normalize_condition_sql("state = 'draft'"))
+        expect(described_class.normalize_condition_sql("\"state\" = 'draft'")).to eq("state = 'draft'")
       end
 
       it 'strips backtick-quoted identifiers' do
-        expect(described_class.normalize_condition_sql("`state` = 'draft'"))
-          .to eq(described_class.normalize_condition_sql("state = 'draft'"))
+        expect(described_class.normalize_condition_sql("`state` = 'draft'")).to eq("state = 'draft'")
       end
     end
 
     context 'with parenthesized numeric literals' do
       it 'unwraps a parenthesized integer literal with a cast' do
-        expect(described_class.normalize_condition_sql('price > (0)::numeric'))
-          .to eq(described_class.normalize_condition_sql('price > 0'))
+        expect(described_class.normalize_condition_sql('price > (0)::numeric')).to eq('price > 0')
       end
 
       it 'unwraps a parenthesized decimal literal with a cast' do
-        expect(described_class.normalize_condition_sql('price > (0.0)::float8'))
-          .to eq(described_class.normalize_condition_sql('price > 0.0'))
+        expect(described_class.normalize_condition_sql('price > (0.0)::float8')).to eq('price > 0.0')
       end
 
       it 'unwraps a parenthesized small decimal literal' do
-        expect(described_class.normalize_condition_sql('price > (0.00001)::double precision'))
-          .to eq(described_class.normalize_condition_sql('price > 0.00001'))
+        expect(described_class.normalize_condition_sql('price > (0.00001)::double precision')).to eq('price > 0.00001')
       end
 
       it 'unwraps a parenthesized large integer literal with a cast' do
-        expect(described_class.normalize_condition_sql('price > (1000000)::numeric'))
-          .to eq(described_class.normalize_condition_sql('price > 1000000'))
+        expect(described_class.normalize_condition_sql('price > (1000000)::numeric')).to eq('price > 1000000')
       end
 
       it 'unwraps a parenthesized decimal through nested casts' do
-        expect(described_class.normalize_condition_sql('price > ((1.23)::real)::numeric'))
-          .to eq(described_class.normalize_condition_sql('price > 1.23'))
+        expect(described_class.normalize_condition_sql('price > ((1.23)::real)::numeric')).to eq('price > 1.23')
       end
 
       it 'unwraps a decimal through three levels of nested casts' do
         expect(described_class.normalize_condition_sql('price > (((1.23)::real)::numeric)::double precision'))
-          .to eq(described_class.normalize_condition_sql('price > 1.23'))
+          .to eq('price > 1.23')
       end
 
       it 'does not unwrap parentheses around a number-string literal' do
@@ -252,48 +236,43 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
 
     context 'with multi-word and array casts' do
       it 'strips a double precision cast' do
-        expect(described_class.normalize_condition_sql('price > (0.0)::double precision'))
-          .to eq(described_class.normalize_condition_sql('price > 0.0'))
+        expect(described_class.normalize_condition_sql('price > (0.0)::double precision')).to eq('price > 0.0')
       end
 
       it 'strips a character varying cast' do
-        expect(described_class.normalize_condition_sql("label = 'x'::character varying"))
-          .to eq(described_class.normalize_condition_sql("label = 'x'"))
+        expect(described_class.normalize_condition_sql("label = 'x'::character varying")).to eq("label = 'x'")
       end
 
       it 'strips a timestamp without time zone cast' do
         expect(described_class.normalize_condition_sql("created_at > '2024-01-01'::timestamp without time zone"))
-          .to eq(described_class.normalize_condition_sql("created_at > '2024-01-01'"))
+          .to eq("created_at > '2024-01-01'")
       end
 
       it 'strips an array cast and normalizes ANY (ARRAY[...]) to IN (...)' do
         expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'::character varying]::text[])"))
-          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+          .to eq("state IN ('draft')")
       end
 
       it 'normalizes a simple ANY (ARRAY[...]) with one text element' do
-        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'])"))
-          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+        expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'])")).to eq("state IN ('draft')")
       end
 
       it 'normalizes a simple ANY (ARRAY[...]) with multiple text elements' do
         expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft', 'published'])"))
-          .to eq(described_class.normalize_condition_sql("state IN ('draft', 'published')"))
+          .to eq("state IN ('draft', 'published')")
       end
 
       it 'normalizes ANY (ARRAY[...]) with a cast element' do
         expect(described_class.normalize_condition_sql("state = ANY (ARRAY['draft'::text])"))
-          .to eq(described_class.normalize_condition_sql("state IN ('draft')"))
+          .to eq("state IN ('draft')")
       end
 
       it 'normalizes ANY (ARRAY[...]) with numeric elements' do
-        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1, 2, 3])'))
-          .to eq(described_class.normalize_condition_sql('price IN (1, 2, 3)'))
+        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1, 2, 3])')).to eq('price IN (1, 2, 3)')
       end
 
       it 'normalizes ANY (ARRAY[...]) with float elements' do
-        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1.5, 2.5])'))
-          .to eq(described_class.normalize_condition_sql('price IN (1.5, 2.5)'))
+        expect(described_class.normalize_condition_sql('price = ANY (ARRAY[1.5, 2.5])')).to eq('price IN (1.5, 2.5)')
       end
 
       it 'normalizes a Postgres indexdef-style ANY array wrapped in extra parentheses' do
@@ -301,7 +280,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
                  "((state)::text = ANY ((ARRAY['draft'::character varying, " \
                  "'canon'::character varying])::text[]))"
                ))
-          .to eq(described_class.normalize_condition_sql("state IN ('draft', 'canon')"))
+          .to eq("state IN ('draft', 'canon')")
       end
 
       it 'keeps the parentheses of an IN list' do
@@ -478,7 +457,7 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
     context 'with real-world partial-index predicates' do
       it 'strips outer parens when a literal has unmatched parens and normalizes booleans' do
         expect(described_class.normalize_condition_sql("((label = 'Region (North)') AND active = TRUE)"))
-          .to eq(described_class.normalize_condition_sql("active = 1 AND label = 'Region (North)'"))
+          .to eq("active = 1 AND label = 'Region (North)'")
       end
     end
   end
