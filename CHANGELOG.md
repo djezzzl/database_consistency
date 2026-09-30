@@ -1,5 +1,13 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` false positives for partial indexes whose `WHERE` clause uses a bare boolean column, a function call, or operators and commas written without spaces. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
+
+### [3.0.13] - 2026/09/22
+
+- Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` false positives for partial indexes whose `WHERE` clause PostgreSQL stores differently from the validator's `conditions:` SQL. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this in [#318](https://github.com/djezzzl/database_consistency/pull/318)!
+
 ### [3.0.12] - 2026/09/15
 
 - Mask string literals during predicate normalization to prevent false positives from SQL-like characters inside literal values. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this in [#317](https://github.com/djezzzl/database_consistency/pull/317)!

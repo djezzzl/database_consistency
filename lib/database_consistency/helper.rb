@@ -199,6 +199,22 @@ module DatabaseConsistency
     # rather than the end of it.
     CONDITION_LITERAL = /'(?:[^']|'')*'/.freeze
 
+    # Matches a masked literal, so steps that run on masked SQL can step over
+    # the `<` and `>` in the placeholder.
+    MASKED_LITERAL = Regexp.new(
+      Regexp.escape(LITERAL_PLACEHOLDER).sub('%<index>d') { '\d+' }
+    ).freeze
+
+    # Matches an operator together with whatever spaces were written around it.
+    # `+` and `-` are left out: either can be a sign as well as an operator, and
+    # telling the two apart takes a parser. `->` and `->>` are the exception,
+    # since neither can be read as a sign.
+    CONDITION_OPERATOR = %r{\s*(->>?|[<>=!~@#%^&|?*/]+)\s*}.freeze
+
+    # Matches either of the two, so the spacing step can find operators while
+    # passing over the placeholders.
+    MASKED_LITERAL_OR_OPERATOR = Regexp.union(MASKED_LITERAL, CONDITION_OPERATOR).freeze
+
     # Matches a number PostgreSQL had to quote in order to coerce it, together
     # with the cast that says it is a number rather than a string. `::text` is
     # deliberately absent from the list so a genuine string keeps its quotes.
@@ -244,7 +260,9 @@ module DatabaseConsistency
     IN_LIST_OPENING = /(?<!\bIN\s)/i.freeze
 
     # Matches a bare identifier wrapped in parentheses, e.g. `(internal_name)`.
-    WRAPPED_IDENTIFIER = /#{IN_LIST_OPENING}\(([a-z_][\w.]*)\)/i.freeze
+    # The lookbehind keeps the argument list of a call such as `lower(name)`
+    # intact.
+    WRAPPED_IDENTIFIER = /(?<![\w.])#{IN_LIST_OPENING}\(([a-z_][\w.]*)\)/i.freeze
 
     # Matches a parenthesized numeric literal, e.g. `(0)` or `(0.001)`, which is
     # what a cast such as `(0)::numeric` leaves behind once the cast is gone.
@@ -262,20 +280,26 @@ module DatabaseConsistency
 
     # Matches a bare negated boolean predicate such as `NOT archived`, in the
     # three places one can stand: at the start of an expression, after `AND` or
-    # `OR`, or after an opening parenthesis.
+    # `OR`, or after an opening parenthesis. The whitespace before whatever
+    # follows sits inside the lookahead, so the match leaves it in place instead
+    # of consuming it and fusing the next `AND` / `OR` to the rewritten
+    # predicate. The lookbehind keeps a call's own parenthesis out of the
+    # boolean positions, so the argument of `lower(...)` is not read as a
+    # predicate of its own.
     NEGATED_BOOLEAN_PREDICATE = /
-      (^ | (?: \bAND\b | \bOR\b | \( ))
-      \s* NOT \s+ ([a-z_][\w.]*) \s*
-      (?= $ | (?: \bAND\b | \bOR\b | \) ))
+      (^ | (?: \bAND\b | \bOR\b | (?<![\w.]) \( ))
+      \s* NOT \s+ ([a-z_][\w.]*)
+      (?= \s* (?: $ | \bAND\b | \bOR\b | \) ))
     /xi.freeze
 
     # Matches a bare boolean predicate such as `most_recent` in those same three
-    # places. It runs after the negated form so that `NOT archived` is already
-    # gone and cannot be read as the predicate `archived`.
+    # places, with the same lookahead and lookbehind. It runs after the negated
+    # form so that `NOT archived` is already gone and cannot be read as the
+    # predicate `archived`.
     BARE_BOOLEAN_PREDICATE = /
-      (^ | (?: \bAND\b | \bOR\b | \( ))
-      \s* ([a-z_][\w.]*) \s*
-      (?= $ | (?: \bAND\b | \bOR\b | \) ))
+      (^ | (?: \bAND\b | \bOR\b | (?<![\w.]) \( ))
+      \s* ([a-z_][\w.]*)
+      (?= \s* (?: $ | \bAND\b | \bOR\b | \) ))
     /xi.freeze
 
     # Matches `column = ANY (ARRAY[...])` or `column != ALL ((ARRAY[...]))`,
@@ -442,11 +466,23 @@ module DatabaseConsistency
       "#{sign}#{expanded}".sub(/(\.\d*?)0+\z/, '\1').chomp('.')
     end
 
+    # Gives every operator a space either side, every comma a space after it
+    # and no parenthesis a space on its inside, which is how PostgreSQL writes
+    # an indexdef however the index was typed.
+    def normalize_operator_spacing(sql)
+      spaced_sql = sql.gsub(MASKED_LITERAL_OR_OPERATOR) do |match|
+        match.match?(MASKED_LITERAL) ? match : " #{match.strip} "
+      end
+      spaced_sql = spaced_sql.gsub(/\s*,\s*/, ', ')
+      spaced_sql.gsub(/\(\s+/, '(').gsub(/\s+\)/, ')')
+    end
+
     # Rewrites the spellings that differ between adapters, or between what an
     # adapter stores and what Active Record writes: quoted identifiers, casts,
-    # exponent notation, the spacing of an `IN` list, the parentheses PostgreSQL
-    # adds around a cast operand and the `<>` it writes for inequality. Literals are masked throughout, so
-    # none of it reaches the inside of a value.
+    # exponent notation, the spacing of an `IN` list, of operators and of
+    # commas, the parentheses PostgreSQL adds around a cast operand and the `<>`
+    # it writes for inequality. Literals are masked throughout, so none of it
+    # reaches the inside of a value.
     def normalize_adapter_syntax(sql)
       # Strips quoted identifiers (double quotes on PostgreSQL/SQLite,
       # backticks on MySQL) so the same column normalizes across adapters.
@@ -457,9 +493,11 @@ module DatabaseConsistency
       # reach the same string and the list is recognisable to the unwrappers
       # below. `\b` keeps a call such as `min(1)` out of it.
       normalized_sql = normalized_sql.gsub(/\bIN\s*\(/i, 'IN (')
+      normalized_sql = normalize_operator_spacing(normalized_sql)
       normalized_sql = unwrap_redundant_parentheses(normalized_sql)
-      # `/\s*<>\s*/` rewrites the SQL inequality operator `<>` to `!=`.
-      normalized_sql = normalized_sql.gsub(/\s*<>\s*/, ' != ')
+      # Rewrites the SQL inequality operator `<>` to `!=`; the spacing step
+      # has already given it a space either side.
+      normalized_sql = normalized_sql.gsub('<>', '!=')
       normalized_sql.gsub(/\s+/, ' ').strip
     end
 
