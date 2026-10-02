@@ -551,20 +551,14 @@ module DatabaseConsistency
       end
     end
 
-    # Sorts simple `AND` clauses so `a AND b` and `b AND a` normalize to the
-    # same string before comparison. Two clauses can be identical apart from the
+    # Sorts the `AND` clauses so `a AND b` and `b AND a` normalize to the same
+    # string before comparison. Two clauses can be identical apart from the
     # string each one compares against, and then those strings decide the order,
     # which is why the literals go back in before the sort. A placeholder is
     # numbered by where its literal appeared, so sorting on the placeholders
     # would leave such a pair in whichever order it arrived in.
     def sort_and_clauses(sql, literals)
-      # Matches `AND` with surrounding whitespace and splits the expression into
-      # comparable clause fragments.
-      clauses = sql.split(/\s+AND\s+/i)
-      return sql if clauses.length == 1
-
-      clauses.map! { |clause| Parentheses.strip_outer(clause) }
-      clauses.sort_by { |clause| unmask_condition_literals(clause, literals) }.join(' AND ')
+      AndClauses.sort(sql) { |clause| unmask_condition_literals(clause, literals) }
     end
 
     # Builds the implicit SQL guard introduced by validator options that skip

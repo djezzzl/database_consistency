@@ -38,6 +38,14 @@ RSpec.describe DatabaseConsistency::Helper::Parentheses, :sqlite, :mysql, :postg
     end
   end
 
+  describe '.unclosed?' do
+    it 'reports only a group that is opened and never closed' do
+      expect(described_class.unclosed?('(a = 1')).to be(true)
+      expect(described_class.unclosed?('(a = 1)')).to be(false)
+      expect(described_class.unclosed?('a = 1)')).to be(false)
+    end
+  end
+
   describe '.depth_after' do
     it 'counts an opening parenthesis up, a closing one down, and ignores the rest' do
       expect(described_class.depth_after(0, '(')).to eq(1)

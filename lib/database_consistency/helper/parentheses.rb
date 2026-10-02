@@ -3,7 +3,7 @@
 module DatabaseConsistency
   module Helper
     # Parenthesis bookkeeping for SQL predicates: what a pair of parentheses
-    # encloses.
+    # encloses, and whether a fragment is still waiting for one to close.
     module Parentheses
       module_function
 
@@ -30,6 +30,11 @@ module DatabaseConsistency
         end
 
         depth.zero?
+      end
+
+      # Returns true while the fragment opens a group it never closes.
+      def unclosed?(sql)
+        sql.count('(') > sql.count(')')
       end
 
       # Tracks nesting depth character by character.
