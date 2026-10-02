@@ -8,6 +8,7 @@ RSpec.shared_context 'database context' do |configuration|
       ActiveSupport::Dependencies.remove_unloadable_constants!
     end
     ActiveRecord::Base.establish_connection(configuration)
+    ActiveRecord::Base.connection.schema_cache.clear!
     clear_database!
     ActiveRecord::Schema.verbose = false
   end
@@ -20,6 +21,15 @@ RSpec.shared_context 'database context' do |configuration|
     define_database do
       create_table(:entities, id: false, &block)
     end
+  end
+
+  # Active Record has no migration method for views, so this runs raw DDL and
+  # then drops the view's cached columns itself.
+  define_method :define_view do |name, select_sql|
+    connection = ActiveRecord::Base.connection
+    connection.execute("DROP VIEW IF EXISTS #{name}")
+    connection.execute("CREATE VIEW #{name} AS #{select_sql}")
+    connection.schema_cache.clear_data_source_cache!(name.to_s)
   end
 
   define_method :clear_database! do
