@@ -8,6 +8,7 @@ RSpec.shared_context 'database context' do |configuration|
       ActiveSupport::Dependencies.remove_unloadable_constants!
     end
     ActiveRecord::Base.establish_connection(configuration)
+    ActiveRecord::Base.connection.schema_cache.clear!
     clear_database!
     ActiveRecord::Schema.verbose = false
   end
