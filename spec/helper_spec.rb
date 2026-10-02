@@ -841,8 +841,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
     # those two comparisons, so both sides reach the same clauses.
     context 'with a BETWEEN range' do
       it 'writes the range out as the two comparisons PostgreSQL stores' do
-        pending 'a BETWEEN range is kept as written'
-
         # validator conditions: -> { where(qty: 1..10) }
         expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10'))
           .to eq('qty <= 10 AND qty >= 1')
@@ -852,8 +850,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'writes out a range beside another clause' do
-        pending 'a BETWEEN range is kept as written'
-
         # validator conditions: -> { where(qty: 1..10, account_id: 5) }
         expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10 AND account_id = 5'))
           .to eq('account_id = 5 AND qty <= 10 AND qty >= 1')
@@ -863,8 +859,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'writes out a range with a negative bound' do
-        pending 'a BETWEEN range is kept as written'
-
         # validator conditions: -> { where(qty: -5..5) }
         expect(described_class.normalize_condition_sql('qty BETWEEN -5 AND 5'))
           .to eq('qty <= 5 AND qty >= -5')
@@ -874,8 +868,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'writes out a range of strings' do
-        pending 'a BETWEEN range is kept as written'
-
         # validator conditions: -> { where(code: 'a'..'m') }
         expect(described_class.normalize_condition_sql("code BETWEEN 'a' AND 'm'"))
           .to eq("code <= 'm' AND code >= 'a'")
@@ -886,8 +878,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'writes out a range of timestamps' do
-        pending 'a BETWEEN range is kept as written'
-
         # validator conditions: -> { where(starts_at: Time.utc(2024, 1, 1)..Time.utc(2024, 12, 31)) }
         expect(described_class.normalize_condition_sql(
                  "starts_at BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 00:00:00'"
@@ -900,8 +890,6 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
       end
 
       it 'writes out a range whose bounds are columns' do
-        pending 'a BETWEEN range is kept as written, and its upper bound is read as a boolean'
-
         # validator conditions: -> { where('qty BETWEEN lo AND hi') }
         expect(described_class.normalize_condition_sql('qty BETWEEN lo AND hi'))
           .to eq('qty <= hi AND qty >= lo')

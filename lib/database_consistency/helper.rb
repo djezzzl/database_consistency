@@ -321,6 +321,21 @@ module DatabaseConsistency
       \)? \s* \)
     /xi.freeze
 
+    # Matches one bound of a `BETWEEN` range: a number, a masked literal or a
+    # column.
+    BETWEEN_BOUND = /-?\d+(?:\.\d+)?(?:e[+-]?\d+)?|#{MASKED_LITERAL.source}|[a-z_][\w.]*/i.freeze
+
+    # Matches an inclusive range over a lone column, in the same three places
+    # as a bare boolean predicate, capturing the column and both bounds. A range
+    # over an expression, or with any other kind of bound, is left unmatched.
+    # A bare `NOT` is not one of the places, because it negates the whole range.
+    BETWEEN_RANGE = /
+      (^ | (?: \bAND\b | \bOR\b | (?<![\w.]) \( ))
+      \s* ([a-z_][\w.]*)
+      \s+ BETWEEN \s+ (#{BETWEEN_BOUND}) \s+ AND \s+ (#{BETWEEN_BOUND})
+      (?= \s* (?: $ | \bAND\b | \bOR\b | \) ))
+    /xi.freeze
+
     # Normalizes SQL predicates into a canonical form so semantically equivalent
     # Rails validators and database partial indexes can be compared safely.
     def normalize_condition_sql(sql)
@@ -344,9 +359,10 @@ module DatabaseConsistency
     # final structural clean-ups, and only then restores the literal values.
     # Restoring last protects literal contents from whitespace collapse and
     # clause sorting.
-    def normalize_masked_condition_sql(masked_sql, literals)
+    def normalize_masked_condition_sql(masked_sql, literals) # rubocop:disable Metrics/AbcSize
       masked_sql
         .then { |value| normalize_adapter_syntax(value) }
+        .then { |value| expand_between_ranges(value) }
         .then { |value| normalize_boolean_predicates(value) }
         .then { |value| normalize_array_any_predicates(value) }
         .then { |value| normalize_negated_blank_or_nil_predicates(value) }
@@ -513,6 +529,18 @@ module DatabaseConsistency
       true while normalized_sql.gsub!(WRAPPED_FUNCTION_CALL, '\k<call>')
 
       normalized_sql
+    end
+
+    # Writes an inclusive range out as the two comparisons PostgreSQL stores it
+    # as, so `qty BETWEEN 1 AND 10` lines up with `(qty >= 1) AND (qty <= 10)`.
+    # It runs before boolean predicates are read, so a bound that is a column
+    # is not mistaken for one.
+    def expand_between_ranges(sql)
+      sql.gsub(BETWEEN_RANGE) do
+        prefix, column, lower, upper = Regexp.last_match.captures
+
+        "#{prefix} #{column} >= #{lower} AND #{column} <= #{upper}"
+      end
     end
 
     # Rewrites shorthand boolean predicates into explicit comparisons so
