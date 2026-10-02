@@ -757,6 +757,104 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         expect(described_class.normalize_condition_sql("lower(email) = 'x' AND qty > 0"))
           .to eq("lower(email) = 'x' AND qty > 0")
       end
+
+      # A clause PostgreSQL wraps as a whole loses its parentheses; the ones
+      # around each comparison inside a kept group stay.
+      it 'keeps the OR group of an indexdef whole while sorting the clauses around it' do
+        pending 'the sorter splits on the AND beside the OR group and strips the parentheses that bind it'
+
+        # index     where: 'account_id = 1 AND (qty = 1 OR qty IS NULL)'
+        expect(described_class.normalize_condition_sql('((account_id = 1) AND ((qty = 1) OR (qty IS NULL)))'))
+          .to eq('((qty = 1) OR (qty IS NULL)) AND account_id = 1')
+      end
+
+      it 'flattens the nested conjunction PostgreSQL writes for a BETWEEN range' do
+        pending 'the sorter splits inside the nested group without flattening it'
+
+        # index     where: 'account_id = 5 AND qty BETWEEN 1 AND 10'
+        expect(described_class.normalize_condition_sql('((account_id = 5) AND ((qty >= 1) AND (qty <= 10)))'))
+          .to eq('account_id = 5 AND qty <= 10 AND qty >= 1')
+      end
+
+      it 'keeps the conjunction inside a NOT group of an indexdef balanced' do
+        pending 'the sorter splits on the AND inside the NOT group'
+
+        # index     where: 'NOT (qty = 1 AND role = 1)'
+        expect(described_class.normalize_condition_sql('(NOT ((qty = 1) AND (role = 1)))'))
+          .to eq('NOT ((qty = 1) AND (role = 1))')
+      end
+    end
+
+    # Clause sorting may only reorder the `AND`s that join two clauses. The `AND`
+    # inside a group or a `NOT (...)`, and the one completing a `BETWEEN` range,
+    # belong to their clause; and when an `OR` stands at the top level, every
+    # `AND` binds tighter than it, so nothing can be moved at all. The index
+    # halves below are SQLite's, which stores the predicate as written.
+    context 'with AND clauses beside a group or a range' do
+      it 'keeps a BETWEEN range in one clause' do
+        pending 'the sorter splits a BETWEEN range at its own AND'
+
+        # validator conditions: -> { where(qty: 1..10) }
+        expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10'))
+          .to eq('qty BETWEEN 1 AND 10')
+        # validator conditions: -> { where(account_id: 5, qty: 1..10) }
+        expect(described_class.normalize_condition_sql('account_id = 5 AND qty BETWEEN 1 AND 10'))
+          .to eq('account_id = 5 AND qty BETWEEN 1 AND 10')
+        # index     where: 'qty BETWEEN 1 AND 10 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10 AND account_id = 5'))
+          .to eq('account_id = 5 AND qty BETWEEN 1 AND 10')
+      end
+
+      it 'flattens a nested conjunction so it matches the flat one' do
+        pending 'the sorter splits inside the nested group without flattening it'
+
+        # validator conditions: -> { where(code: 'x').where('qty >= 1 AND qty <= 10') }
+        expect(described_class.normalize_condition_sql("code = 'x' AND (qty >= 1 AND qty <= 10)"))
+          .to eq("code = 'x' AND qty <= 10 AND qty >= 1")
+        # index     where: "code = 'x' AND qty >= 1 AND qty <= 10" on a varchar column
+        expect(described_class.normalize_condition_sql(
+                 "(((code)::text = 'x'::text) AND (qty >= 1) AND (qty <= 10))"
+               )).to eq("code = 'x' AND qty <= 10 AND qty >= 1")
+      end
+
+      it 'keeps an OR group whole while sorting the clauses around it' do
+        pending 'the sorter strips the parentheses that bind the OR'
+
+        # validator conditions: -> { where(account_id: 1, qty: [1, nil]) }
+        expect(described_class.normalize_condition_sql('account_id = 1 AND (qty = 1 OR qty IS NULL)'))
+          .to eq('(qty = 1 OR qty IS NULL) AND account_id = 1')
+        # index     where: '(qty = 1 OR qty IS NULL) AND account_id = 1'
+        expect(described_class.normalize_condition_sql('(qty = 1 OR qty IS NULL) AND account_id = 1'))
+          .to eq('(qty = 1 OR qty IS NULL) AND account_id = 1')
+      end
+
+      it 'keeps a NOT group whole while sorting the clauses around it' do
+        pending 'the sorter splits on the AND inside the NOT group'
+
+        # validator conditions: -> { where(account_id: 5).where.not(qty: 1, role: 1) }
+        expect(described_class.normalize_condition_sql('account_id = 5 AND NOT (qty = 1 AND role = 1)'))
+          .to eq('NOT (qty = 1 AND role = 1) AND account_id = 5')
+      end
+
+      it 'leaves the clauses around an ungrouped OR in place' do
+        pending 'the sorter moves a clause across the OR'
+
+        # validator conditions: -> { where(qty: nil).or(where(qty: 1, account_id: 1)) }
+        expect(described_class.normalize_condition_sql('qty IS NULL OR qty = 1 AND account_id = 1'))
+          .to eq('qty IS NULL OR qty = 1 AND account_id = 1')
+      end
+
+      # The index below leaves out the grouping, so it means
+      # `(account_id = 1 AND qty = 1) OR qty IS NULL`: a different predicate,
+      # which must not normalize to the same string as the validator.
+      it 'keeps an OR group distinct from the same clauses written without it' do
+        pending 'the sorter strips the parentheses that bind the OR'
+
+        # validator conditions: -> { where(account_id: 1, qty: [1, nil]) }
+        # index     where: 'account_id = 1 AND qty = 1 OR qty IS NULL'
+        expect(described_class.normalize_condition_sql('account_id = 1 AND qty = 1 OR qty IS NULL'))
+          .not_to eq(described_class.normalize_condition_sql('account_id = 1 AND (qty = 1 OR qty IS NULL)'))
+      end
     end
 
     # PostgreSQL quotes every negative and every exponent literal, and the only
