@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` comparing partial-index `WHERE` clauses that use `BETWEEN` or an inclusive range `qty: 1..10`, a parenthesized group, `NOT (...)`, or `AND` beside `OR`. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
+
 ### [3.0.14] - 2026/09/30
 
 - Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` false positives for partial indexes whose `WHERE` clause uses a bare boolean column, a function call, or operators and commas written without spaces. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
