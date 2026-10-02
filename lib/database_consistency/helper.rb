@@ -333,7 +333,7 @@ module DatabaseConsistency
                                 .then { |value| mask_condition_literals(value) }
 
       normalize_masked_condition_sql(
-        masked_sql.then { |value| strip_outer_parentheses(value) }
+        masked_sql.then { |value| Parentheses.strip_outer(value) }
                   .then { |value| normalize_boolean_and_null_keywords(value) },
         literals
       )
@@ -515,43 +515,6 @@ module DatabaseConsistency
       normalized_sql
     end
 
-    # Repeatedly removes one wrapping layer of parentheses when the whole SQL
-    # fragment is enclosed, e.g. `((foo))` -> `foo`.
-    def strip_outer_parentheses(sql)
-      stripped_sql = sql.strip
-
-      stripped_sql = stripped_sql[1..-2].strip while wrapped_with_parentheses?(stripped_sql)
-
-      stripped_sql
-    end
-
-    # Returns true only when the string is entirely wrapped by one outer pair of
-    # parentheses, not when parentheses close earlier inside the expression.
-    def wrapped_with_parentheses?(sql)
-      return false unless sql.start_with?('(') && sql.end_with?(')')
-
-      depth = 0
-
-      sql[1..-2].each_char do |char|
-        depth = parenthesis_depth(depth, char)
-        return false if depth.negative?
-      end
-
-      depth.zero?
-    end
-
-    # Tracks parenthesis nesting depth character by character.
-    def parenthesis_depth(depth, char)
-      case char
-      when '('
-        depth + 1
-      when ')'
-        depth - 1
-      else
-        depth
-      end
-    end
-
     # Rewrites shorthand boolean predicates into explicit comparisons so
     # `flag` and `NOT flag` line up with `flag = true/false`.
     def normalize_boolean_predicates(sql)
@@ -600,7 +563,7 @@ module DatabaseConsistency
       clauses = sql.split(/\s+AND\s+/i)
       return sql if clauses.length == 1
 
-      clauses.map! { |clause| strip_outer_parentheses(clause) }
+      clauses.map! { |clause| Parentheses.strip_outer(clause) }
       clauses.sort_by { |clause| unmask_condition_literals(clause, literals) }.join(' AND ')
     end
 
