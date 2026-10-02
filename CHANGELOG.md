@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix spec isolation on ActiveRecord `main`, which now reuses one connection pool across `establish_connection` calls with the same config: clear the cache as needed. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
+
 ### [3.0.14] - 2026/09/30
 
 - Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` false positives for partial indexes whose `WHERE` clause uses a bare boolean column, a function call, or operators and commas written without spaces. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
