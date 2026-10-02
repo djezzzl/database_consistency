@@ -44,12 +44,7 @@ RSpec.describe DatabaseConsistency::Checkers::ViewPrimaryKeyChecker, :sqlite, :m
         end
       end
 
-      model.connection.execute(<<~SQL)
-        DROP VIEW IF EXISTS #{view_klass.table_name};
-      SQL
-      model.connection.execute(<<~SQL)
-        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM entities;
-      SQL
+      define_view(view_klass.table_name, 'SELECT * FROM entities')
     end
 
     context 'without primary_key set' do

@@ -23,6 +23,15 @@ RSpec.shared_context 'database context' do |configuration|
     end
   end
 
+  # Active Record has no migration method for views, so this runs raw DDL and
+  # then drops the view's cached columns itself.
+  define_method :define_view do |name, select_sql|
+    connection = ActiveRecord::Base.connection
+    connection.execute("DROP VIEW IF EXISTS #{name}")
+    connection.execute("CREATE VIEW #{name} AS #{select_sql}")
+    connection.schema_cache.clear_data_source_cache!(name.to_s)
+  end
+
   define_method :clear_database! do
     ActiveRecord::Base.connection.execute 'SET FOREIGN_KEY_CHECKS=0;' if configuration[:adapter] == 'mysql2'
     ActiveRecord::Base.connection.tables.each do |table|

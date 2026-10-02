@@ -40,12 +40,7 @@ RSpec.describe DatabaseConsistency::Checkers::ForeignKeyChecker, :sqlite, :mysql
         end
       end
 
-      model.connection.execute(<<~SQL)
-        DROP VIEW IF EXISTS #{view_klass.table_name};
-      SQL
-      model.connection.execute(<<~SQL)
-        CREATE VIEW #{view_klass.table_name} AS SELECT * FROM #{entity_class.table_name};
-      SQL
+      define_view(view_klass.table_name, "SELECT * FROM #{entity_class.table_name}")
     end
 
     it "doesn't check views" do
