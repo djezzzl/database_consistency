@@ -262,6 +262,65 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         # validator conditions: -> { where(state: 'draft') } on MySQL
         expect(described_class.normalize_condition_sql("`state` = 'draft'")).to eq("state = 'draft'")
       end
+
+      # A quoted identifier can be spelled like a keyword, and the quotes are
+      # all that tell the column `"or"` from the operator `OR`.
+      it 'sorts the clauses around a column named like OR' do
+        pending 'the unquoted column is read as a top-level OR'
+        # validator conditions: -> { where(or: 1, account_id: 5) }
+        expect(described_class.normalize_condition_sql('"or" = 1 AND "account_id" = 5'))
+          .to eq('account_id = 5 AND or = 1')
+        # index     where: '"or" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND or = 1')
+      end
+
+      it 'sorts the clauses around a column named like OR whichever comes first' do
+        pending 'the unquoted column is read as a top-level OR'
+        # validator conditions: -> { where(account_id: 5, or: 1) }
+        expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" = 1'))
+          .to eq('account_id = 5 AND or = 1')
+        # index     where: '"or" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND or = 1')
+      end
+
+      it 'sorts the clauses around a column named like BETWEEN' do
+        pending 'the unquoted column is read as a BETWEEN still waiting for its AND'
+        # validator conditions: -> { where(between: 1, account_id: 5) }
+        expect(described_class.normalize_condition_sql('"between" = 1 AND "account_id" = 5'))
+          .to eq('account_id = 5 AND between = 1')
+        # index     where: '"between" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("between" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND between = 1')
+      end
+
+      it 'writes out a range over a column named like OR' do
+        pending 'the unquoted column is read as a top-level OR'
+        # validator conditions: -> { where(account_id: 5, or: 1..5) }
+        expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" BETWEEN 1 AND 5'))
+          .to eq('account_id = 5 AND or <= 5 AND or >= 1')
+        # index     where: 'account_id = 5 AND "or" BETWEEN 1 AND 5'
+        expect(described_class.normalize_condition_sql('((account_id = 5) AND (("or" >= 1) AND ("or" <= 5)))'))
+          .to eq('account_id = 5 AND or <= 5 AND or >= 1')
+      end
+
+      it 'keeps a column named like TRUE as a column' do
+        pending 'the unquoted column is read as the boolean TRUE'
+        # validator conditions: -> { where(true: 1) }
+        expect(described_class.normalize_condition_sql('"true" = 1')).to eq('true = 1')
+        # index     where: '"true" = 1'
+        expect(described_class.normalize_condition_sql('("true" = 1)')).to eq('true = 1')
+      end
+
+      it 'sorts the clauses around ordinary quoted columns' do
+        # validator conditions: -> { where(status: 'draft', account_id: 5) }
+        expect(described_class.normalize_condition_sql("\"status\" = 'draft' AND \"account_id\" = 5"))
+          .to eq("account_id = 5 AND status = 'draft'")
+        # index     where: "status = 'draft' AND account_id = 5" on a varchar column
+        expect(described_class.normalize_condition_sql("(((status)::text = 'draft'::text) AND (account_id = 5))"))
+          .to eq("account_id = 5 AND status = 'draft'")
+      end
     end
 
     # PostgreSQL writes every operator with a space either side and every list
