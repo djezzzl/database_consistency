@@ -269,48 +269,80 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         pending 'the unquoted column is read as a top-level OR'
         # validator conditions: -> { where(or: 1, account_id: 5) }
         expect(described_class.normalize_condition_sql('"or" = 1 AND "account_id" = 5'))
-          .to eq('account_id = 5 AND or = 1')
+          .to eq('account_id = 5 AND "or" = 1')
         # index     where: '"or" = 1 AND account_id = 5'
         expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
-          .to eq('account_id = 5 AND or = 1')
+          .to eq('account_id = 5 AND "or" = 1')
       end
 
       it 'sorts the clauses around a column named like OR whichever comes first' do
         pending 'the unquoted column is read as a top-level OR'
         # validator conditions: -> { where(account_id: 5, or: 1) }
         expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" = 1'))
-          .to eq('account_id = 5 AND or = 1')
+          .to eq('account_id = 5 AND "or" = 1')
         # index     where: '"or" = 1 AND account_id = 5'
         expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
-          .to eq('account_id = 5 AND or = 1')
+          .to eq('account_id = 5 AND "or" = 1')
       end
 
       it 'sorts the clauses around a column named like BETWEEN' do
         pending 'the unquoted column is read as a BETWEEN still waiting for its AND'
         # validator conditions: -> { where(between: 1, account_id: 5) }
         expect(described_class.normalize_condition_sql('"between" = 1 AND "account_id" = 5'))
-          .to eq('account_id = 5 AND between = 1')
+          .to eq('account_id = 5 AND "between" = 1')
         # index     where: '"between" = 1 AND account_id = 5'
         expect(described_class.normalize_condition_sql('(("between" = 1) AND (account_id = 5))'))
-          .to eq('account_id = 5 AND between = 1')
+          .to eq('account_id = 5 AND "between" = 1')
       end
 
       it 'writes out a range over a column named like OR' do
         pending 'the unquoted column is read as a top-level OR'
         # validator conditions: -> { where(account_id: 5, or: 1..5) }
         expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" BETWEEN 1 AND 5'))
-          .to eq('account_id = 5 AND or <= 5 AND or >= 1')
+          .to eq('account_id = 5 AND "or" <= 5 AND "or" >= 1')
         # index     where: 'account_id = 5 AND "or" BETWEEN 1 AND 5'
         expect(described_class.normalize_condition_sql('((account_id = 5) AND (("or" >= 1) AND ("or" <= 5)))'))
-          .to eq('account_id = 5 AND or <= 5 AND or >= 1')
+          .to eq('account_id = 5 AND "or" <= 5 AND "or" >= 1')
       end
 
       it 'keeps a column named like TRUE as a column' do
         pending 'the unquoted column is read as the boolean TRUE'
-        # validator conditions: -> { where(true: 1) }
-        expect(described_class.normalize_condition_sql('"true" = 1')).to eq('true = 1')
+        # validator conditions: -> { where('true' => 1) }
+        expect(described_class.normalize_condition_sql('"true" = 1')).to eq('"true" = 1')
         # index     where: '"true" = 1'
-        expect(described_class.normalize_condition_sql('("true" = 1)')).to eq('true = 1')
+        expect(described_class.normalize_condition_sql('("true" = 1)')).to eq('"true" = 1')
+      end
+
+      # A normalized predicate has to normalize to itself, so a column named
+      # like a keyword comes out still quoted.
+      it 'leaves a column named like OR as it is when normalized again' do
+        # validator conditions: -> { where(or: 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"or" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like BETWEEN as it is when normalized again' do
+        # validator conditions: -> { where(between: 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"between" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a range over a column named like OR as it is when normalized again' do
+        # validator conditions: -> { where(account_id: 5, or: 1..5) }
+        normalized = described_class.normalize_condition_sql('"account_id" = 5 AND "or" BETWEEN 1 AND 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like TRUE as it is when normalized again' do
+        # validator conditions: -> { where('true' => 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"true" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like FALSE as it is when normalized again' do
+        # validator conditions: -> { where('false' => 0, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"false" = 0 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
       end
 
       it 'sorts the clauses around ordinary quoted columns' do
