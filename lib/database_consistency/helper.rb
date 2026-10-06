@@ -167,12 +167,10 @@ module DatabaseConsistency
     # `attribute IS NOT NULL` clause and never match the partial index.
     def uniqueness_validator_where_sql(model, attribute, validator)
       conditions_sql = conditions_where_sql(model, validator.options[:conditions])
-      guard_sql = conditions_sql ? nil : uniqueness_validator_guard_sql(model, attribute, validator)
+      return conditions_sql.presence if conditions_sql
 
-      sql_parts = [conditions_sql, guard_sql].reject { |part| part.nil? || part == '' }
-      return nil if sql_parts.empty?
-
-      normalize_condition_sql(sql_parts.join(' AND '))
+      guard_sql = uniqueness_validator_guard_sql(model, attribute, validator)
+      normalize_condition_sql(guard_sql) if guard_sql
     end
 
     # Returns true when validator conditions and index WHERE clause are a valid
@@ -198,6 +196,14 @@ module DatabaseConsistency
     # SQL escapes a quote by doubling it, so a `''` pair is part of the value
     # rather than the end of it.
     CONDITION_LITERAL = /'(?:[^']|'')*'/.freeze
+
+    # Matches a quoted identifier spelled like a keyword the normalizer reads,
+    # such as a column named `"or"`. Once its quotes were stripped it would read
+    # as the keyword, so it is renamed to an identifier-shaped placeholder
+    # instead and written back in double quotes at the end, which keeps the
+    # result the same when it is normalized again.
+    KEYWORD_IDENTIFIER = /["`](and|or|not|between|in|is|null|true|false)["`]/i.freeze
+    KEYWORD_IDENTIFIER_PLACEHOLDER = /__database_consistency_identifier_(\w+?)__/.freeze
 
     # Matches a masked literal, so steps that run on masked SQL can step over
     # the `<` and `>` in the placeholder.
@@ -373,7 +379,8 @@ module DatabaseConsistency
 
     # Masks non-empty string literals so later regexes cannot rewrite their
     # contents. Empty literals are left untouched because negated-blank
-    # normalization relies on them.
+    # normalization relies on them. A quoted identifier spelled like a keyword
+    # is masked too, as described at `KEYWORD_IDENTIFIER`.
     def mask_condition_literals(sql)
       literals = []
       masked_sql = sql.gsub(CONDITION_LITERAL) do |match|
@@ -384,16 +391,19 @@ module DatabaseConsistency
           format(LITERAL_PLACEHOLDER, index: literals.length - 1)
         end
       end
+      masked_sql = masked_sql.gsub(KEYWORD_IDENTIFIER) { "__database_consistency_identifier_#{Regexp.last_match(1)}__" }
       [masked_sql, literals]
     end
 
     # Restores literals in the order they were masked. Uses a block replacement
     # so backslashes inside the literal are not interpreted as regexp backrefs.
+    # A masked keyword identifier comes back in double quotes, whichever quote
+    # it was written with.
     def unmask_condition_literals(sql, literals)
       literals.each_with_index do |literal, index|
         sql = sql.sub(format(LITERAL_PLACEHOLDER, index: index)) { literal }
       end
-      sql
+      sql.gsub(KEYWORD_IDENTIFIER_PLACEHOLDER, '"\1"')
     end
 
     # PostgreSQL writes any literal it had to coerce as a quoted string with a
@@ -584,9 +594,13 @@ module DatabaseConsistency
     # string each one compares against, and then those strings decide the order,
     # which is why the literals go back in before the sort. A placeholder is
     # numbered by where its literal appeared, so sorting on the placeholders
-    # would leave such a pair in whichever order it arrived in.
+    # would leave such a pair in whichever order it arrived in. A column named
+    # like a keyword is ordered by its bare name, so its quotes do not move it
+    # ahead of every other clause.
     def sort_and_clauses(sql, literals)
-      AndClauses.sort(sql) { |clause| unmask_condition_literals(clause, literals) }
+      AndClauses.sort(sql) do |clause|
+        unmask_condition_literals(clause.gsub(KEYWORD_IDENTIFIER_PLACEHOLDER, '\1'), literals)
+      end
     end
 
     # Builds the implicit SQL guard introduced by validator options that skip
