@@ -2,6 +2,7 @@
 
 ### [Unreleased]
 
+- Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` comparing partial-index `WHERE` clauses that use `BETWEEN` or an inclusive range `qty: 1..10`, a parenthesized group, `NOT (...)`, or `AND` beside `OR`. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
 - Fix spec isolation on ActiveRecord `main`, which now reuses one connection pool across `establish_connection` calls with the same config: clear the cache as needed. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
 
 ### [3.0.14] - 2026/09/30

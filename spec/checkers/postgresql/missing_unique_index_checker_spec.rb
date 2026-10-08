@@ -230,6 +230,36 @@ RSpec.describe DatabaseConsistency::Checkers::MissingUniqueIndexChecker, :postgr
     end
   end
 
+  context 'when uniqueness validation has conditions on a column named like a keyword' do
+    let(:attribute) { :account_id }
+    let(:klass) do
+      define_class do |klass|
+        klass.validates :account_id, uniqueness: { conditions: -> { where('true' => 1) } }
+      end
+    end
+
+    context 'when partial unique index is provided' do
+      before do
+        define_database_with_entity do |table|
+          table.integer :account_id
+          table.integer 'true'
+          table.index %i[account_id], unique: true, where: '"true" = 1'
+        end
+      end
+
+      specify do
+        expect(checker.report).to have_attributes(
+          checker_name: 'MissingUniqueIndexChecker',
+          table_or_model_name: klass.name,
+          column_or_attribute_name: 'account_id',
+          status: :ok,
+          error_message: nil,
+          error_slug: nil
+        )
+      end
+    end
+  end
+
   context 'when uniqueness validation uses allow_nil' do
     let(:attribute) { :reset_password_token }
     let(:klass) do

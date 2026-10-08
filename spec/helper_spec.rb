@@ -262,6 +262,92 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         # validator conditions: -> { where(state: 'draft') } on MySQL
         expect(described_class.normalize_condition_sql("`state` = 'draft'")).to eq("state = 'draft'")
       end
+
+      # A quoted identifier can be spelled like a keyword, and the quotes are
+      # all that tell the column `"or"` from the operator `OR`.
+      it 'sorts the clauses around a column named like OR' do
+        # validator conditions: -> { where(or: 1, account_id: 5) }
+        expect(described_class.normalize_condition_sql('"or" = 1 AND "account_id" = 5'))
+          .to eq('account_id = 5 AND "or" = 1')
+        # index     where: '"or" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND "or" = 1')
+      end
+
+      it 'sorts the clauses around a column named like OR whichever comes first' do
+        # validator conditions: -> { where(account_id: 5, or: 1) }
+        expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" = 1'))
+          .to eq('account_id = 5 AND "or" = 1')
+        # index     where: '"or" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("or" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND "or" = 1')
+      end
+
+      it 'sorts the clauses around a column named like BETWEEN' do
+        # validator conditions: -> { where(between: 1, account_id: 5) }
+        expect(described_class.normalize_condition_sql('"between" = 1 AND "account_id" = 5'))
+          .to eq('account_id = 5 AND "between" = 1')
+        # index     where: '"between" = 1 AND account_id = 5'
+        expect(described_class.normalize_condition_sql('(("between" = 1) AND (account_id = 5))'))
+          .to eq('account_id = 5 AND "between" = 1')
+      end
+
+      it 'writes out a range over a column named like OR' do
+        # validator conditions: -> { where(account_id: 5, or: 1..5) }
+        expect(described_class.normalize_condition_sql('"account_id" = 5 AND "or" BETWEEN 1 AND 5'))
+          .to eq('account_id = 5 AND "or" <= 5 AND "or" >= 1')
+        # index     where: 'account_id = 5 AND "or" BETWEEN 1 AND 5'
+        expect(described_class.normalize_condition_sql('((account_id = 5) AND (("or" >= 1) AND ("or" <= 5)))'))
+          .to eq('account_id = 5 AND "or" <= 5 AND "or" >= 1')
+      end
+
+      it 'keeps a column named like TRUE as a column' do
+        # validator conditions: -> { where('true' => 1) }
+        expect(described_class.normalize_condition_sql('"true" = 1')).to eq('"true" = 1')
+        # index     where: '"true" = 1'
+        expect(described_class.normalize_condition_sql('("true" = 1)')).to eq('"true" = 1')
+      end
+
+      # A normalized predicate has to normalize to itself, so a column named
+      # like a keyword comes out still quoted.
+      it 'leaves a column named like OR as it is when normalized again' do
+        # validator conditions: -> { where(or: 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"or" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like BETWEEN as it is when normalized again' do
+        # validator conditions: -> { where(between: 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"between" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a range over a column named like OR as it is when normalized again' do
+        # validator conditions: -> { where(account_id: 5, or: 1..5) }
+        normalized = described_class.normalize_condition_sql('"account_id" = 5 AND "or" BETWEEN 1 AND 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like TRUE as it is when normalized again' do
+        # validator conditions: -> { where('true' => 1, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"true" = 1 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'leaves a column named like FALSE as it is when normalized again' do
+        # validator conditions: -> { where('false' => 0, account_id: 5) }
+        normalized = described_class.normalize_condition_sql('"false" = 0 AND "account_id" = 5')
+        expect(described_class.normalize_condition_sql(normalized)).to eq(normalized)
+      end
+
+      it 'sorts the clauses around ordinary quoted columns' do
+        # validator conditions: -> { where(status: 'draft', account_id: 5) }
+        expect(described_class.normalize_condition_sql("\"status\" = 'draft' AND \"account_id\" = 5"))
+          .to eq("account_id = 5 AND status = 'draft'")
+        # index     where: "status = 'draft' AND account_id = 5" on a varchar column
+        expect(described_class.normalize_condition_sql("(((status)::text = 'draft'::text) AND (account_id = 5))"))
+          .to eq("account_id = 5 AND status = 'draft'")
+      end
     end
 
     # PostgreSQL writes every operator with a space either side and every list
@@ -756,6 +842,173 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         ).to eq("lower(email) = 'x' AND qty > 0")
         expect(described_class.normalize_condition_sql("lower(email) = 'x' AND qty > 0"))
           .to eq("lower(email) = 'x' AND qty > 0")
+      end
+
+      # A clause PostgreSQL wraps as a whole loses its parentheses; the ones
+      # around each comparison inside a kept group stay.
+      it 'keeps the OR group of an indexdef whole while sorting the clauses around it' do
+        # index     where: 'account_id = 1 AND (qty = 1 OR qty IS NULL)'
+        expect(described_class.normalize_condition_sql('((account_id = 1) AND ((qty = 1) OR (qty IS NULL)))'))
+          .to eq('((qty = 1) OR (qty IS NULL)) AND account_id = 1')
+      end
+
+      it 'flattens the nested conjunction PostgreSQL writes for a BETWEEN range' do
+        # index     where: 'account_id = 5 AND qty BETWEEN 1 AND 10'
+        expect(described_class.normalize_condition_sql('((account_id = 5) AND ((qty >= 1) AND (qty <= 10)))'))
+          .to eq('account_id = 5 AND qty <= 10 AND qty >= 1')
+      end
+
+      it 'keeps the conjunction inside a NOT group of an indexdef balanced' do
+        # index     where: 'NOT (qty = 1 AND role = 1)'
+        expect(described_class.normalize_condition_sql('(NOT ((qty = 1) AND (role = 1)))'))
+          .to eq('NOT ((qty = 1) AND (role = 1))')
+      end
+    end
+
+    # Clause sorting may only reorder the `AND`s that join two clauses. The `AND`
+    # inside a group or a `NOT (...)`, and the one completing a `BETWEEN` range,
+    # belong to their clause; and when an `OR` stands at the top level, every
+    # `AND` binds tighter than it, so nothing can be moved at all. The index
+    # halves below are SQLite's, which stores the predicate as written.
+    context 'with AND clauses beside a group or a range' do
+      # A range over a lone column is written out as two comparisons (see
+      # 'with a BETWEEN range'); one over an expression stays a range.
+      it 'keeps a BETWEEN range in one clause' do
+        # validator conditions: -> { where('qty + 1 BETWEEN 1 AND 10 AND account_id = 5') }
+        expect(described_class.normalize_condition_sql('qty + 1 BETWEEN 1 AND 10 AND account_id = 5'))
+          .to eq('account_id = 5 AND qty + 1 BETWEEN 1 AND 10')
+      end
+
+      it 'flattens a nested conjunction so it matches the flat one' do
+        # validator conditions: -> { where(code: 'x').where('qty >= 1 AND qty <= 10') }
+        expect(described_class.normalize_condition_sql("code = 'x' AND (qty >= 1 AND qty <= 10)"))
+          .to eq("code = 'x' AND qty <= 10 AND qty >= 1")
+        # index     where: "code = 'x' AND qty >= 1 AND qty <= 10" on a varchar column
+        expect(described_class.normalize_condition_sql(
+                 "(((code)::text = 'x'::text) AND (qty >= 1) AND (qty <= 10))"
+               )).to eq("code = 'x' AND qty <= 10 AND qty >= 1")
+      end
+
+      it 'keeps an OR group whole while sorting the clauses around it' do
+        # validator conditions: -> { where(account_id: 1, qty: [1, nil]) }
+        expect(described_class.normalize_condition_sql('account_id = 1 AND (qty = 1 OR qty IS NULL)'))
+          .to eq('(qty = 1 OR qty IS NULL) AND account_id = 1')
+        # index     where: '(qty = 1 OR qty IS NULL) AND account_id = 1'
+        expect(described_class.normalize_condition_sql('(qty = 1 OR qty IS NULL) AND account_id = 1'))
+          .to eq('(qty = 1 OR qty IS NULL) AND account_id = 1')
+      end
+
+      it 'keeps a NOT group whole while sorting the clauses around it' do
+        # validator conditions: -> { where(account_id: 5).where.not(qty: 1, role: 1) }
+        expect(described_class.normalize_condition_sql('account_id = 5 AND NOT (qty = 1 AND role = 1)'))
+          .to eq('NOT (qty = 1 AND role = 1) AND account_id = 5')
+      end
+
+      it 'leaves the clauses around an ungrouped OR in place' do
+        # validator conditions: -> { where(qty: nil).or(where(qty: 1, account_id: 1)) }
+        expect(described_class.normalize_condition_sql('qty IS NULL OR qty = 1 AND account_id = 1'))
+          .to eq('qty IS NULL OR qty = 1 AND account_id = 1')
+      end
+
+      # The index below leaves out the grouping, so it means
+      # `(account_id = 1 AND qty = 1) OR qty IS NULL`: a different predicate,
+      # which must not normalize to the same string as the validator.
+      it 'keeps an OR group distinct from the same clauses written without it' do
+        # validator conditions: -> { where(account_id: 1, qty: [1, nil]) }
+        # index     where: 'account_id = 1 AND qty = 1 OR qty IS NULL'
+        expect(described_class.normalize_condition_sql('account_id = 1 AND qty = 1 OR qty IS NULL'))
+          .not_to eq(described_class.normalize_condition_sql('account_id = 1 AND (qty = 1 OR qty IS NULL)'))
+      end
+    end
+
+    # Active Record writes an inclusive range as `BETWEEN`, and PostgreSQL
+    # stores `x BETWEEN a AND b` as `(x >= a) AND (x <= b)`. A range over a lone
+    # column, with each bound a number, a string or a column, is written out as
+    # those two comparisons, so both sides reach the same clauses.
+    context 'with a BETWEEN range' do
+      it 'writes the range out as the two comparisons PostgreSQL stores' do
+        # validator conditions: -> { where(qty: 1..10) }
+        expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10'))
+          .to eq('qty <= 10 AND qty >= 1')
+        # index     where: 'qty BETWEEN 1 AND 10'
+        expect(described_class.normalize_condition_sql('((qty >= 1) AND (qty <= 10))'))
+          .to eq('qty <= 10 AND qty >= 1')
+      end
+
+      it 'writes out a range beside another clause' do
+        # validator conditions: -> { where(qty: 1..10, account_id: 5) }
+        expect(described_class.normalize_condition_sql('qty BETWEEN 1 AND 10 AND account_id = 5'))
+          .to eq('account_id = 5 AND qty <= 10 AND qty >= 1')
+        # index     where: 'account_id = 5 AND qty BETWEEN 1 AND 10'
+        expect(described_class.normalize_condition_sql('((account_id = 5) AND ((qty >= 1) AND (qty <= 10)))'))
+          .to eq('account_id = 5 AND qty <= 10 AND qty >= 1')
+      end
+
+      it 'writes out a range with a negative bound' do
+        # validator conditions: -> { where(qty: -5..5) }
+        expect(described_class.normalize_condition_sql('qty BETWEEN -5 AND 5'))
+          .to eq('qty <= 5 AND qty >= -5')
+        # index     where: 'qty BETWEEN -5 AND 5'
+        expect(described_class.normalize_condition_sql("((qty >= '-5'::integer) AND (qty <= 5))"))
+          .to eq('qty <= 5 AND qty >= -5')
+      end
+
+      it 'writes out a range of strings' do
+        # validator conditions: -> { where(code: 'a'..'m') }
+        expect(described_class.normalize_condition_sql("code BETWEEN 'a' AND 'm'"))
+          .to eq("code <= 'm' AND code >= 'a'")
+        # index     where: "code BETWEEN 'a' AND 'm'" on a varchar column
+        expect(described_class.normalize_condition_sql(
+                 "(((code)::text >= 'a'::text) AND ((code)::text <= 'm'::text))"
+               )).to eq("code <= 'm' AND code >= 'a'")
+      end
+
+      it 'writes out a range of timestamps' do
+        # validator conditions: -> { where(starts_at: Time.utc(2024, 1, 1)..Time.utc(2024, 12, 31)) }
+        expect(described_class.normalize_condition_sql(
+                 "starts_at BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 00:00:00'"
+               )).to eq("starts_at <= '2024-12-31 00:00:00' AND starts_at >= '2024-01-01 00:00:00'")
+        # index     where: "starts_at BETWEEN '2024-01-01' AND '2024-12-31'" on a timestamp column
+        expect(described_class.normalize_condition_sql(
+                 "((starts_at >= '2024-01-01 00:00:00'::timestamp without time zone) " \
+                 "AND (starts_at <= '2024-12-31 00:00:00'::timestamp without time zone))"
+               )).to eq("starts_at <= '2024-12-31 00:00:00' AND starts_at >= '2024-01-01 00:00:00'")
+      end
+
+      it 'writes out a range whose bounds are columns' do
+        # validator conditions: -> { where('qty BETWEEN lo AND hi') }
+        expect(described_class.normalize_condition_sql('qty BETWEEN lo AND hi'))
+          .to eq('qty <= hi AND qty >= lo')
+        # index     where: 'qty BETWEEN lo AND hi'
+        expect(described_class.normalize_condition_sql('((qty >= lo) AND (qty <= hi))'))
+          .to eq('qty <= hi AND qty >= lo')
+      end
+
+      # `+` binds tighter than `BETWEEN`, so this range is over `qty + 1`.
+      it 'leaves a range over an expression alone' do
+        # validator conditions: -> { where('qty + 1 BETWEEN 1 AND 10') }
+        expect(described_class.normalize_condition_sql('qty + 1 BETWEEN 1 AND 10'))
+          .to eq('qty + 1 BETWEEN 1 AND 10')
+      end
+
+      # `NOT` binds looser than `BETWEEN`, so it negates the whole range and
+      # cannot stay in front of the first of two comparisons.
+      it 'leaves a range after a bare NOT alone' do
+        # validator conditions: -> { where('NOT qty BETWEEN 1 AND 10') }
+        expect(described_class.normalize_condition_sql('NOT qty BETWEEN 1 AND 10'))
+          .to eq('NOT qty BETWEEN 1 AND 10')
+      end
+
+      it 'leaves a range with a function-call bound alone' do
+        # validator conditions: -> { where('qty BETWEEN abs(lo) AND 10') }
+        expect(described_class.normalize_condition_sql('qty BETWEEN abs(lo) AND 10'))
+          .to eq('qty BETWEEN abs(lo) AND 10')
+      end
+
+      it 'leaves BETWEEN SYMMETRIC alone' do
+        # validator conditions: -> { where('qty BETWEEN SYMMETRIC 1 AND 10') }
+        expect(described_class.normalize_condition_sql('qty BETWEEN SYMMETRIC 1 AND 10'))
+          .to eq('qty BETWEEN SYMMETRIC 1 AND 10')
       end
     end
 

@@ -167,12 +167,10 @@ module DatabaseConsistency
     # `attribute IS NOT NULL` clause and never match the partial index.
     def uniqueness_validator_where_sql(model, attribute, validator)
       conditions_sql = conditions_where_sql(model, validator.options[:conditions])
-      guard_sql = conditions_sql ? nil : uniqueness_validator_guard_sql(model, attribute, validator)
+      return conditions_sql.presence if conditions_sql
 
-      sql_parts = [conditions_sql, guard_sql].reject { |part| part.nil? || part == '' }
-      return nil if sql_parts.empty?
-
-      normalize_condition_sql(sql_parts.join(' AND '))
+      guard_sql = uniqueness_validator_guard_sql(model, attribute, validator)
+      normalize_condition_sql(guard_sql) if guard_sql
     end
 
     # Returns true when validator conditions and index WHERE clause are a valid
@@ -198,6 +196,14 @@ module DatabaseConsistency
     # SQL escapes a quote by doubling it, so a `''` pair is part of the value
     # rather than the end of it.
     CONDITION_LITERAL = /'(?:[^']|'')*'/.freeze
+
+    # Matches a quoted identifier spelled like a keyword the normalizer reads,
+    # such as a column named `"or"`. Once its quotes were stripped it would read
+    # as the keyword, so it is renamed to an identifier-shaped placeholder
+    # instead and written back in double quotes at the end, which keeps the
+    # result the same when it is normalized again.
+    KEYWORD_IDENTIFIER = /["`](and|or|not|between|in|is|null|true|false)["`]/i.freeze
+    KEYWORD_IDENTIFIER_PLACEHOLDER = /__database_consistency_identifier_(\w+?)__/.freeze
 
     # Matches a masked literal, so steps that run on masked SQL can step over
     # the `<` and `>` in the placeholder.
@@ -321,6 +327,21 @@ module DatabaseConsistency
       \)? \s* \)
     /xi.freeze
 
+    # Matches one bound of a `BETWEEN` range: a number, a masked literal or a
+    # column.
+    BETWEEN_BOUND = /-?\d+(?:\.\d+)?(?:e[+-]?\d+)?|#{MASKED_LITERAL.source}|[a-z_][\w.]*/i.freeze
+
+    # Matches an inclusive range over a lone column, in the same three places
+    # as a bare boolean predicate, capturing the column and both bounds. A range
+    # over an expression, or with any other kind of bound, is left unmatched.
+    # A bare `NOT` is not one of the places, because it negates the whole range.
+    BETWEEN_RANGE = /
+      (^ | (?: \bAND\b | \bOR\b | (?<![\w.]) \( ))
+      \s* ([a-z_][\w.]*)
+      \s+ BETWEEN \s+ (#{BETWEEN_BOUND}) \s+ AND \s+ (#{BETWEEN_BOUND})
+      (?= \s* (?: $ | \bAND\b | \bOR\b | \) ))
+    /xi.freeze
+
     # Normalizes SQL predicates into a canonical form so semantically equivalent
     # Rails validators and database partial indexes can be compared safely.
     def normalize_condition_sql(sql)
@@ -333,7 +354,7 @@ module DatabaseConsistency
                                 .then { |value| mask_condition_literals(value) }
 
       normalize_masked_condition_sql(
-        masked_sql.then { |value| strip_outer_parentheses(value) }
+        masked_sql.then { |value| Parentheses.strip_outer(value) }
                   .then { |value| normalize_boolean_and_null_keywords(value) },
         literals
       )
@@ -344,9 +365,10 @@ module DatabaseConsistency
     # final structural clean-ups, and only then restores the literal values.
     # Restoring last protects literal contents from whitespace collapse and
     # clause sorting.
-    def normalize_masked_condition_sql(masked_sql, literals)
+    def normalize_masked_condition_sql(masked_sql, literals) # rubocop:disable Metrics/AbcSize
       masked_sql
         .then { |value| normalize_adapter_syntax(value) }
+        .then { |value| expand_between_ranges(value) }
         .then { |value| normalize_boolean_predicates(value) }
         .then { |value| normalize_array_any_predicates(value) }
         .then { |value| normalize_negated_blank_or_nil_predicates(value) }
@@ -357,7 +379,8 @@ module DatabaseConsistency
 
     # Masks non-empty string literals so later regexes cannot rewrite their
     # contents. Empty literals are left untouched because negated-blank
-    # normalization relies on them.
+    # normalization relies on them. A quoted identifier spelled like a keyword
+    # is masked too, as described at `KEYWORD_IDENTIFIER`.
     def mask_condition_literals(sql)
       literals = []
       masked_sql = sql.gsub(CONDITION_LITERAL) do |match|
@@ -368,16 +391,19 @@ module DatabaseConsistency
           format(LITERAL_PLACEHOLDER, index: literals.length - 1)
         end
       end
+      masked_sql = masked_sql.gsub(KEYWORD_IDENTIFIER) { "__database_consistency_identifier_#{Regexp.last_match(1)}__" }
       [masked_sql, literals]
     end
 
     # Restores literals in the order they were masked. Uses a block replacement
     # so backslashes inside the literal are not interpreted as regexp backrefs.
+    # A masked keyword identifier comes back in double quotes, whichever quote
+    # it was written with.
     def unmask_condition_literals(sql, literals)
       literals.each_with_index do |literal, index|
         sql = sql.sub(format(LITERAL_PLACEHOLDER, index: index)) { literal }
       end
-      sql
+      sql.gsub(KEYWORD_IDENTIFIER_PLACEHOLDER, '"\1"')
     end
 
     # PostgreSQL writes any literal it had to coerce as a quoted string with a
@@ -515,40 +541,15 @@ module DatabaseConsistency
       normalized_sql
     end
 
-    # Repeatedly removes one wrapping layer of parentheses when the whole SQL
-    # fragment is enclosed, e.g. `((foo))` -> `foo`.
-    def strip_outer_parentheses(sql)
-      stripped_sql = sql.strip
+    # Writes an inclusive range out as the two comparisons PostgreSQL stores it
+    # as, so `qty BETWEEN 1 AND 10` lines up with `(qty >= 1) AND (qty <= 10)`.
+    # It runs before boolean predicates are read, so a bound that is a column
+    # is not mistaken for one.
+    def expand_between_ranges(sql)
+      sql.gsub(BETWEEN_RANGE) do
+        prefix, column, lower, upper = Regexp.last_match.captures
 
-      stripped_sql = stripped_sql[1..-2].strip while wrapped_with_parentheses?(stripped_sql)
-
-      stripped_sql
-    end
-
-    # Returns true only when the string is entirely wrapped by one outer pair of
-    # parentheses, not when parentheses close earlier inside the expression.
-    def wrapped_with_parentheses?(sql)
-      return false unless sql.start_with?('(') && sql.end_with?(')')
-
-      depth = 0
-
-      sql[1..-2].each_char do |char|
-        depth = parenthesis_depth(depth, char)
-        return false if depth.negative?
-      end
-
-      depth.zero?
-    end
-
-    # Tracks parenthesis nesting depth character by character.
-    def parenthesis_depth(depth, char)
-      case char
-      when '('
-        depth + 1
-      when ')'
-        depth - 1
-      else
-        depth
+        "#{prefix} #{column} >= #{lower} AND #{column} <= #{upper}"
       end
     end
 
@@ -588,20 +589,18 @@ module DatabaseConsistency
       end
     end
 
-    # Sorts simple `AND` clauses so `a AND b` and `b AND a` normalize to the
-    # same string before comparison. Two clauses can be identical apart from the
+    # Sorts the `AND` clauses so `a AND b` and `b AND a` normalize to the same
+    # string before comparison. Two clauses can be identical apart from the
     # string each one compares against, and then those strings decide the order,
     # which is why the literals go back in before the sort. A placeholder is
     # numbered by where its literal appeared, so sorting on the placeholders
-    # would leave such a pair in whichever order it arrived in.
+    # would leave such a pair in whichever order it arrived in. A column named
+    # like a keyword is ordered by its bare name, so its quotes do not move it
+    # ahead of every other clause.
     def sort_and_clauses(sql, literals)
-      # Matches `AND` with surrounding whitespace and splits the expression into
-      # comparable clause fragments.
-      clauses = sql.split(/\s+AND\s+/i)
-      return sql if clauses.length == 1
-
-      clauses.map! { |clause| strip_outer_parentheses(clause) }
-      clauses.sort_by { |clause| unmask_condition_literals(clause, literals) }.join(' AND ')
+      AndClauses.sort(sql) do |clause|
+        unmask_condition_literals(clause.gsub(KEYWORD_IDENTIFIER_PLACEHOLDER, '\1'), literals)
+      end
     end
 
     # Builds the implicit SQL guard introduced by validator options that skip
