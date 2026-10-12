@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix autofix migration versions when one run writes many migrations: add one second to the last version instead of one, so versions stay valid timestamps (no `...60` seconds). Thanks [Garrett Blehm](https://github.com/garrettblehm) for contributing this!
+
 ### [3.0.15] - 2026/10/08
 
 - Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` comparing partial-index `WHERE` clauses that use `BETWEEN` or an inclusive range `qty: 1..10`, a parenthesized group, `NOT (...)`, or `AND` beside `OR`. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
