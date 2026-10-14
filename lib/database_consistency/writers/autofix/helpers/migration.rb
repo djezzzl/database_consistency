@@ -16,6 +16,8 @@ module DatabaseConsistency
 
           # Adds one second to a timestamp version, so a batch of migrations keeps valid times.
           def next_version_number(last_version)
+            return last_version + 1 unless last_version.to_s.match?(/\A\d{14}\z/)
+
             time = Time.strptime("#{last_version} +0000", '%Y%m%d%H%M%S %z').utc
             (time + 1).strftime('%Y%m%d%H%M%S').to_i
           rescue ArgumentError
