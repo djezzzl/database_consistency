@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 module DatabaseConsistency
   module Writers
     module Autofix
@@ -7,9 +9,19 @@ module DatabaseConsistency
         module Migration # :nodoc:
           def migration_path(name)
             last = migration_context.migrations.last
-            version = ActiveRecord::Migration.next_migration_number(last&.version.to_i + 1)
+            version = ActiveRecord::Migration.next_migration_number(next_version_number(last&.version.to_i))
 
             "db/migrate/#{version}_#{name.underscore}.rb"
+          end
+
+          # Adds one second to a timestamp version, so a batch of migrations keeps valid times.
+          def next_version_number(last_version)
+            return last_version + 1 unless last_version.to_s.match?(/\A\d{14}\z/)
+
+            time = Time.strptime("#{last_version} +0000", '%Y%m%d%H%M%S %z').utc
+            (time + 1).strftime('%Y%m%d%H%M%S').to_i
+          rescue ArgumentError
+            last_version + 1
           end
 
           def migration_path_pattern(name)
