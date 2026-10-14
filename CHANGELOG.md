@@ -3,6 +3,7 @@
 ### [Unreleased]
 
 - Fix autofix migration versions when one run writes many migrations: add one second to the last version instead of one, so versions stay valid timestamps (no `...60` seconds). Thanks [Garrett Blehm](https://github.com/garrettblehm) for contributing this!
+- Fix `InconsistentTypes` autofix for array types, types with spaces (e.g. `character varying`), and composite foreign keys, which wrote a migration file name that Rails refuses and stopped the autofix run. Thanks [Garrett Blehm](https://github.com/garrettblehm) for contributing this!
 
 ### [3.0.15] - 2026/10/08
 
