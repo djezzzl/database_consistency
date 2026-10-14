@@ -1,5 +1,9 @@
 # Changelog
 
+### [Unreleased]
+
+- Fix `InconsistentTypes` autofix for array types, types with spaces (e.g. `character varying`), and composite foreign keys, which wrote a migration file name that Rails refuses and stopped the autofix run. Thanks [Garrett Blehm](https://github.com/garrettblehm) for contributing this!
+
 ### [3.0.15] - 2026/10/08
 
 - Fix `MissingUniqueIndexChecker` and `UniqueIndexChecker` comparing partial-index `WHERE` clauses that use `BETWEEN` or an inclusive range `qty: 1..10`, a parenthesized group, `NOT (...)`, or `AND` beside `OR`. Thanks [Jamie McCarthy](https://github.com/jamiemccarthy) for contributing this!
