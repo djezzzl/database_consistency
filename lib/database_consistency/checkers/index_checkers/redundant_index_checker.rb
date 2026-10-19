@@ -47,7 +47,7 @@ module DatabaseConsistency
 
       def covered_by_index
         @covered_by_index ||=
-          model.connection.indexes(model.table_name).find do |another_index|
+          model.connection_pool.with_connection { |conn| conn.indexes(model.table_name) }.find do |another_index|
             next if index.name == another_index.name || !Helper.btree_index?(another_index)
 
             clause_equals?(another_index) && include_index_as_prefix?(another_index)

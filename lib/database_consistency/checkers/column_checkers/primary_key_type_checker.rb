@@ -70,7 +70,7 @@ module DatabaseConsistency
 
       # @return [Boolean]
       def sqlite?
-        model.connection.adapter_name == SQLITE_ADAPTER_NAME
+        model.connection_pool.with_connection(&:adapter_name) == SQLITE_ADAPTER_NAME
       end
     end
   end

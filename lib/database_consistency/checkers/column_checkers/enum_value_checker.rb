@@ -36,8 +36,8 @@ module DatabaseConsistency
 
       def enum_column_values # rubocop:disable Metrics/AbcSize
         @enum_column_values ||=
-          if model.connection.enum_types.is_a?(Array)
-            _, values = model.connection.enum_types.find { |(enum, _)| enum == column.sql_type }
+          if model.connection_pool.with_connection(&:enum_types).is_a?(Array)
+            _, values = model.connection_pool.with_connection(&:enum_types).find { |(enum, _)| enum == column.sql_type }
             case values
             when Array then values
             else
@@ -45,7 +45,7 @@ module DatabaseConsistency
             end
           else
             # active_record-postgres_enum gem
-            model.connection.enum_types[column.sql_type.to_sym]
+            model.connection_pool.with_connection(&:enum_types)[column.sql_type.to_sym]
           end
       end
 

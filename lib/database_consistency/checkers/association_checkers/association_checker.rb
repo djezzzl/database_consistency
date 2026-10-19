@@ -25,7 +25,7 @@ module DatabaseConsistency
       end
 
       def foreign_key # rubocop:disable Metrics/AbcSize
-        model.connection.foreign_keys(model.table_name).find do |foreign_key|
+        model.connection_pool.with_connection { |conn| conn.foreign_keys(model.table_name) }.find do |foreign_key|
           (Helper.extract_columns(association.foreign_key) - Array.wrap(foreign_key.column)).empty? &&
             foreign_key.to_table == association.klass.table_name
         end
