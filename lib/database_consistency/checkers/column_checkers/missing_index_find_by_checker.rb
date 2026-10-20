@@ -65,13 +65,13 @@ module DatabaseConsistency
       end
 
       def indexed?
-        model.connection.indexes(model.table_name).any? do |index|
+        model.connection_pool.with_connection { |conn| conn.indexes(model.table_name) }.any? do |index|
           Helper.extract_index_columns(index.columns).first == column.name.to_s
         end
       end
 
       def primary_key_column?
-        primary_key = model.connection.primary_key(model.table_name)
+        primary_key = model.connection_pool.with_connection { |conn| conn.primary_key(model.table_name) }
 
         column.name.to_s == Array(primary_key).first.to_s
       end

@@ -9,7 +9,7 @@ module DatabaseConsistency
       def preconditions
         ActiveRecord::VERSION::MAJOR >= 5 &&
           !model.abstract_class? &&
-          model.connection.view_exists?(model.table_name)
+          model.connection_pool.with_connection { |conn| conn.view_exists?(model.table_name) }
       end
 
       # Table of possible statuses

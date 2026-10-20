@@ -67,8 +67,8 @@ module DatabaseConsistency
       def foreign_key
         @foreign_key ||=
           association.klass
-                     .connection
-                     .foreign_keys(association.klass.table_name)
+                     .connection_pool
+                     .with_connection { |conn| conn.foreign_keys(association.klass.table_name) }
                      .find { |fk| (Helper.extract_columns(association.foreign_key) - Array.wrap(fk.column)).empty? }
       end
 

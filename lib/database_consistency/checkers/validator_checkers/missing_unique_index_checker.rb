@@ -47,7 +47,8 @@ module DatabaseConsistency
       end
 
       def unique_index
-        @unique_index ||= model.connection.indexes(model.table_name).find { |index| index_matches?(index) }
+        @unique_index ||= model.connection_pool.with_connection { |conn| conn.indexes(model.table_name) }
+                               .find { |index| index_matches?(index) }
       end
 
       def index_matches?(index)
@@ -57,7 +58,7 @@ module DatabaseConsistency
       end
 
       def primary_key_covers_validation?
-        primary_key = model.connection.primary_key(model.table_name)
+        primary_key = model.connection_pool.with_connection { |conn| conn.primary_key(model.table_name) }
 
         return false if primary_key.blank?
 

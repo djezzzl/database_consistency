@@ -22,7 +22,7 @@ module DatabaseConsistency
         supported? &&
           association.belongs_to? && !association.polymorphic? &&
           same_database? &&
-          model.connection.table_exists?(model.table_name)
+          model.connection_pool.with_connection { |conn| conn.table_exists?(model.table_name) }
       rescue NameError
         false
       end

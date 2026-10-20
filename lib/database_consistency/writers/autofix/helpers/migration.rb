@@ -40,10 +40,10 @@ module DatabaseConsistency
               return ActiveRecord::MigrationContext.new(ActiveRecord::Migrator.migrations_paths)
             end
 
-            if ActiveRecord::Base.connection.respond_to?(:schema_migration)
+            if ActiveRecord::Base.connection_pool.with_connection { |conn| conn.respond_to?(:schema_migration) }
               return ActiveRecord::MigrationContext.new(
                 ActiveRecord::Migrator.migrations_paths,
-                ActiveRecord::Base.connection.schema_migration
+                ActiveRecord::Base.connection_pool.with_connection(&:schema_migration)
               )
             end
 

@@ -33,8 +33,8 @@ module DatabaseConsistency
       end
 
       def preconditions
-        model.connection.respond_to?(:check_constraints) &&
-          model.connection.table_exists?(model.table_name) &&
+        model.connection_pool.with_connection { |conn| conn.respond_to?(:check_constraints) } &&
+          model.connection_pool.with_connection { |conn| conn.table_exists?(model.table_name) } &&
           column &&
           validators.any?
       end
@@ -54,7 +54,7 @@ module DatabaseConsistency
       end
 
       def check_constraints
-        @check_constraints ||= model.connection.check_constraints(model.table_name)
+        @check_constraints ||= model.connection_pool.with_connection { |conn| conn.check_constraints(model.table_name) }
       rescue StandardError
         []
       end

@@ -70,13 +70,17 @@ module DatabaseConsistency
       end
 
       def unique_index
-        @unique_index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
+        @unique_index ||= association.klass.connection_pool
+                                     .with_connection { |conn| conn.indexes(association.klass.table_name) }
+                                     .find do |index|
           index_keys(index) == association_keys && index.unique
         end
       end
 
       def index
-        @index ||= association.klass.connection.indexes(association.klass.table_name).find do |index|
+        @index ||= association.klass.connection_pool
+                              .with_connection { |conn| conn.indexes(association.klass.table_name) }
+                              .find do |index|
           index_keys(index, limit: association_keys.size) == association_keys
         end
       end

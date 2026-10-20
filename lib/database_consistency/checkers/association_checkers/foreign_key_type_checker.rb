@@ -115,7 +115,7 @@ module DatabaseConsistency
 
       # @return [DatabaseConsistency::Databases::Factory]
       def database_factory
-        @database_factory ||= Databases::Factory.new(association.active_record.connection.adapter_name)
+        @database_factory ||= Databases::Factory.new(association.active_record.connection_pool.with_connection(&:adapter_name))
       end
 
       # @param [ActiveRecord::Base] model
@@ -123,7 +123,8 @@ module DatabaseConsistency
       #
       # @return [ActiveRecord::ConnectionAdapters::Column]
       def column(model, column_name)
-        model.connection.columns(model.table_name).find { |column| column.name == column_name } ||
+        model.connection_pool.with_connection { |conn| conn.columns(model.table_name) }
+             .find { |column| column.name == column_name } ||
           (raise Errors::MissingField, missing_field_error(model.table_name, column_name))
       end
 
