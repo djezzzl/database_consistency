@@ -31,7 +31,7 @@ module DatabaseConsistency
         klass =
           if report.error_slug
             begin
-              "DatabaseConsistency::Writers::Simple::#{report.error_slug.to_s.classify}".constantize
+              "DatabaseConsistency::Writers::Simple::#{report.error_slug.to_s.camelize}".constantize
             rescue NameError
               Simple::DefaultMessage
             end

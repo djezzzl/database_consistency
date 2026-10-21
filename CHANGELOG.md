@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+- Fix the `ForeignKeyTypeChecker` message: `inconsistent_types` was looked up as `InconsistentType` (`classify` singularizes), so failures printed without a message.
 - Use scoped connections (`connection_pool.with_connection`) instead of permanent connection checkouts, so the tool works with `ActiveRecord.permanent_connection_checkout` set to `:deprecated` or `:disallowed`. Thanks [seahal](https://github.com/seahal) for contributing this!
 
 ### [3.0.16] - 2026/10/14
