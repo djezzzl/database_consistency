@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+- Count the primary key as an index in `MissingIndexChecker`: a primary key covers the association's foreign key when it is the foreign key (`has_one` and `has_many`) or when the foreign key is the leading column of a composite primary key (`has_many`).
 - Use scoped connections (`connection_pool.with_connection`) instead of permanent connection checkouts, so the tool works with `ActiveRecord.permanent_connection_checkout` set to `:deprecated` or `:disallowed`. Thanks [seahal](https://github.com/seahal) for contributing this!
 
 ### [3.0.16] - 2026/10/14

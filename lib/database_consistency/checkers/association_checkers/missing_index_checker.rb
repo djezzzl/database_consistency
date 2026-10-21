@@ -39,7 +39,7 @@ module DatabaseConsistency
       end
 
       def check_unique_has_one
-        if unique_index
+        if unique_index || primary_key_columns.sort == association_keys
           report_template(:ok)
         else
           report_template(:fail, error_slug: :has_one_missing_unique_index)
@@ -47,7 +47,7 @@ module DatabaseConsistency
       end
 
       def check_remaining
-        if index
+        if index || primary_key_columns.first(association_keys.size).sort == association_keys
           report_template(:ok)
         else
           report_template(:fail, error_slug: :association_missing_index)
@@ -83,6 +83,13 @@ module DatabaseConsistency
                               .find do |index|
           index_keys(index, limit: association_keys.size) == association_keys
         end
+      end
+
+      # The primary key is an implicit unique index, so it covers the association as well.
+      def primary_key_columns
+        @primary_key_columns ||= Array(
+          association.klass.connection_pool.with_connection { |conn| conn.primary_key(association.klass.table_name) }
+        ).map(&:to_s)
       end
 
       def association_keys
