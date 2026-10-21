@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+- Skip `MissingIndexChecker` for associations whose associated model has no table, instead of reporting a missing index. `MissingTableChecker` reports the missing table.
 - Use scoped connections (`connection_pool.with_connection`) instead of permanent connection checkouts, so the tool works with `ActiveRecord.permanent_connection_checkout` set to `:deprecated` or `:disallowed`. Thanks [seahal](https://github.com/seahal) for contributing this!
 
 ### [3.0.16] - 2026/10/14
