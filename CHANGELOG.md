@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.1.1] - 2026/10/22
 
 - Skip `MissingIndexChecker` for associations whose associated model has no table, instead of reporting a missing index. `MissingTableChecker` reports the missing table. Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!
 - Fix the `ForeignKeyCascadeChecker` message, which printed the list of accepted options as a symbol (`on_delete: :[:nullify]`) and named neither alternative for `restrict_with_exception`/`restrict_with_error`. Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!
