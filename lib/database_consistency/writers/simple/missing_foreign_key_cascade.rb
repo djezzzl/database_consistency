@@ -7,13 +7,20 @@ module DatabaseConsistency
         private
 
         def template
-          'should have a foreign key with on_delete: :%<cascade_option>s in the database'
+          'should have a foreign key %<cascade_option>s in the database'
         end
 
         def attributes
           {
-            cascade_option: report.cascade_option
+            cascade_option: cascade_option_text
           }
+        end
+
+        # nil stands for a foreign key without an on_delete option
+        def cascade_option_text
+          options = report.cascade_option.compact.map { |option| "with on_delete: :#{option}" }
+          options << 'without on_delete' if report.cascade_option.include?(nil)
+          options.join(' or ')
         end
 
         def unique_attributes
