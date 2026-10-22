@@ -6,6 +6,7 @@
 - Fix the `ForeignKeyCascadeChecker` message, which printed the list of accepted options as a symbol (`on_delete: :[:nullify]`) and named neither alternative for `restrict_with_exception`/`restrict_with_error`. Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!
 - Fix the `ForeignKeyTypeChecker` message: `inconsistent_types` was looked up as `InconsistentType` (`classify` singularizes), so failures printed without a message. Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!
 - Count the primary key as an index in `MissingIndexChecker`: a primary key covers the association's foreign key when it is the foreign key (`has_one` and `has_many`) or when the foreign key is the leading column of a composite primary key (`has_many`). Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!
+- Resolve symlinks in the bundle path (`Bundler.bundle_path.realpath`) when finding project models, so gem models are no longer treated as project models when the bundle path is symlinked (e.g. git worktrees). Thanks [Paul Sadauskas](https://github.com/paul) for fixing it!
 
 ### [3.1.0] - 2026/10/20
 
