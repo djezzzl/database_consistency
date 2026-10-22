@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tmpdir'
+
 RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
   describe '#first_level_associations' do
     subject { described_class.first_level_associations(child) }
@@ -56,6 +58,46 @@ RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
         before { klass.define_singleton_method(:name) { 'Some invalid !@#' } }
 
         it { is_expected.to be(RUBY_VERSION < '2.7') }
+      end
+    end
+
+    # Ruby resolves symlinks in the paths it loads files from, but `Bundler.bundle_path` keeps
+    #   them, e.g. when `vendor/bundle` is a symlink shared between git worktrees.
+    context 'when the bundle path is a symlink', skip: RUBY_VERSION < '2.7' do
+      let(:tmpdir) { Pathname.new(Dir.mktmpdir) }
+      let(:linked_bundle_path) { tmpdir.join('linked_bundle') }
+      let(:gem_lib_path) { linked_bundle_path.join('gems/symlinked_gem/lib') }
+
+      before do
+        tmpdir.join('bundle/gems/symlinked_gem/lib').mkpath
+        tmpdir.join('bundle/gems/symlinked_gem/lib/symlinked_gem_model.rb').write("class SymlinkedGemModel; end\n")
+        linked_bundle_path.make_symlink(tmpdir.join('bundle'))
+        allow(Bundler).to receive(:bundle_path).and_return(linked_bundle_path)
+      end
+
+      after { FileUtils.remove_entry(tmpdir) }
+
+      context 'with a class defined in a gem' do
+        let(:klass) { SymlinkedGemModel }
+
+        before do
+          $LOAD_PATH.unshift(gem_lib_path.to_s)
+          require 'symlinked_gem_model'
+        end
+
+        after do
+          $LOAD_PATH.delete(gem_lib_path.to_s)
+          $LOADED_FEATURES.delete_if { |feature| feature.end_with?('/symlinked_gem_model.rb') }
+          Object.send(:remove_const, :SymlinkedGemModel)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'with a class defined in the project' do
+        let(:klass) { define_class }
+
+        it { is_expected.to be(true) }
       end
     end
   end
