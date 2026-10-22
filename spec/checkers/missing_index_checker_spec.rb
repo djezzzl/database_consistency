@@ -299,4 +299,110 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
       end
     end
   end
+
+  context 'when the primary key covers the foreign key' do
+    before { define_class('User', :users) }
+
+    def expected_report(association_name, status, error_slug = nil)
+      have_attributes(
+        checker_name: 'MissingIndexChecker',
+        table_or_model_name: company_class.name,
+        column_or_attribute_name: association_name,
+        status: status,
+        error_slug: error_slug,
+        error_message: nil
+      )
+    end
+
+    context 'with has_one association' do
+      let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_one :user } }
+
+      context 'when the primary key is the foreign key' do
+        before do
+          define_database do
+            create_table :users, primary_key: :company_id
+            create_table :companies
+          end
+        end
+
+        specify do
+          expect(checker.report).to expected_report('user', :ok)
+        end
+      end
+
+      context 'when the foreign key is only the leading column of a composite primary key' do
+        before do
+          skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+
+          define_database do
+            create_table :users, primary_key: %i[company_id name] do |t|
+              t.integer :company_id
+              t.string :name
+            end
+
+            create_table :companies
+          end
+        end
+
+        specify do
+          expect(checker.report).to expected_report('user', :fail, :has_one_missing_unique_index)
+        end
+      end
+    end
+
+    context 'with has_many association' do
+      let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users } }
+
+      context 'when the primary key is the foreign key' do
+        before do
+          define_database do
+            create_table :users, primary_key: :company_id
+            create_table :companies
+          end
+        end
+
+        specify do
+          expect(checker.report).to expected_report('users', :ok)
+        end
+      end
+
+      context 'when the foreign key is the leading column of a composite primary key' do
+        before do
+          skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+
+          define_database do
+            create_table :users, primary_key: %i[company_id name] do |t|
+              t.integer :company_id
+              t.string :name
+            end
+
+            create_table :companies
+          end
+        end
+
+        specify do
+          expect(checker.report).to expected_report('users', :ok)
+        end
+      end
+
+      context 'when the foreign key is a trailing column of a composite primary key' do
+        before do
+          skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+
+          define_database do
+            create_table :users, primary_key: %i[name company_id] do |t|
+              t.string :name
+              t.integer :company_id
+            end
+
+            create_table :companies
+          end
+        end
+
+        specify do
+          expect(checker.report).to expected_report('users', :fail, :association_missing_index)
+        end
+      end
+    end
+  end
 end
