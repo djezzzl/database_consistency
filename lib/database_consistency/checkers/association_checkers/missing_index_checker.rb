@@ -16,11 +16,13 @@ module DatabaseConsistency
       #  - association isn't a `HasOne` or `HasMany`
       #  - association has `through` option
       #  - associated class doesn't exist
+      #  - associated class's table doesn't exist
       def preconditions
         %i[
           has_one
           has_many
-        ].include?(association.macro) && association.through_reflection.nil? && association.klass
+        ].include?(association.macro) && association.through_reflection.nil? &&
+          association.klass.table_exists?
       rescue StandardError
         false
       end

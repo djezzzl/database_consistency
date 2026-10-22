@@ -15,6 +15,23 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
     end
   end
 
+  context 'when associated table does not exist' do
+    let!(:company_class) { define_class('Company', :companies) { |klass| klass.has_many :users } }
+
+    before do
+      define_class('User', :users)
+
+      define_database do
+        create_table :companies
+      end
+    end
+
+    it 'should skip the check' do
+      expect(DatabaseConsistency::RescueError).not_to receive(:call)
+      expect(checker.report).to be_nil
+    end
+  end
+
   context 'with polymorphic association' do
     let!(:user_class) { define_class('User', :users) { |klass| klass.belongs_to :companable, polymorphic: true } }
 
