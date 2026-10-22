@@ -67,7 +67,10 @@ module DatabaseConsistency
       return true unless Module.respond_to?(:const_source_location) && defined?(Bundler)
 
       source_path = Module.const_source_location(klass.to_s).first.to_s
-      [Bundler.bundle_path, Bundler.bundle_path.realpath].none? { |path| source_path.include?(path.to_s) }
+      bundle_path = Bundler.bundle_path
+      bundle_paths = [bundle_path]
+      bundle_paths << bundle_path.realpath if bundle_path.exist?
+      bundle_paths.none? { |path| source_path.include?(path.to_s) }
     rescue NameError
       false
     end
