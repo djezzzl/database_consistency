@@ -3,6 +3,30 @@
 require 'tmpdir'
 
 RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
+  describe '#postgresql?' do
+    subject { described_class.postgresql? }
+
+    before { allow(described_class).to receive(:adapter).and_return(adapter_name) }
+
+    context 'with the postgresql adapter' do
+      let(:adapter_name) { 'postgresql' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with the postgis adapter' do
+      let(:adapter_name) { 'postgis' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with the mysql2 adapter' do
+      let(:adapter_name) { 'mysql2' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#first_level_associations' do
     subject { described_class.first_level_associations(child) }
 

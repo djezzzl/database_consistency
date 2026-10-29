@@ -1,5 +1,9 @@
 # Changelog
 
+### Unreleased
+
+- Treat the `postgis` adapter as PostgreSQL, so the PostgreSQL-only checkers (`ImplicitOrderingChecker`, `EnumValueChecker`, `CaseSensitiveUniqueValidationChecker`) run for PostGIS databases.
+
 ### [3.1.1] - 2026/10/22
 
 - Skip `MissingIndexChecker` for associations whose associated model has no table, instead of reporting a missing index. `MissingTableChecker` reports the missing table. Thanks [Manuel Meurer](https://github.com/manuelmeurer) for fixing it!

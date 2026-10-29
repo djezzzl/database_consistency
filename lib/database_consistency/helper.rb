@@ -18,7 +18,7 @@ module DatabaseConsistency
     end
 
     def postgresql?
-      adapter == 'postgresql'
+      %w[postgresql postgis].include?(adapter)
     end
 
     def connection_config(klass)
