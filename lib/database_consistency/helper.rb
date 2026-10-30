@@ -3,6 +3,8 @@
 module DatabaseConsistency
   # The module contains helper methods
   module Helper # rubocop:disable Metrics/ModuleLength
+    POSTGRESQL_ADAPTERS = %w[postgresql postgis].freeze
+
     module_function
 
     def adapter
@@ -18,7 +20,7 @@ module DatabaseConsistency
     end
 
     def postgresql?
-      adapter == 'postgresql'
+      POSTGRESQL_ADAPTERS.include?(adapter)
     end
 
     def connection_config(klass)
