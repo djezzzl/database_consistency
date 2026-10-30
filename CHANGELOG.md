@@ -1,6 +1,6 @@
 # Changelog
 
-### [Unreleased]
+### [3.1.2] - 2026/10/30
 
 - Treat the `postgis` adapter as PostgreSQL, so the PostgreSQL-only checkers (`ImplicitOrderingChecker`, `EnumValueChecker`, `CaseSensitiveUniqueValidationChecker`) run for PostGIS databases.
 
