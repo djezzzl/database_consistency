@@ -1,5 +1,9 @@
 # Changelog
 
+### Unreleased
+
+- Handle index definitions without `type` (as on Rails main with SQLite) when checking for redundant indexes, instead of raising an exception. Non-B-tree index types and methods are still rejected. Thanks to [Tom Hughes](https://github.com/tomhughes) for fixing it!
+
 ### [3.1.2] - 2026/10/30
 
 - Treat the `postgis` adapter as PostgreSQL, so the PostgreSQL-only checkers (`ImplicitOrderingChecker`, `EnumValueChecker`, `CaseSensitiveUniqueValidationChecker`) run for PostGIS databases.
