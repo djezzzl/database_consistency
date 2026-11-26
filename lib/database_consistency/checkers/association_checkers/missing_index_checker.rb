@@ -95,7 +95,7 @@ module DatabaseConsistency
       end
 
       def association_keys
-        @association_keys ||= [association.foreign_key, association.type].compact.map(&:to_s).sort
+        @association_keys ||= [association.foreign_key, association.type].flatten.compact.map(&:to_s).sort
       end
 
       def index_keys(index, limit: nil)
@@ -104,7 +104,7 @@ module DatabaseConsistency
         if limit
           columns.first(limit).sort
         else
-          columns
+          columns.sort
         end
       end
     end
