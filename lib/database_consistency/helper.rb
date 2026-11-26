@@ -129,7 +129,7 @@ module DatabaseConsistency
     end
 
     def btree_index?(index)
-      (index.type.nil? || index.type.to_s == 'btree') &&
+      (!index.respond_to?(:type) || index.type.nil? || index.type.to_s == 'btree') &&
         (index.using.nil? || index.using.to_s == 'btree')
     end
 

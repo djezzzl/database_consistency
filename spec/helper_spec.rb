@@ -3,6 +3,24 @@
 require 'tmpdir'
 
 RSpec.describe DatabaseConsistency::Helper, :sqlite, :mysql, :postgresql do
+  describe '#btree_index?' do
+    it 'accepts indexes without a type attribute' do
+      expect(described_class.btree_index?(double(using: nil))).to be(true)
+    end
+
+    it 'accepts explicit btree types and methods' do
+      expect(described_class.btree_index?(double(type: :btree, using: 'btree'))).to be(true)
+    end
+
+    it 'rejects non-btree types' do
+      expect(described_class.btree_index?(double(type: 'fulltext', using: nil))).to be(false)
+    end
+
+    it 'rejects non-btree methods even without a type attribute' do
+      expect(described_class.btree_index?(double(using: 'hash'))).to be(false)
+    end
+  end
+
   describe '#postgresql?' do
     subject { described_class.postgresql? }
 
