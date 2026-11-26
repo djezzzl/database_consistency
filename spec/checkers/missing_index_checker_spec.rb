@@ -300,6 +300,259 @@ RSpec.describe DatabaseConsistency::Checkers::MissingIndexChecker, :sqlite, :mys
     end
   end
 
+  context 'with composite association' do
+    before do
+      skip('Composite primary keys are supported only in Rails 7.1+') unless compound_primary_keys_supported?
+    end
+
+    let!(:user_class) { define_class('User', :users) }
+
+    context 'with has_one association' do
+      let!(:company_class) do
+        define_class('Company', :companies) do |klass|
+          klass.has_one :user, composite_foreign_key_option_name => %i[company_type company_id]
+        end
+      end
+
+      context 'when index is not provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'user',
+            status: :fail,
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
+          )
+        end
+      end
+
+      context 'when not unique index is provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+              t.index %i[company_type company_id]
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'user',
+            status: :fail,
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
+          )
+        end
+      end
+
+      context 'when bigger unique index is provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+              t.integer :something
+              t.index %i[company_type company_id something], unique: true
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'user',
+            status: :fail,
+            error_slug: :has_one_missing_unique_index,
+            error_message: nil
+          )
+        end
+      end
+
+      context 'when many indexes are provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+            end
+
+            add_index :users, %i[company_type company_id], unique: true, name: 'unique_index'
+            add_index :users, %i[company_type company_id], name: 'not_unique_index'
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'user',
+            status: :ok,
+            error_slug: nil,
+            error_message: nil
+          )
+        end
+      end
+
+      context 'when unique index is provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+              t.index %i[company_type company_id], unique: true
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'user',
+            status: :ok,
+            error_slug: nil,
+            error_message: nil
+          )
+        end
+      end
+    end
+
+    context 'with has_many association' do
+      let!(:company_class) do
+        define_class('Company', :companies) do |klass|
+          klass.has_many :users, composite_foreign_key_option_name => %i[company_type company_id]
+        end
+      end
+
+      context 'when index is not provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'users',
+            status: :fail,
+            error_slug: :association_missing_index,
+            error_message: nil
+          )
+        end
+      end
+
+      if ActiveRecord::VERSION::MAJOR >= 5
+        context 'when index is compound', mysql: false do
+          before do
+            define_database do
+              create_table :users do |t|
+                t.integer :company_type
+                t.integer :company_id
+                t.string :name
+
+                t.index 'company_type, company_id, lower(name)'
+              end
+
+              create_table :companies, primary_key: %i[type id] do |t|
+                t.integer :type
+                t.integer :id
+              end
+            end
+          end
+
+          specify do
+            expect(checker.report).to have_attributes(
+              checker_name: 'MissingIndexChecker',
+              table_or_model_name: company_class.name,
+              column_or_attribute_name: 'users',
+              status: :ok,
+              error_slug: nil,
+              error_message: nil
+            )
+          end
+        end
+      end
+
+      context 'when index is provided' do
+        before do
+          define_database do
+            create_table :users do |t|
+              t.integer :company_type
+              t.integer :company_id
+              t.index %i[company_type company_id]
+            end
+
+            create_table :companies, primary_key: %i[type id] do |t|
+              t.integer :type
+              t.integer :id
+            end
+          end
+        end
+
+        specify do
+          expect(checker.report).to have_attributes(
+            checker_name: 'MissingIndexChecker',
+            table_or_model_name: company_class.name,
+            column_or_attribute_name: 'users',
+            status: :ok,
+            error_slug: nil,
+            error_message: nil
+          )
+        end
+      end
+    end
+  end
+
   context 'when the primary key covers the foreign key' do
     before { define_class('User', :users) }
 
